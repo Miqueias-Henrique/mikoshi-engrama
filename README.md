@@ -1,4 +1,4 @@
-# ⚡ Miqueias Carvalho — Cyberpunk 2077 / Edgerunners / Cyberpunk RED Interactive Menu
+# ⚡ Miqueias Carvalho — Cyberpunk 2077 / Edgerunners / Cyberpunk RED Interactive OS v2.1
 
 > **"Wake the f*ck up, Samurai. We have legacy code to refactor and APIs to ship."**
 
@@ -6,28 +6,25 @@ Portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor de Software Júnio
 
 - 🌐 **Live Demo (GitHub Pages):** [https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/](https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/)
 - 📦 **Repositório:** [https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077](https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077)
-- 📄 **Repositório Base (Dados Originais Preservados):** [https://github.com/Miqueias-Henrique/miqueias-henrique.github.io](https://github.com/Miqueias-Henrique/miqueias-henrique.github.io)
+- 📄 **Repositório Base (Dados Originais Preservados):** [https://github.com/Miqueias-Henrique/miqueias-henrique.github.io](https://github.com/Miqueias-henrique/miqueias-henrique.github.io)
 
 ---
 
-## 🎮 As 6 Telas do Menu + Modos Especiais
+## 🔥 Novidades da Edição Potencializada (v2.1)
 
-| Atalho | Tela / Sistema | Referência da Franquia | Conteúdo do Portfólio |
-| :--- | :--- | :--- | :--- |
-| **`[I]`** | **Ripperdoc & Cyberware** | Clínica de *Viktor Vektor* (*Cyberpunk 2077*) + Barra de *Cyberware Capacity* & *Humanity (EMP)* | 10 implantes cibernéticos mapeando `C#/.NET`, `SQL Server`, `Java 17/21`, `Node.js/NestJS`, `VB6 Legacy`, `AVL/Hash O(1)` com Custo de Humanidade (`4d6`) e scanner biométrico |
-| **`[M]`** | **Mapa de Gigs (11 Pinos)** | Mapa tático de *Night City* com briefings de *Fixers* (*Wakako Okada*, *Rogue Amendiares*, *Padre*, *Regina Jones*, *Faraday*) | Todos os **8 repositórios reais do GitHub** + experiências na **Zetti**, **Carvalho Forros** e **UNIFAN** posicionados como contratos de mercenário |
-| **`[P]`** | **Árvore de Habilidades 2.0** | Skill Tree do *Patch 2.0* (*Intelligence*, *Technical Ability*, *Cool*, *Reflexes*, *Relic*) | Constelação neural SVG clicável destrinchando competências técnicas, QA, GitFlow e arquitetura |
-| **`[R]`** | **Ficha RPG de Mesa (`1d10`)** | *Cyberpunk 2020 / Cyberpunk RED* (*R. Talsorian Games* / *Mike Pondsmith*) | Ficha completa multiclasse (`Netrunner Nv.8 / Tech Nv.8`), 10 atributos clássicos (`INT, REF, DEX, TECH, COOL, WILL, LUCK, MOVE, BODY, EMP`), *Lifepath* e **Rolador de Dados Interativo `1d10 + STAT + SKILL vs DV`** com explosão crítica no `10` |
-| **`[J]`** | **Diário, Shards & Tarô** | *Journal*, *Data Shards* e os **Arcanos Maiores do Tarô da Misty** (*The Fool, The Magician, The Hermit, The World*) | Linha do tempo profissional, formação acadêmica na UNIFAN, certificações e citações de *William Gibson (Neuromancer)* e *Rache Bartmoss* |
-| **`[H]`** | **Holocall & Breach Protocol** | Chamada holográfica + minigame *Breach Protocol* de matriz hexadecimal (`1C 55 BD E9 7A`) | Contato direto (WhatsApp, E-mail, LinkedIn, GitHub), download do currículo PDF e minigame para decriptar 3 Daemons (`ROOT_ACCESS`, `SQL_OPTIMIZER`, `HIRE_CANDIDATE`) |
-| **`[E]`** | **Modo Sandevistan (*Apogee*)** | *Cyberpunk: Edgerunners* (*David Martinez* & *Lucy Kushinada*) | Distorção temporal visual neon-verde/ciano com **rastro fantasma cromático do cursor** no `<canvas>` e desaceleração do pulso neural |
-| **`📻`** | **98.7 Body Heat Radio FM** | Rádio in-game (*98.7 Body Heat* / *107.3 Morro Rock* / *89.3 Pacific Dreams*) | Sintetizador WebAudio Darksynth em tempo real sem dependências externas |
-
----
-
-## 🎨 Arquitetura de Design Tokens (W3C DTCG)
-
-- [`assets/design-tokens.json`](./assets/design-tokens.json) — Tokens em 3 camadas (*Primitive → Semantic → Component*)
-- [`assets/design-tokens.css`](./assets/design-tokens.css) — Variáveis CSS compiladas automaticamente via [`generate-tokens.cjs`](./generate-tokens.cjs)
-- [`design-system/cyberpunk-2077-portfolio/MASTER.md`](./design-system/cyberpunk-2077-portfolio/MASTER.md) — Especificação completa de UI/UX
-- [`docs/brand-guidelines.md`](./docs/brand-guidelines.md) — Guia de estilo e acessibilidade
+1. **Barra de Telemetria Kiroshi Mk.5 & Unidades de RAM do Cyberdeck (`8/8 RAM`):**
+   - Rastreamento óptico em tempo real das coordenadas do cursor (`RETÍCULA X/Y`) e barra de **Unidades de RAM** que são consumidas ao fazer *Upgrade de Cyberware* ou *Simular Execução de Projetos* e recarregam automaticamente.
+2. **Engrama Holográfico do Johnny Silverhand (`[G]`):**
+   - Pressione `[G]` ou clique em `🎸 JOHNNY [G]` no topo para disparar o efeito de *Relic Malfunction* e invocar comentários ácidos do Johnny Silverhand sobre sustentação em produção, VB6, SQL Server e seus projetos no GitHub.
+3. **Clínica de Ripperdoc (`[I]`) com Blueprint de Código Real, Upgrade Tier 5++ & Overclock (`[O]`):**
+   - Cada implante cibernético exibe um **trecho de código real** (*Stored Procedure SQL Server*, *Controller C#/.NET*, *Módulo Fiscal VB6*, *Busca Hash O(1) em Java 17*, *Service paginado em TypeScript/TypeORM*).
+   - Botão **Aprimorar Implante (+1 Tier)** e modo **Overclock Edgerunner (`[O]`)** que eleva a capacidade a `298/300` com aura vermelha de limite de empatia.
+4. **Mapa Tático (`[M]`) com Traçado de Rota GPS Animado & Terminal Live Runner:**
+   - Clicar em qualquer um dos **11 pinos** desenha dinamicamente uma **rota GPS tracejada neon** a partir do QG na Zetti até o contrato escolhido, calculando a distância em KM.
+   - Inclui um **Terminal de Simulação do Projeto** que executa os comandos reais (`docker compose`, `curl`, `mvn test`, `java benchmark ns`) de cada repositório.
+5. **Ficha RPG de Mesa Cyberpunk RED (`[R]`) com Elevador de Arquitetura NET (5 Andares) & Exportação `.TXT`:**
+   - Além dos 10 atributos clássicos e do **Rolador `1d10 + STAT + PERÍCIA vs DV`** (com explosão crítica no `10`), inclui o mini-jogo oficial de **Invasão de Arquitetura NET em 5 Andares** (*Firewall DV12 → Hellhound DV15 → SQL Cluster DV17 → Kraken DV18 → Root Virus DV20*) e botão para baixar a ficha completa em `.TXT`.
+6. **Diário (`[J]`) com Scanner de Braindance em 3 Camadas (Judy Alvarez) & Tarô da Misty:**
+   - Alterne entre a **Camada Visual**, **Camada de Áudio** e **Camada Térmica / SQL** da operação profissional de Miqueias, além de consultar a leitura esotérica de *Misty Olszewski* para os 4 Arcanos Maiores do Tarô.
+7. **Holocall & Breach Protocol (`[H]`) com Auto-Hack Kiroshi & Rádio Multi-Estações:**
+   - Botão **Auto-Hack Kiroshi** que resolve automaticamente a matriz hexadecimal desbloqueando os 3 Daemons em sequência, e **Rádio FM** com 3 estações sintetizadas via WebAudio (*98.7 Body Heat FM*, *107.3 Morro Rock* e *89.3 Pacific Dreams*).

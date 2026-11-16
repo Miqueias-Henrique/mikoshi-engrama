@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Miqueias Carvalho // CYBERPUNK 2077 · EDGERUNNERS · CYBERPUNK RED OS</title>
-  <meta name="description" content="Portfólio interativo de Miqueias Carvalho (Desenvolvedor Backend Júnior | C#/.NET & SQL Server) construído como o Menu de Jogo de Cyberpunk 2077, Cyberpunk: Edgerunners (Sandevistan) e Ficha de RPG de Mesa Cyberpunk RED.">
+  <title>Miqueias Carvalho // CYBERPUNK 2077 · EDGERUNNERS · CYBERPUNK RED OS v2.1</title>
+  <meta name="description" content="Portfólio interativo de Miqueias Carvalho (Desenvolvedor Backend Júnior | C#/.NET & SQL Server) construído como o Menu de Jogo de Cyberpunk 2077 Patch 2.1, Cyberpunk: Edgerunners (Sandevistan & Cyberpsychosis) e Ficha de RPG de Mesa Cyberpunk RED (1d10 & NET Architecture).">
   <meta name="author" content="Miqueias Carvalho">
   <meta name="theme-color" content="#FF003C">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,10 +15,10 @@
 
   <style>
     /* ==========================================================================
-       ULTIMATE CYBERPUNK UNIVERSE DESIGN SYSTEM (THREE-LAYER TOKENS)
-       1. Cyberpunk 2077 (REDengine 4 Menu, Relic Biochip, Tarot, Breach, Fixers)
-       2. Cyberpunk: Edgerunners (Militech Apogee Sandevistan, Lucy Deep Dive, Humanity)
-       3. Cyberpunk 2020 / RED Tabletop RPG (10 Stats, Lifepath, 1d10 Skill Checks)
+       ULTIMATE CYBERPUNK UNIVERSE DESIGN SYSTEM v2.1 (THREE-LAYER TOKENS)
+       1. Cyberpunk 2077 Patch 2.1 (REDengine 4 Menu, Relic Biochip, Braindance, Breach)
+       2. Cyberpunk: Edgerunners (Militech Apogee Sandevistan, Cyberpsychosis Overclock)
+       3. Cyberpunk 2020 / RED Tabletop RPG (10 Stats, 1d10 Roller, NET Architecture)
        ========================================================================== */
     :root {
       --cp-red: #FF003C;
@@ -30,9 +30,9 @@
       --cp-purple: #D946EF;
 
       --menu-bg: #080204;
-      --menu-surface: rgba(20, 4, 9, 0.90);
-      --menu-card: rgba(32, 6, 14, 0.93);
-      --menu-card-hover: rgba(52, 9, 22, 0.97);
+      --menu-surface: rgba(20, 4, 9, 0.92);
+      --menu-card: rgba(32, 6, 14, 0.94);
+      --menu-card-hover: rgba(52, 9, 22, 0.98);
       --menu-border: rgba(255, 0, 60, 0.56);
       --menu-border-dim: rgba(255, 0, 60, 0.26);
       --menu-primary: #FCEE09;
@@ -55,12 +55,12 @@
     /* Edgerunners Sandevistan Theme Override */
     body.sandevistan-active,
     [data-cyber-os="edgerunners"] {
-      --menu-bg: #030906;
-      --menu-surface: rgba(6, 22, 16, 0.91);
-      --menu-card: rgba(10, 34, 24, 0.94);
-      --menu-card-hover: rgba(16, 52, 36, 0.97);
-      --menu-border: rgba(0, 255, 102, 0.62);
-      --menu-border-dim: rgba(0, 240, 255, 0.30);
+      --menu-bg: #020906;
+      --menu-surface: rgba(5, 24, 17, 0.92);
+      --menu-card: rgba(9, 36, 25, 0.95);
+      --menu-card-hover: rgba(15, 56, 38, 0.98);
+      --menu-border: rgba(0, 255, 102, 0.65);
+      --menu-border-dim: rgba(0, 240, 255, 0.32);
       --menu-primary: #00FF66;
       --menu-secondary: #00F0FF;
       --menu-accent: #FCEE09;
@@ -68,14 +68,18 @@
 
     [data-cyber-os="blackwall"] {
       --menu-bg: #050103;
-      --menu-surface: rgba(18, 2, 6, 0.93);
-      --menu-card: rgba(28, 3, 9, 0.95);
-      --menu-card-hover: rgba(45, 4, 14, 0.98);
-      --menu-border: rgba(255, 0, 60, 0.78);
-      --menu-border-dim: rgba(255, 0, 60, 0.38);
+      --menu-surface: rgba(18, 2, 6, 0.94);
+      --menu-card: rgba(28, 3, 9, 0.96);
+      --menu-card-hover: rgba(45, 4, 14, 0.99);
+      --menu-border: rgba(255, 0, 60, 0.82);
+      --menu-border-dim: rgba(255, 0, 60, 0.40);
       --menu-primary: #FF003C;
       --menu-secondary: #FCEE09;
       --menu-accent: #00F0FF;
+    }
+
+    body.cyberpsychosis-overclock {
+      box-shadow: inset 0 0 90px rgba(255, 0, 60, 0.45);
     }
 
     * {
@@ -147,13 +151,79 @@
     /* Relic Malfunction Glitch Animation */
     @keyframes relicGlitch {
       0% { transform: translate(0, 0) skewX(0deg); filter: none; }
-      20% { transform: translate(-4px, 1px) skewX(4deg); filter: hue-rotate(90deg) contrast(1.4); }
-      40% { transform: translate(4px, -2px) skewX(-4deg); filter: hue-rotate(-90deg); }
-      60% { transform: translate(-2px, 0) skewX(2deg); }
+      20% { transform: translate(-5px, 2px) skewX(4deg); filter: hue-rotate(90deg) contrast(1.45); }
+      40% { transform: translate(5px, -2px) skewX(-4deg); filter: hue-rotate(-90deg); }
+      60% { transform: translate(-3px, 0) skewX(2deg); }
       100% { transform: translate(0, 0) skewX(0deg); filter: none; }
     }
     body.relic-malfunction main.cp-game-stage {
-      animation: relicGlitch 0.42s ease;
+      animation: relicGlitch 0.45s ease;
+    }
+
+    /* ==========================================================================
+       KIROSHI TELEMETRY SUB-BAR & JOHNNY SILVERHAND HOLOGRAM POPUP
+       ========================================================================== */
+    .kiroshi-telemetry-bar {
+      background: rgba(5, 1, 3, 0.95);
+      border-bottom: 1px solid var(--menu-border-dim);
+      padding: 4px 20px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--menu-secondary);
+      position: relative;
+      z-index: 301;
+    }
+    .kiroshi-telemetry-inner {
+      max-width: 1520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .ram-slots-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ram-pip {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--menu-secondary);
+      box-shadow: 0 0 6px var(--menu-secondary);
+      transition: all 0.2s ease;
+    }
+    .ram-pip.spent {
+      background: rgba(255, 0, 60, 0.25);
+      box-shadow: none;
+      border: 1px solid var(--menu-accent);
+    }
+
+    /* Johnny Silverhand Hologram Banner */
+    .johnny-engram-banner {
+      display: none;
+      max-width: 1520px;
+      margin: 10px auto 0;
+      padding: 10px 18px;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.16), rgba(255, 0, 60, 0.22));
+      border: 1px solid var(--menu-secondary);
+      border-left: 6px solid var(--menu-accent);
+      clip-path: var(--clip-btn);
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #fff;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 0 28px rgba(0, 240, 255, 0.25);
+      position: relative;
+      z-index: 10;
+    }
+    .johnny-engram-banner.active {
+      display: flex;
+      animation: relicGlitch 0.38s ease;
     }
 
     /* ==========================================================================
@@ -163,7 +233,7 @@
       position: sticky;
       top: 0;
       z-index: 300;
-      background: linear-gradient(180deg, rgba(10, 2, 5, 0.97) 0%, rgba(18, 3, 9, 0.92) 100%);
+      background: linear-gradient(180deg, rgba(10, 2, 5, 0.97) 0%, rgba(18, 3, 9, 0.93) 100%);
       border-bottom: 2px solid var(--menu-accent);
       box-shadow: 0 6px 32px rgba(255, 0, 60, 0.24);
       backdrop-filter: blur(14px);
@@ -224,7 +294,7 @@
     .cp-xp-bar i {
       display: block;
       height: 100%;
-      width: 94%;
+      width: 96%;
       background: var(--menu-primary);
     }
     .cp-xp-bar.cred i {
@@ -300,6 +370,9 @@
       cursor: pointer;
       clip-path: var(--clip-btn);
       transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     .cp-top-btn:hover,
     .cp-top-btn.active {
@@ -326,7 +399,7 @@
       z-index: 3;
       max-width: 1520px;
       margin: 0 auto;
-      padding: 18px 22px 38px;
+      padding: 16px 22px 38px;
     }
 
     .cp-screen {
@@ -370,18 +443,18 @@
     }
 
     /* ==========================================================================
-       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE & HUMANITY
+       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE, CODE & OVERCLOCK
        ========================================================================== */
     .cyberware-layout {
       display: grid;
-      grid-template-columns: 330px minmax(280px, 370px) minmax(340px, 1fr);
+      grid-template-columns: 340px minmax(280px, 360px) minmax(360px, 1fr);
       gap: 18px;
       align-items: stretch;
     }
     .cw-slots-col {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .cw-col-label {
       font-family: var(--font-mono);
@@ -397,13 +470,13 @@
       position: relative;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       width: 100%;
       text-align: left;
       background: var(--menu-card);
       border: 1px solid var(--menu-border);
       border-left: 5px solid var(--cp-iconic);
-      padding: 11px 13px;
+      padding: 10px 12px;
       cursor: pointer;
       clip-path: var(--clip-card);
       transition: all 0.16s ease;
@@ -419,8 +492,8 @@
       transform: translateX(4px);
     }
     .cw-slot-icon {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       flex-shrink: 0;
       background: rgba(8, 2, 4, 0.92);
       border: 1px solid var(--cp-iconic);
@@ -428,7 +501,7 @@
       place-items: center;
       color: var(--menu-primary);
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
     }
     .cw-slot-info {
@@ -436,17 +509,18 @@
       min-width: 0;
     }
     .cw-slot-part {
-      display: block;
+      display: flex;
+      justify-content: space-between;
       font-family: var(--font-mono);
       font-size: 9.5px;
       color: var(--menu-secondary);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
     .cw-slot-name {
       display: block;
       font-family: var(--font-display);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: var(--menu-text);
       margin: 2px 0;
@@ -488,7 +562,7 @@
     }
     .humanity-bar {
       width: 100%;
-      height: 6px;
+      height: 7px;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid var(--menu-border-dim);
       overflow: hidden;
@@ -498,6 +572,7 @@
       height: 100%;
       width: 88%;
       background: linear-gradient(90deg, var(--cp-green), var(--menu-primary), var(--cp-iconic));
+      transition: width 0.3s ease;
     }
 
     .cw-avatar-rig {
@@ -578,16 +653,16 @@
       margin-top: 10px;
     }
 
-    /* Right RPG Item Tooltip */
+    /* Right RPG Item Tooltip + Live Code Box */
     .cw-inspector-card {
       background: var(--menu-surface);
       border: 2px solid var(--cp-iconic);
       clip-path: var(--clip-panel);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 0 28px rgba(255, 158, 0, 0.10);
     }
     .cw-rarity-banner {
@@ -601,19 +676,21 @@
       font-size: 11px;
       font-weight: 800;
       color: var(--cp-iconic);
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .cw-item-title {
       font-family: var(--font-display);
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 900;
       color: var(--menu-primary);
       text-transform: uppercase;
     }
     .cw-item-category {
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--menu-secondary);
       margin-top: 2px;
     }
@@ -626,13 +703,26 @@
       font-style: italic;
       color: var(--menu-text-sub);
     }
+    .cw-code-preview {
+      background: #040103;
+      border: 1px solid var(--menu-border);
+      border-left: 3px solid var(--cp-green);
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cp-green);
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.45;
+      max-height: 125px;
+    }
     .cw-stat-bars {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       background: rgba(8, 2, 4, 0.78);
       border: 1px solid var(--menu-border-dim);
-      padding: 9px;
+      padding: 8px;
       font-family: var(--font-mono);
     }
     .cw-stat-box span {
@@ -642,19 +732,19 @@
       text-transform: uppercase;
     }
     .cw-stat-box strong {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--menu-secondary);
     }
     .cw-effects-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 5px;
     }
     .cw-effects-list li {
       position: relative;
       padding-left: 16px;
-      font-size: 14.5px;
+      font-size: 14px;
       color: var(--menu-text-sub);
     }
     .cw-effects-list li::before {
@@ -669,24 +759,24 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      padding-top: 10px;
+      padding-top: 8px;
       border-top: 1px dashed var(--menu-border-dim);
     }
     .cw-mod-pills span {
       font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 3px 8px;
+      font-size: 10.5px;
+      padding: 2px 8px;
       background: rgba(8, 2, 4, 0.9);
       border: 1px solid var(--menu-secondary);
       color: var(--menu-secondary);
     }
 
     /* ==========================================================================
-       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA
+       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA + GPS ROUTE & TERMINAL
        ========================================================================== */
     .map-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.85fr);
+      grid-template-columns: minmax(0, 1.32fr) minmax(360px, 0.88fr);
       gap: 18px;
       align-items: stretch;
     }
@@ -695,7 +785,7 @@
       border: 2px solid var(--menu-accent);
       clip-path: var(--clip-panel);
       position: relative;
-      min-height: 530px;
+      min-height: 540px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -731,15 +821,21 @@
       position: relative;
       flex: 1;
       width: 100%;
-      min-height: 430px;
+      min-height: 440px;
       background: radial-gradient(circle at 50% 50%, rgba(255, 0, 60, 0.14), rgba(5, 1, 3, 0.98) 78%);
       overflow: hidden;
     }
     .map-vector-svg {
       width: 100%;
       height: 100%;
-      min-height: 430px;
+      min-height: 440px;
       display: block;
+    }
+    @keyframes gpsDash {
+      to { stroke-dashoffset: -40; }
+    }
+    #gpsRouteLine {
+      animation: gpsDash 1.2s linear infinite;
     }
     .map-pin {
       position: absolute;
@@ -792,12 +888,14 @@
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--menu-secondary);
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .map-briefing-card {
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
       clip-path: var(--clip-panel);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -815,15 +913,29 @@
       font-weight: 800;
       color: var(--menu-primary);
       text-transform: uppercase;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .gig-blueprint-box {
       background: #060204;
       border: 1px solid var(--menu-border);
-      padding: 12px;
+      padding: 10px 12px;
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--menu-secondary);
-      line-height: 1.6;
+      line-height: 1.55;
+    }
+    .gig-terminal-output {
+      background: #030704;
+      border: 1px solid var(--cp-green);
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cp-green);
+      max-height: 115px;
+      overflow-y: auto;
+      line-height: 1.45;
+      white-space: pre-wrap;
     }
 
     /* ==========================================================================
@@ -917,8 +1029,8 @@
     .perk-node {
       position: absolute;
       transform: translate(-50%, -50%);
-      width: 68px;
-      height: 68px;
+      width: 70px;
+      height: 70px;
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       background: #090205;
       border: 2px solid var(--menu-secondary);
@@ -943,8 +1055,8 @@
       box-shadow: 0 0 18px rgba(252, 238, 9, 0.35);
     }
     .perk-node.master-node {
-      width: 82px;
-      height: 82px;
+      width: 84px;
+      height: 84px;
       border-color: var(--cp-iconic);
       background: rgba(255, 158, 0, 0.22);
       color: var(--cp-iconic);
@@ -958,22 +1070,21 @@
     }
 
     /* ==========================================================================
-       SCREEN 4 (NEW!): FICHA DE RPG DE MESA // CYBERPUNK RED & 2020
-       (R. Talsorian Games Character Sheet + 1d10 Skill Roller + Lifepath)
+       SCREEN 4: FICHA DE RPG DE MESA // CYBERPUNK RED & NET ARCHITECTURE
        ========================================================================== */
     .trpg-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(350px, 0.85fr);
+      grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr);
       gap: 18px;
     }
     .trpg-sheet-card {
       background: var(--menu-surface);
       border: 2px solid var(--menu-accent);
       clip-path: var(--clip-panel);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
     .trpg-stats-grid {
       display: grid;
@@ -983,7 +1094,7 @@
     .trpg-stat-cell {
       background: rgba(8, 2, 4, 0.88);
       border: 1px solid var(--menu-border);
-      padding: 10px 8px;
+      padding: 8px 6px;
       text-align: center;
       clip-path: var(--clip-btn);
     }
@@ -997,7 +1108,7 @@
     .trpg-stat-cell strong {
       display: block;
       font-family: var(--font-display);
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       color: var(--menu-primary);
       margin: 2px 0;
@@ -1011,23 +1122,57 @@
     .lifepath-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 8px;
     }
     .lifepath-box {
       background: var(--menu-card);
       border-left: 3px solid var(--menu-primary);
-      padding: 10px 12px;
+      padding: 8px 11px;
     }
     .lifepath-box small {
       display: block;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       color: var(--menu-secondary);
       text-transform: uppercase;
     }
     .lifepath-box strong {
-      font-size: 14.5px;
+      font-size: 13.5px;
       color: var(--menu-text);
+    }
+
+    /* Cyberpunk RED NET Architecture Elevator */
+    .net-arch-box {
+      background: #050103;
+      border: 1px solid var(--menu-secondary);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .net-floor-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: rgba(0, 240, 255, 0.06);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--menu-text-sub);
+      transition: all 0.2s ease;
+    }
+    .net-floor-row.cleared {
+      background: rgba(0, 255, 102, 0.18);
+      border-color: var(--cp-green);
+      color: var(--cp-green);
+    }
+    .net-floor-row.current {
+      background: rgba(252, 238, 9, 0.22);
+      border-color: var(--menu-primary);
+      color: var(--menu-primary);
+      font-weight: 800;
+      box-shadow: 0 0 14px rgba(252, 238, 9, 0.35);
     }
 
     /* 1d10 Dice Roller Console */
@@ -1035,22 +1180,22 @@
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
       clip-path: var(--clip-panel);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
     }
     .dice-display-stage {
       background: #050103;
       border: 1px solid var(--menu-border);
-      padding: 16px;
+      padding: 14px;
       text-align: center;
       position: relative;
     }
     .d10-big-number {
       font-family: var(--font-display);
-      font-size: 46px;
+      font-size: 44px;
       font-weight: 900;
       color: var(--menu-primary);
       text-shadow: 0 0 22px rgba(252, 238, 9, 0.55);
@@ -1058,29 +1203,29 @@
     }
     .d10-formula {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--menu-secondary);
-      margin-top: 6px;
+      margin-top: 5px;
     }
     .d10-outcome {
       font-family: var(--font-mono);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--cp-green);
-      margin-top: 6px;
+      margin-top: 5px;
     }
     .skill-check-btns {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     /* ==========================================================================
-       SCREEN 5: DIÁRIO DE MISSÕES & CARTAS DE TARÔ (MISTY'S ESOTERICA)
+       SCREEN 5: DIÁRIO, TARÔ DA MISTY & EDITOR DE BRAINDANCE (BD 3 CAMADAS)
        ========================================================================== */
     .journal-layout {
       display: grid;
-      grid-template-columns: 360px minmax(0, 1fr);
+      grid-template-columns: 350px minmax(0, 1fr);
       gap: 18px;
     }
     .quest-list-col {
@@ -1091,7 +1236,7 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: 560px;
+      max-height: 620px;
       overflow-y: auto;
     }
     .quest-cat-header {
@@ -1141,25 +1286,25 @@
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
       clip-path: var(--clip-panel);
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
     }
     .quest-objectives {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       background: rgba(8, 2, 4, 0.8);
       border: 1px solid var(--menu-border-dim);
-      padding: 14px;
+      padding: 12px;
     }
     .quest-obj-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      font-size: 14.5px;
+      font-size: 14px;
       color: var(--menu-text-sub);
     }
     .quest-obj-box {
@@ -1170,12 +1315,43 @@
       flex-shrink: 0;
     }
 
+    /* Braindance (BD) 3-Layer Editor Box */
+    .bd-editor-box {
+      background: #060205;
+      border: 1px solid var(--menu-secondary);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bd-layer-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .bd-layer-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--menu-border);
+      color: var(--menu-text-sub);
+      padding: 5px 10px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      clip-path: var(--clip-btn);
+    }
+    .bd-layer-btn.active {
+      background: var(--menu-secondary);
+      color: #050103;
+      border-color: var(--menu-secondary);
+    }
+
     /* Tarot Cards Strip */
     .tarot-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 8px;
     }
     .tarot-card {
       background: #070205;
@@ -1186,9 +1362,11 @@
       cursor: pointer;
       transition: all 0.18s ease;
     }
-    .tarot-card:hover {
+    .tarot-card:hover,
+    .tarot-card.active {
       transform: translateY(-4px);
       border-color: var(--menu-primary);
+      background: rgba(252, 238, 9, 0.12);
       box-shadow: 0 0 18px rgba(252, 238, 9, 0.35);
     }
     .tarot-num {
@@ -1204,16 +1382,16 @@
       margin: 4px 0;
     }
     .tarot-meaning {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--menu-text-sub);
     }
 
     /* ==========================================================================
-       SCREEN 6: HOLOCALL, BREACH PROTOCOL & NIGHT CITY RADIO
+       SCREEN 6: HOLOCALL, BREACH PROTOCOL & PROPOSTA RÁPIDA
        ========================================================================== */
     .holocall-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      grid-template-columns: minmax(0, 1.15fr) minmax(350px, 0.85fr);
       gap: 18px;
     }
     .holo-panel {
@@ -1264,9 +1442,9 @@
       border: 1px solid var(--menu-primary);
       border-left: 6px solid var(--menu-primary);
       color: var(--menu-primary);
-      padding: 11px 14px;
+      padding: 10px 14px;
       font-family: var(--font-sans);
-      font-size: 15.5px;
+      font-size: 15px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
@@ -1352,9 +1530,9 @@
       background: var(--menu-primary);
       color: #080204;
       border: 1px solid var(--menu-primary);
-      padding: 10px 15px;
+      padding: 9px 14px;
       font-family: var(--font-display);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -1431,13 +1609,38 @@
 <canvas id="sandevistanCanvas" aria-hidden="true"></canvas>
 
 <!-- ==========================================================================
+     KIROSHI OPTICAL TELEMETRY & CYBERDECK RAM BUFFER BAR
+     ========================================================================== -->
+<div class="kiroshi-telemetry-bar" role="region" aria-label="Telemetria Óptica Kiroshi">
+  <div class="kiroshi-telemetry-inner">
+    <div>
+      <span>KIROSHI OPTICS MK.5 // GOIÂNIA SECTOR</span> ·
+      <span id="cursorTelemetry">RETÍCULA X:0420 Y:0210</span>
+    </div>
+
+    <div class="ram-slots-wrap" title="Unidades de RAM do Cyberdeck (Recarregam automaticamente)">
+      <span style="color: var(--menu-primary); font-weight: 800;">CYBERDECK RAM:</span>
+      <span id="ramPipsContainer">
+        <i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i>
+        <i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i>
+      </span>
+      <strong id="ramCountText" style="color: var(--cp-green);">8/8 UNIDADES</strong>
+    </div>
+
+    <div>
+      <span style="color: var(--menu-primary);">ATALHOS: [I] [M] [P] [R] [J] [H] · [E] SANDEVISTAN · [G] JOHNNY ENGRAM</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
      CYBERPUNK 2077 / EDGERUNNERS / CYBERPUNK RED TOP MENU BAR
      ========================================================================== -->
 <header class="cp-top-hud" role="banner">
   <div class="cp-top-row">
     <div class="cp-player-stats">
       <div class="cp-stat-badge" title="Nível do Mercenário Backend">
-        <span class="cp-stat-num">50</span>
+        <span class="cp-stat-num" id="hudLevelNum">50</span>
         <div class="cp-stat-meta">
           <span>NÍVEL // BACKEND</span>
           <div class="cp-xp-bar"><i></i></div>
@@ -1466,7 +1669,7 @@
         <span class="hotkey">R</span> FICHA RPG DE MESA [1d10]
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="diario" class="cp-menu-tab" onclick="openGameScreen('diario', this)">
-        <span class="hotkey">J</span> DIÁRIO &amp; TARÔ
+        <span class="hotkey">J</span> DIÁRIO, BD &amp; TARÔ
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="holocall" class="cp-menu-tab" onclick="openGameScreen('holocall', this)">
         <span class="hotkey">H</span> HOLOCALL &amp; BREACH
@@ -1477,8 +1680,11 @@
       <button type="button" id="sandevistanBtn" class="cp-top-btn sandevistan-btn" onclick="toggleSandevistan()" title="Ativar Militech 'Apogee' Sandevistan (Edgerunners)">
         ⚡ SANDEVISTAN [E]
       </button>
-      <button type="button" id="radioBtn" class="cp-top-btn" onclick="toggleNightCityRadio()" title="Rádio 98.7 Body Heat FM / Morro Rock Synth">
+      <button type="button" id="radioBtn" class="cp-top-btn" onclick="cycleNightCityRadio()" title="Alternar Estações: 98.7 Body Heat / 107.3 Morro Rock / 89.3 Pacific Dreams">
         📻 RÁDIO FM: OFF
+      </button>
+      <button type="button" class="cp-top-btn" onclick="summonJohnnyEngram()" title="Invocar Engrama do Johnny Silverhand [G]">
+        🎸 JOHNNY [G]
       </button>
       <button type="button" class="cp-top-btn" onclick="triggerRelicGlitch()" title="Pulso Biochip Relic / Trocar Facção">
         OS: <span id="osModeLabel">REDENGINE</span>
@@ -1487,10 +1693,19 @@
   </div>
 </header>
 
+<!-- JOHNNY SILVERHAND ENGRAM HOLOGRAM OVERLAY -->
+<div id="johnnyBanner" class="johnny-engram-banner" role="status">
+  <div>
+    <strong style="color: var(--menu-primary);">[RELIC BIOCHIP ENGRAM // JOHNNY SILVERHAND]:</strong>
+    <span id="johnnyQuoteText">"Acorda, Samurai! Esse garoto mantém sistemas farmacêuticos em produção na Zetti e constrói APIs limpas em C#/.NET e SQL Server. Contrata logo antes que a Arasaka leve!"</span>
+  </div>
+  <button type="button" class="cp-top-btn" onclick="document.getElementById('johnnyBanner').classList.remove('active')">FECHAR [X]</button>
+</div>
+
 <main class="cp-game-stage">
 
   <!-- ========================================================================
-       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE & HUMANITY
+       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE, CODE & OVERCLOCK
        ======================================================================== -->
   <section id="screen-cyberware" class="cp-screen active" role="tabpanel">
     <div class="screen-header-strip">
@@ -1498,7 +1713,7 @@
         <p>CLÍNICA DO VIKTOR VEKTOR (LITTLE CHINA) // EDGERUNNERS &amp; PATCH 2.1 CYBERWARE</p>
         <h1>RIPPERDOC &amp; CYBERWARE — MIQUEIAS CARVALHO</h1>
       </div>
-      <p>IMPLANTES TÉCNICOS COM CUSTO DE HUMANIDADE (CYBERPUNK RED) &amp; CAPACIDADE</p>
+      <p>IMPLANTES COM PREVIEW DE CÓDIGO REAL, UPGRADE TIER 5++ &amp; OVERCLOCK DE EMPATIA</p>
     </div>
 
     <div class="cyberware-layout">
@@ -1509,7 +1724,7 @@
         <button type="button" class="cw-slot-card active" onclick="selectCyberware('sql_cortex', this)">
           <div class="cw-slot-icon">SQL</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">CÓRTEX FRONTAL // RELIC CO-PROCESSOR</span>
+            <span class="cw-slot-part"><span>CÓRTEX FRONTAL</span><b id="lvl-sql_cortex">TIER 5++</b></span>
             <strong class="cw-slot-name">SQL Server Engine MK.5++</strong>
             <span class="cw-slot-sub">Queries, Views &amp; Procedures (Zetti)</span>
           </div>
@@ -1518,7 +1733,7 @@
         <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('dotnet_deck', this)">
           <div class="cw-slot-icon">.NET</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">SISTEMA OPERACIONAL // APOGEE DECK</span>
+            <span class="cw-slot-part"><span>SISTEMA OPERACIONAL</span><b id="lvl-dotnet_deck">TIER 5++</b></span>
             <strong class="cw-slot-name">C# / .NET Sandevistan Deck</strong>
             <span class="cw-slot-sub">POO, APIs REST, Swagger &amp; Clean Arch</span>
           </div>
@@ -1527,7 +1742,7 @@
         <button type="button" class="cw-slot-card" onclick="selectCyberware('vb6_chassis', this)">
           <div class="cw-slot-icon">VB6</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">ESQUELETO // CHASSI DE TITÂNIO</span>
+            <span class="cw-slot-part"><span>ESQUELETO // PRODUÇÃO</span><b id="lvl-vb6_chassis">TIER 5+</b></span>
             <strong class="cw-slot-name">VB6 Legacy Reactor @ Zetti</strong>
             <span class="cw-slot-sub">Múltiplas Farmácias · CNPJ Alfanumérico</span>
           </div>
@@ -1538,7 +1753,7 @@
         <button type="button" class="cw-slot-card" onclick="selectCyberware('java_reflex', this)">
           <div class="cw-slot-icon">JAVA</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">SISTEMA NERVOSO // KERENZIKOV</span>
+            <span class="cw-slot-part"><span>KERENZIKOV NEURAL</span><b id="lvl-java_reflex">TIER 5+</b></span>
             <strong class="cw-slot-name">Java 17/21 &amp; Spring Boot 3</strong>
             <span class="cw-slot-sub">JPA, JavaFX DAO, Árvores AVL &amp; Hash O(1)</span>
           </div>
@@ -1547,7 +1762,7 @@
         <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('node_ts', this)">
           <div class="cw-slot-icon">TS</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">BRAÇOS // MONOFIO DA LUCY (DEEP DIVE)</span>
+            <span class="cw-slot-part"><span>MONOFIO DA LUCY</span><b id="lvl-node_ts">TIER 5++</b></span>
             <strong class="cw-slot-name">Node.js, TypeScript &amp; NestJS</strong>
             <span class="cw-slot-sub">TypeORM, Prisma ORM, MySQL &amp; PostgreSQL</span>
           </div>
@@ -1556,7 +1771,7 @@
         <button type="button" class="cw-slot-card" onclick="selectCyberware('git_optics', this)">
           <div class="cw-slot-icon">OPT</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">ÓPTICA // KIROSHI "THE ORACLE" MK.5</span>
+            <span class="cw-slot-part"><span>ÓPTICA KIROSHI MK.5</span><b id="lvl-git_optics">TIER 5+</b></span>
             <strong class="cw-slot-name">Git, GitKraken, Jira &amp; Docker</strong>
             <span class="cw-slot-sub">GitHub, GitLab, Visual Studio &amp; VS Code</span>
           </div>
@@ -1568,12 +1783,12 @@
         <div class="cw-meters-top">
           <div class="cw-meter-row">
             <span style="color: var(--cp-green);">HUMANIDADE (EMPATIA 9/10)</span>
-            <strong id="humanityReadout" style="color: var(--menu-primary);">78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]</strong>
+            <strong id="humanityReadout" style="color: var(--menu-primary);">78 / 90 [ESTÁVEL]</strong>
           </div>
-          <div class="humanity-bar"><span></span></div>
+          <div class="humanity-bar"><span id="humanityBarFill"></span></div>
           <div class="cw-meter-row">
-            <span>CAPACIDADE DE CYBERWARE (EDGERUNNER)</span>
-            <strong>248 / 250 [TIER 5++]</strong>
+            <span>CAPACIDADE DE CYBERWARE</span>
+            <strong id="cwCapacityReadout">248 / 300 [EDGERUNNER]</strong>
           </div>
         </div>
 
@@ -1582,8 +1797,8 @@
             <circle cx="120" cy="112" r="90" stroke="var(--menu-accent)" stroke-opacity="0.34" stroke-width="1.2" stroke-dasharray="10 6"/>
             <circle cx="120" cy="112" r="104" stroke="var(--menu-secondary)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 10"/>
             <!-- Edgerunners David Martinez Spine / Sandevistan Neural Vertebrae -->
-            <line x1="120" y1="15" x2="120" y2="255" stroke="var(--cp-green)" stroke-opacity="0.4" stroke-width="4" stroke-dasharray="6 4"/>
-            <path d="M12 42 L72 70 M12 112 L58 112 M12 182 L76 162 M228 62 L168 82 M228 148 L172 132" stroke="var(--menu-primary)" stroke-opacity="0.55" stroke-width="1.4"/>
+            <line x1="120" y1="15" x2="120" y2="255" stroke="var(--cp-green)" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="6 4"/>
+            <path d="M12 42 L72 70 M12 112 L58 112 M12 182 L76 162 M228 62 L168 82 M228 148 L172 132" stroke="var(--menu-primary)" stroke-opacity="0.6" stroke-width="1.5"/>
             <polygon points="75,200 165,200 188,264 52,264" fill="rgba(255,0,60,0.08)" stroke="var(--menu-accent)" stroke-width="1.5"/>
           </svg>
 
@@ -1605,14 +1820,14 @@
             <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
               ⬇ Dossiê PDF
             </a>
-            <a href="https://wa.me/5562998421308" target="_blank" rel="noopener noreferrer" class="cp-action-btn outline">
-              ⚡ WhatsApp
-            </a>
+            <button type="button" class="cp-action-btn outline" onclick="toggleCyberpsychosisOverclock()">
+              🔥 Overclock [O]
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: RPG Item Tooltip with Viktor Vektor / Edgerunners Lore Quote -->
+      <!-- Right Column: RPG Item Tooltip with Viktor Vektor Quote & Live Code -->
       <div class="cw-inspector-card">
         <div>
           <div class="cw-rarity-banner">
@@ -1620,16 +1835,16 @@
             <span id="cwRamText">CUSTO HUMANIDADE: 14 HC (4d6)</span>
           </div>
 
-          <div style="margin-top: 12px;">
+          <div style="margin-top: 10px;">
             <h3 class="cw-item-title" id="cwTitle">SQL Server Engine MK.5++</h3>
             <p class="cw-item-category" id="cwCategory">CÓRTEX FRONTAL // BANCO DE DADOS RELACIONAL EM PRODUÇÃO</p>
           </div>
 
-          <div class="cw-lore-quote" id="cwLoreQuote" style="margin-top: 10px;">
+          <div class="cw-lore-quote" id="cwLoreQuote" style="margin-top: 8px;">
             "Garoto, esse co-processador SQL aguenta a pressão de dezenas de farmácias rodando ao mesmo tempo sem fritar uma única sinapse." — Viktor Vektor, Ripperdoc
           </div>
 
-          <div class="cw-stat-bars" style="margin-top: 12px;">
+          <div class="cw-stat-bars" style="margin-top: 10px;">
             <div class="cw-stat-box">
               <span>PROFICIÊNCIA</span>
               <strong id="cwStat1">92% PROD</strong>
@@ -1644,11 +1859,24 @@
             </div>
           </div>
 
-          <ul class="cw-effects-list" id="cwBullets" style="margin-top: 14px;">
+          <ul class="cw-effects-list" id="cwBullets" style="margin-top: 10px;">
             <li>Desenvolvimento e otimização diária de <strong>queries, views e stored procedures</strong> em SQL Server na Zetti.</li>
             <li>Apoio direto a regras de negócio, correções críticas e atualizações em massa em bases de dados de múltiplas farmácias.</li>
             <li>Adequação de esquemas e relatórios para o novo formato alfanumérico do CNPJ e novos impostos.</li>
           </ul>
+
+          <div style="margin-top: 10px;">
+            <span class="cw-col-label" style="display:block; margin-bottom:4px;">BLUEPRINT DE CÓDIGO DO IMPLANTE (KIROSHI CODE SCAN)</span>
+            <pre class="cw-code-preview" id="cwCodePreview">-- SQL Server Procedure @ Zetti (CNPJ Alfanumérico & Impostos)
+CREATE OR ALTER PROCEDURE dbo.sp_ValidarAtualizarCNPJ_Alfa
+  @FarmaciaID INT, @NovoCNPJ CHAR(14)
+AS BEGIN
+  SET NOCOUNT ON;
+  UPDATE dbo.UnidadesFarmacia
+  SET CNPJ_Alfa = UPPER(@NovoCNPJ), AtualizadoEm = SYSDATETIME()
+  WHERE FarmaciaID = @FarmaciaID AND Ativo = 1;
+END;</pre>
+          </div>
         </div>
 
         <div>
@@ -1660,12 +1888,12 @@
             <span>Stored Procedures</span>
           </div>
 
-          <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-            <button type="button" class="cp-action-btn" onclick="toggleSandevistan()">
-              ⚡ Ativar Sandevistan (Apogee)
+          <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+            <button type="button" class="cp-action-btn" onclick="upgradeSelectedCyberware()">
+              🔧 Aprimorar Implante (+1 Tier // 2 RAM)
             </button>
-            <button type="button" class="cp-action-btn outline" onclick="openGameScreen('trpg', document.querySelector('[data-screen=trpg]'))">
-              🎲 Testar na Ficha RPG [1d10]
+            <button type="button" class="cp-action-btn outline" onclick="toggleSandevistan()">
+              ⚡ Sandevistan [E]
             </button>
           </div>
         </div>
@@ -1674,15 +1902,15 @@
   </section>
 
   <!-- ========================================================================
-       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA (GIGS & FIXERS)
+       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA (GIGS, GPS & TERMINAL)
        ======================================================================== -->
   <section id="screen-mapa" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
         <p>SATÉLITE KIROSHI &amp; FIXERS (ROGUE AMENDIARES / WAKAKO / FARADAY) // GOIÂNIA SECTOR</p>
-        <h2>MAPA TÁTICO — CARREIRA REAL &amp; 8 CONTRATOS DE CÓDIGO</h2>
+        <h2>MAPA TÁTICO — CARREIRA REAL, ROTA GPS &amp; 8 CONTRATOS DE CÓDIGO</h2>
       </div>
-      <p>CLIQUE NOS MARCADORES [!] E [★] NO MAPA PARA LER O BRIEFING DO FIXER</p>
+      <p>CLIQUE EM UM PINO PARA TRAÇAR A ROTA GPS E EXECUTAR O PROJETO NO TERMINAL</p>
     </div>
 
     <div class="map-layout">
@@ -1716,33 +1944,36 @@
             <polygon points="410,235 745,245 730,420 395,420" fill="rgba(255,158,0,0.07)" stroke="#FF9E00" stroke-width="1.5" stroke-dasharray="8 4"/>
             <text x="425" y="395" fill="#FF9E00" font-family="monospace" font-size="11" font-weight="bold">SANTO DOMINGO // UNIFAN 2027 &amp; WEB UI</text>
 
-            <path d="M180 110 L460 115 L640 140 L540 310 L220 300 Z" stroke="#00F0FF" stroke-opacity="0.4" stroke-width="2" fill="none" stroke-dasharray="8 6"/>
-            <path d="M180 110 L260 160 M460 115 L550 175 M220 300 L310 345" stroke="#FCEE09" stroke-opacity="0.55" stroke-width="1.8"/>
+            <path d="M180 110 L460 115 L640 140 L540 310 L220 300 Z" stroke="#00F0FF" stroke-opacity="0.35" stroke-width="1.8" fill="none" stroke-dasharray="8 6"/>
+
+            <!-- Dynamic GPS Route Line from HQ (Zetti 176,108) to Selected Target -->
+            <line id="gpsRouteLine" x1="176" y1="108" x2="456" y2="99" stroke="#FCEE09" stroke-width="3.5" stroke-dasharray="10 6"/>
+            <circle id="gpsTargetPulse" cx="176" cy="108" r="14" fill="none" stroke="#00FF66" stroke-width="2"/>
           </svg>
 
-          <button type="button" class="map-pin pin-job active" data-pin-cat="job" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">★ ZETTI [ATUAL]</button>
-          <button type="button" class="map-pin pin-job" data-pin-cat="job" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">★ CARVALHO [2021–25]</button>
+          <button type="button" class="map-pin pin-job active" data-pin-cat="job" data-x="176" data-y="108" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">★ ZETTI [ATUAL]</button>
+          <button type="button" class="map-pin pin-job" data-pin-cat="job" data-x="264" data-y="162" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">★ CARVALHO [2021–25]</button>
 
-          <button type="button" class="map-pin" data-pin-cat="api" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">! TOP 1: api-gestao-produtos</button>
-          <button type="button" class="map-pin" data-pin-cat="api" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">! vosso-cinema-api</button>
-          <button type="button" class="map-pin" data-pin-cat="api java" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">! vital-conscious-api</button>
+          <button type="button" class="map-pin" data-pin-cat="api" data-x="456" data-y="99" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">! TOP 1: api-gestao-produtos</button>
+          <button type="button" class="map-pin" data-pin-cat="api" data-x="552" data-y="171" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">! vosso-cinema-api</button>
+          <button type="button" class="map-pin" data-pin-cat="api java" data-x="656" data-y="135" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">! vital-conscious-api</button>
 
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">! controle-estoque-javafx</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">! catalogo-livros-avl-bst</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">! tabela-hash-cpf-java</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">! quiz-cli-java</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="152" data-y="279" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">! controle-estoque-javafx</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="256" data-y="333" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">! catalogo-livros-avl-bst</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="328" data-y="261" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">! tabela-hash-cpf-java</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="128" data-y="360" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">! quiz-cli-java</button>
 
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">! vosso-cinema-web</button>
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">◆ UNIFAN ENG. SOFTWARE</button>
+          <button type="button" class="map-pin pin-edu" data-pin-cat="web" data-x="512" data-y="288" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">! vosso-cinema-web</button>
+          <button type="button" class="map-pin pin-edu" data-pin-cat="web" data-x="632" data-y="342" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">◆ UNIFAN ENG. SOFTWARE</button>
         </div>
 
         <div class="map-coords-footer">
           <span id="mapCoordReadout">COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI</span>
-          <span>SATÉLITE: NIGHT CITY // GOIÂNIA</span>
+          <span id="gpsDistanceReadout" style="color: var(--menu-primary);">ROTA GPS ATIVA // DISTÂNCIA: 0.0 KM (QG ATUAL)</span>
         </div>
       </div>
 
-      <!-- Right Fixer Briefing Card -->
+      <!-- Right Fixer Briefing Card + Live Cyberdeck Terminal -->
       <div class="map-briefing-card">
         <div>
           <div class="gig-threat-bar">
@@ -1750,24 +1981,35 @@
             <span id="gigRewardBadge">FIXER: ZETTI TECH</span>
           </div>
 
-          <div style="margin-top: 10px;">
+          <div style="margin-top: 8px;">
             <p id="gigKicker" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); text-transform: uppercase;">
               GOIÂNIA, GO · 08/12/2025 — ATUAL
             </p>
-            <h3 id="gigTitle" style="font-family: var(--font-display); font-size: 20px; color: var(--menu-primary); text-transform: uppercase; margin-top: 2px;">
+            <h3 id="gigTitle" style="font-family: var(--font-display); font-size: 19px; color: var(--menu-primary); text-transform: uppercase; margin-top: 2px;">
               Estagiário de Desenvolvimento — Zetti
             </h3>
           </div>
 
-          <p id="gigDesc" style="color: var(--menu-text-sub); font-size: 14.5px; margin-top: 8px;">
+          <p id="gigDesc" style="color: var(--menu-text-sub); font-size: 14px; margin-top: 6px;">
             Atuação diária em produção mantendo e evoluindo sistema utilizado por múltiplas farmácias, com foco direto em estabilidade operacional, regras de negócio e banco de dados SQL Server.
           </p>
 
-          <div class="gig-blueprint-box" id="gigBlueprint" style="margin-top: 12px;">
+          <div class="gig-blueprint-box" id="gigBlueprint" style="margin-top: 10px;">
             ▸ Manutenção, correção e evolução de sistema legado em VB6 em produção diária.<br>
             ▸ Desenvolvimento e otimização de queries, views e procedures em SQL Server.<br>
             ▸ Adequação ao novo formato alfanumérico do CNPJ, novos impostos e atualizações em massa.<br>
             ▸ Fluxo validado com Jira, GitHub, GitLab, GitKraken e Visual Studio.
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span class="cw-col-label">TERMINAL DE SIMULAÇÃO DO PROJETO (LIVE RUNNER)</span>
+              <button type="button" class="cp-top-btn" onclick="simulateCurrentGigTerminal()">▶ Simular Execução (1 RAM)</button>
+            </div>
+            <div class="gig-terminal-output" id="gigTerminalOutput">$ zetti-prod-cli --status
+[OK] Conectado ao SQL Server (Multi-Farmácias)
+[OK] Procedure sp_CNPJ_Alfanumerico compilada (0 erros)
+[OK] Relatórios fiscais validados no Jira antes do deploy.</div>
           </div>
         </div>
 
@@ -1780,7 +2022,7 @@
             <span>GitHub / GitLab / GitKraken</span>
           </div>
 
-          <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+          <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
             <a href="https://github.com/Miqueias-Henrique?tab=repositories" target="_blank" rel="noopener noreferrer" class="cp-action-btn" id="gigPrimaryLink">
               Acessar GitHub ↗
             </a>
@@ -1800,9 +2042,11 @@
     <div class="screen-header-strip">
       <div>
         <p>BIOMONITOR NEURAL // DISTRIBUIÇÃO DE ATRIBUTOS E VANTAGENS (PATCH 2.1 + EDGERUNNER PERK)</p>
-        <h2>ÁRVORE DE HABILIDADES — <span id="perkPointsCount" style="color: var(--menu-secondary);">3 PONTOS DE VANTAGEM DISPONÍVEIS</span></h2>
+        <h2>ÁRVORE DE HABILIDADES — <span id="perkPointsCount" style="color: var(--menu-secondary);">5 PONTOS DE VANTAGEM DISPONÍVEIS</span></h2>
       </div>
-      <p>SELECIONE UM ATRIBUTO ACIMA E CLIQUE NOS NÓS DA ÁRVORE PARA FAZER OVERCLOCK</p>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="cp-top-btn" onclick="unlockAllPerksInTree()">⚡ Maximizar Árvore (Max Level)</button>
+      </div>
     </div>
 
     <div class="attributes-top-bar" role="toolbar">
@@ -1888,7 +2132,7 @@
   </section>
 
   <!-- ========================================================================
-       SCREEN 4 (NEW!): FICHA DE RPG DE MESA // CYBERPUNK RED & 2020 (1d10)
+       SCREEN 4: FICHA DE RPG DE MESA // CYBERPUNK RED (1d10 + NET ARCHITECTURE)
        ======================================================================== -->
   <section id="screen-trpg" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
@@ -1896,11 +2140,13 @@
         <p>R. TALSORIAN GAMES (MIKE PONDSMITH) // CYBERPUNK 2020 &amp; CYBERPUNK RED CHARACTER SHEET</p>
         <h2>FICHA DE RPG DE MESA — ARQUÉTIPO: NETRUNNER &amp; TECH (NÍVEL 8)</h2>
       </div>
-      <p>ROLE OS DADOS 1d10 + STAT + PERÍCIA CONTRA A DIFICULDADE (DV) DE MERCADO</p>
+      <button type="button" class="cp-action-btn outline" onclick="exportCyberpunkRedSheet()">
+        ⬇ Exportar Ficha Cyberpunk RED (.TXT)
+      </button>
     </div>
 
     <div class="trpg-layout">
-      <!-- Left: 10 Classic Stats + Lifepath -->
+      <!-- Left: 10 Classic Stats + Lifepath + NET Architecture Elevator -->
       <div class="trpg-sheet-card">
         <div class="cw-rarity-banner">
           <span>HANDLE: MIQUEIAS "SQL_RUNNER" CARVALHO</span>
@@ -1921,29 +2167,59 @@
         </div>
 
         <div>
-          <span class="cw-col-label" style="display:block; margin-bottom: 8px;">CAMINHO DE VIDA (CYBERPUNK RED LIFEPATH)</span>
-          <div class="lifepath-grid">
-            <div class="lifepath-box">
-              <small>ORIGEM &amp; BASE OPERACIONAL</small>
-              <strong>Goiânia, GO (Disponível Presencial / Remoto)</strong>
+          <span class="cw-col-label" style="display:block; margin-bottom: 6px;">ELEVADOR DE ARQUITETURA NET // INVASÃO DE MAINFRAME (CYBERPUNK RED NETRUNNING)</span>
+          <div class="net-arch-box" id="netArchFloors">
+            <div class="net-floor-row current" id="net-floor-0">
+              <span>ANDAR 01 // FIREWALL CORPORATIVO (PASSWORD)</span>
+              <span>DV 12 · [AGUARDANDO HACK]</span>
             </div>
-            <div class="lifepath-box">
-              <small>CORPORAÇÃO / CONTRATO ATUAL</small>
-              <strong>Zetti — Estagiário de Desenvolvimento (VB6 &amp; SQL Server)</strong>
+            <div class="net-floor-row" id="net-floor-1">
+              <span>ANDAR 02 // GELO NEGRO: HELLHOUND (BLACK ICE)</span>
+              <span>DV 15 · [PROGRAMA: ZAP / SLIDE]</span>
             </div>
-            <div class="lifepath-box">
-              <small>ACADEMIA ARCOLOGY</small>
-              <strong>UNIFAN — Engenharia de Software (Conclusão 2027)</strong>
+            <div class="net-floor-row" id="net-floor-2">
+              <span>ANDAR 03 // NODO DE DADOS: SQL SERVER CLUSTER</span>
+              <span>DV 17 · [EYE-DEE / PROCEDURES]</span>
             </div>
-            <div class="lifepath-box">
-              <small>MOTIVAÇÃO DE EDGERUNNER</small>
-              <strong>Atuar como Dev Júnior Backend (C#/.NET, SQL, Java ou Node)</strong>
+            <div class="net-floor-row" id="net-floor-3">
+              <span>ANDAR 04 // GELO NEGRO: KRAKEN (APIs &amp; DOCKER)</span>
+              <span>DV 18 · [OVERCLOCK C#/.NET]</span>
             </div>
+            <div class="net-floor-row" id="net-floor-4">
+              <span>ANDAR 05 (ROOT) // PLANTAR VÍRUS: CONTRATAR_MIQUEIAS.DAEMON</span>
+              <span>DV 20 · [ACESSO TOTAL]</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button type="button" class="cp-action-btn" style="flex:1;" onclick="advanceNetArchitecture()">
+              ⚡ Infiltrar Próximo Andar da NET (1d10 + Interface 8 + INT 10)
+            </button>
+            <button type="button" class="cp-action-btn outline" onclick="resetNetArchitecture()">
+              ⟳ Reiniciar NET
+            </button>
           </div>
         </div>
 
-        <div class="cw-lore-quote">
-          "O céu sobre o porto tinha a cor de uma TV sintonizada em um canal fora do ar." — William Gibson, Neuromancer (1984) // No RPG de mesa Cyberpunk RED, um teste de perícia soma <strong>1d10 + Atributo + Nível da Perícia</strong> contra o Valor de Dificuldade (DV).
+        <div>
+          <span class="cw-col-label" style="display:block; margin-bottom: 6px;">CAMINHO DE VIDA (CYBERPUNK RED LIFEPATH)</span>
+          <div class="lifepath-grid">
+            <div class="lifepath-box">
+              <small>ORIGEM &amp; BASE OPERACIONAL</small>
+              <strong>Goiânia, GO (Presencial / Remoto)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>CORPORAÇÃO ATUAL</small>
+              <strong>Zetti — Dev Estagiário (VB6 &amp; SQL Server)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>ACADEMIA ARCOLOGY</small>
+              <strong>UNIFAN — Eng. de Software (2027)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>OBJETIVO DE MERCENÁRIO</small>
+              <strong>Dev Júnior Backend (C#/.NET, SQL, Java/Node)</strong>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1952,7 +2228,7 @@
         <div>
           <div class="gig-threat-bar">
             <span>ROLADOR DE DADOS OFICIAL // CYBERPUNK RED (1d10)</span>
-            <span>CRÍTICO NO 10 (EXPLOSÃO!)</span>
+            <span>CRÍTICO NO 10 (EXPLOSÃO +1d10!)</span>
           </div>
 
           <div class="dice-display-stage" style="margin-top: 12px;">
@@ -1961,7 +2237,7 @@
             <div class="d10-outcome" id="d10OutcomeText">✓ SUCESSO LENDÁRIO // QUERY OTIMIZADA EM PRODUÇÃO!</div>
           </div>
 
-          <div class="skill-check-btns" style="margin-top: 14px;">
+          <div class="skill-check-btns" style="margin-top: 12px;">
             <button type="button" class="dialogue-choice-btn" onclick="rollCyberpunkD10('Otimizar Procedure SQL Server (Zetti)', 'INT', 10, 8, 17)">
               <span>🎲 Rolar Teste: SQL Server, Views &amp; Procedures (INT 10 + Perícia 8)</span>
               <span class="d-tag">DV 17</span>
@@ -1981,21 +2257,21 @@
           </div>
         </div>
 
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); text-align: center;">
-          DICA: TIRE 10 NO DADO PARA ATIVAR UM <strong>SUCESSO CRÍTICO (EXPLOSÃO DE DADO +1d10)</strong>!
+        <div class="cw-lore-quote">
+          "O céu sobre o porto tinha a cor de uma TV sintonizada em um canal fora do ar." — William Gibson, Neuromancer (1984) // Clique nas perícias acima ou infiltre a Arquitetura NET ao lado!
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========================================================================
-       SCREEN 5: DIÁRIO DE MISSÕES & CARTAS DE TARÔ (MISTY'S ESOTERICA)
+       SCREEN 5: DIÁRIO, BRAINDANCE (BD 3 CAMADAS) & CARTAS DE TARÔ
        ======================================================================== -->
   <section id="screen-diario" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>DIÁRIO DE BORDO, COMENTÁRIOS DO JOHNNY SILVERHAND &amp; TARÔ DE NIGHT CITY</p>
-        <h2>DIÁRIO DE MISSÕES, TARÔ &amp; CURRÍCULO PDF</h2>
+        <p>DIÁRIO DE BORDO, EDITOR DE BRAINDANCE (JUDY ALVAREZ) &amp; TARÔ DA MISTY</p>
+        <h2>DIÁRIO DE MISSÕES, BRAINDANCE &amp; CURRÍCULO PDF</h2>
       </div>
       <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
         ⬇ Baixar Shard Original: Curriculo_Miqueias_Carvalho.pdf
@@ -2044,45 +2320,63 @@
             <span id="jqLoc">LOCAL: GOIÂNIA, GO</span>
           </div>
 
-          <h3 id="jqTitle" style="font-family: var(--font-display); font-size: 22px; color: var(--menu-primary); text-transform: uppercase; margin-top: 10px;">
+          <h3 id="jqTitle" style="font-family: var(--font-display); font-size: 21px; color: var(--menu-primary); text-transform: uppercase; margin-top: 8px;">
             Estagiário de Desenvolvimento — Zetti (08/12/2025 – Atual)
           </h3>
 
-          <div class="cw-lore-quote" id="jqJohnnyQuote" style="margin-top: 8px;">
+          <div class="cw-lore-quote" id="jqJohnnyQuote" style="margin-top: 6px;">
             "Acorda, Samurai! Manter sistema em produção rodando em dezenas de farmácias todo santo dia é o que separa os mercenários de verdade dos turistas de Night City." — Johnny Silverhand
           </div>
 
-          <p id="jqNarrative" style="color: var(--menu-text-sub); font-size: 15px; margin-top: 10px; line-height: 1.55;">
+          <p id="jqNarrative" style="color: var(--menu-text-sub); font-size: 14.5px; margin-top: 8px; line-height: 1.55;">
             Estudante de Engenharia de Software atuando diretamente na sustentação, correção de bugs e evolução de sistemas utilizados diariamente por múltiplas farmácias em ambiente real de produção.
           </p>
 
-          <div class="quest-objectives" id="jqObjectives" style="margin-top: 12px;">
+          <div class="quest-objectives" id="jqObjectives" style="margin-top: 10px;">
             <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Manter, corrigir e evoluir sistema legado em VB6 utilizado diariamente por múltiplas farmácias.</span></div>
             <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Desenvolver e otimizar queries, views e procedures em SQL Server apoiando regras de negócio.</span></div>
             <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Executar adequação ao novo formato alfanumérico do CNPJ, novos impostos e atualizações em massa.</span></div>
             <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Validar correções antes da conclusão dos chamados usando Jira, GitHub, GitLab, GitKraken e Visual Studio.</span></div>
           </div>
 
+          <!-- BRAINDANCE (BD) 3-LAYER SCANNER -->
+          <div class="bd-editor-box" style="margin-top: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+              <span class="cw-col-label">ANÁLISE DE BRAINDANCE (BD 3 CAMADAS // JUDY ALVAREZ MODE)</span>
+              <div class="bd-layer-tabs">
+                <button type="button" class="bd-layer-btn active" onclick="selectBdLayer('visual', this)">🟡 Camada Visual</button>
+                <button type="button" class="bd-layer-btn" onclick="selectBdLayer('audio', this)">🔵 Camada de Áudio</button>
+                <button type="button" class="bd-layer-btn" onclick="selectBdLayer('thermal', this)">🔴 Camada Térmica / SQL</button>
+              </div>
+            </div>
+            <div id="bdLayerReadout" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--menu-primary); padding-top:4px;">
+              [CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.
+            </div>
+          </div>
+
           <!-- 4 Collectible Cyberpunk 2077 Tarot Cards -->
-          <div style="margin-top: 14px;">
-            <span class="cw-col-label" style="display:block;">COLEÇÃO DE TARÔ DE NIGHT CITY (FOOL'S JOURNEY — 4/4 ENCONTRADAS)</span>
+          <div style="margin-top: 12px;">
+            <span class="cw-col-label" style="display:block;">LEITURA ESOTÉRICA DA MISTY // COLEÇÃO DE TARÔ (4/4 ARCANOS)</span>
+            <div id="tarotReadingBox" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--menu-secondary); margin-top: 4px;">
+              Clique em uma carta de Tarô abaixo para ouvir a leitura de Misty Olszewski sobre a jornada de Miqueias.
+            </div>
             <div class="tarot-grid">
-              <div class="tarot-card" onclick="toast('TARÔ 0 — O LOUCO: Da base administrativa ao início na Engenharia de Software.')">
+              <div class="tarot-card active" onclick="inspectTarotCard(0, this)">
                 <div class="tarot-num">ARCANO 0</div>
                 <div class="tarot-name">O LOUCO</div>
                 <div class="tarot-meaning">O Salto para a Engenharia de Software (UNIFAN)</div>
               </div>
-              <div class="tarot-card" onclick="toast('TARÔ I — O MAGO: Domínio sobre código em 8 projetos práticos no GitHub.')">
+              <div class="tarot-card" onclick="inspectTarotCard(1, this)">
                 <div class="tarot-num">ARCANO I</div>
                 <div class="tarot-name">O MAGO</div>
                 <div class="tarot-meaning">8 Arquiteturas Práticas no GitHub (APIs &amp; Java)</div>
               </div>
-              <div class="tarot-card" onclick="toast('TARÔ VII — O CARRO: Impulso real mantendo sistemas de farmácias na Zetti.')">
-                <div class="tarot-num">ARCANO VII</div>
-                <div class="tarot-name">O CARRO</div>
+              <div class="tarot-card" onclick="inspectTarotCard(2, this)">
+                <div class="tarot-num">ARCANO IX</div>
+                <div class="tarot-name">O EREMITA</div>
                 <div class="tarot-meaning">Produção Real Diária na Zetti (VB6 &amp; SQL Server)</div>
               </div>
-              <div class="tarot-card" onclick="toast('TARÔ XXI — O MUNDO: Pronto para atuar como Dev Júnior Backend C#/.NET & SQL!')">
+              <div class="tarot-card" onclick="inspectTarotCard(3, this)">
                 <div class="tarot-num">ARCANO XXI</div>
                 <div class="tarot-name">O MUNDO</div>
                 <div class="tarot-meaning">Pronto p/ Desenvolvedor Backend Júnior</div>
@@ -2095,7 +2389,7 @@
   </section>
 
   <!-- ========================================================================
-       SCREEN 6: HOLOCALL & BREACH PROTOCOL
+       SCREEN 6: HOLOCALL, PROPOSTA RÁPIDA & BREACH PROTOCOL
        ======================================================================== -->
   <section id="screen-holocall" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
@@ -2103,7 +2397,7 @@
         <p>TRANSMISSÃO CRIPTOGRAFADA // CANAL DIRETO DE RECRUTAMENTO &amp; QUEBRA DE GELO (ICE)</p>
         <h2>HOLOCALL INTERATIVO &amp; BREACH PROTOCOL</h2>
       </div>
-      <p>ESCOLHA UMA OPÇÃO DE DIÁLOGO ABAIXO PARA ACIONAR CONTATO IMEDIATO</p>
+      <p>ESCOLHA UMA OPÇÃO DE DIÁLOGO OU USE O AUTO-HACK KIROSHI</p>
     </div>
 
     <div class="holocall-layout">
@@ -2128,7 +2422,7 @@
         </div>
 
         <div class="dialogue-choices" role="group">
-          <a href="https://wa.me/5562998421308" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Nova mensagem para o Fixer! O WhatsApp (62) 99842-1308 é o canal mais rápido para agendarmos uma entrevista.')">
+          <a href="https://wa.me/5562998421308?text=Ol%C3%A1%20Miqueias!%20Vi%20seu%20portf%C3%B3lio%20Cyberpunk%202077%20e%20gostaria%20de%20conversar%20sobre%20uma%20oportunidade%20Backend." target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Nova mensagem para o Fixer! O WhatsApp (62) 99842-1308 já abre com mensagem pronta para agendarmos uma entrevista.')">
             <span>[⚡ Chamar no WhatsApp] Vamos agendar uma entrevista pelo (62) 99842-1308.</span>
             <span class="d-tag">RECOMENDADO ↗</span>
           </a>
@@ -2136,7 +2430,7 @@
             <span>[📋 Copiar Telefone] Salvar (62) 99842-1308 na área de transferência.</span>
             <span class="d-tag">COPIAR</span>
           </button>
-          <a href="mailto:miqueiash989@gmail.com" class="dialogue-choice-btn" onmouseenter="setSpeech('Pode disparar seu NetMail para miqueiash989@gmail.com!')">
+          <a href="mailto:miqueiash989@gmail.com?subject=Oportunidade%20Desenvolvedor%20Backend%20-%20Miqueias%20Carvalho" class="dialogue-choice-btn" onmouseenter="setSpeech('Pode disparar seu NetMail para miqueiash989@gmail.com!')">
             <span>[✉ Enviar E-mail] Abrir cliente de e-mail para miqueiash989@gmail.com.</span>
             <span class="d-tag">NETMAIL</span>
           </a>
@@ -2155,12 +2449,12 @@
         </div>
       </div>
 
-      <!-- Right: Breach Protocol 5x5 Matrix -->
+      <!-- Right: Breach Protocol 5x5 Matrix + Auto-Hack -->
       <div class="breach-panel">
         <div>
           <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--cp-green); margin-bottom: 10px;">
             <span>BREACH PROTOCOL // QUEBRA DE GELO (ICE)</span>
-            <span id="bpBufferText">BUFFER: [ _ _ _ ]</span>
+            <span id="bpBufferText">BUFFER: [ _ _ _ _ _ ]</span>
           </div>
 
           <div class="breach-matrix-grid" id="bpMatrixGrid">
@@ -2193,15 +2487,20 @@
               <span>+100% XP</span>
             </div>
             <div class="daemon-row" id="daemon3">
-              <span>BD E9 7A — DAEMON: DEEP_DIVE_LUCY (MOON)</span>
+              <span>BD E9 7A — DAEMON: DEEP_DIVE_LUCY (SANDEVISTAN)</span>
               <span>EDGERUNNERS</span>
             </div>
           </div>
         </div>
 
-        <button type="button" class="cp-action-btn" style="width: 100%;" onclick="resetBreachMatrix()">
-          ⟳ Reiniciar Matriz Breach Protocol
-        </button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="cp-action-btn" style="flex:1;" onclick="autoSolveBreachProtocol()">
+            ⚡ Auto-Hack Kiroshi (3 Daemons)
+          </button>
+          <button type="button" class="cp-action-btn outline" onclick="resetBreachMatrix()">
+            ⟳ Reiniciar
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -2217,10 +2516,45 @@
   let portraitIdx = 0;
   let audioOn = true;
   let audioCtx = null;
-  let perkPoints = 3;
+  let perkPoints = 5;
   let sandevistanOn = false;
-  let radioPlaying = false;
-  let radioInterval = null;
+  let overclockOn = false;
+  let ramUnits = 8;
+  const maxRamUnits = 8;
+
+  /* Cyberdeck RAM Regeneration & Telemetry */
+  function renderRamBar() {
+    const pips = document.querySelectorAll('#ramPipsContainer .ram-pip');
+    pips.forEach((pip, idx) => {
+      pip.classList.toggle('spent', idx >= ramUnits);
+    });
+    const txt = document.getElementById('ramCountText');
+    if (txt) txt.textContent = `${ramUnits}/${maxRamUnits} UNIDADES`;
+  }
+
+  function spendRam(cost) {
+    if (ramUnits < cost) {
+      toast(`RAM Insuficiente no Cyberdeck! Aguarde recarga (${ramUnits}/${maxRamUnits})`);
+      return false;
+    }
+    ramUnits -= cost;
+    renderRamBar();
+    return true;
+  }
+
+  setInterval(() => {
+    if (ramUnits < maxRamUnits) {
+      ramUnits++;
+      renderRamBar();
+    }
+  }, 2200);
+
+  window.addEventListener('mousemove', (e) => {
+    const tel = document.getElementById('cursorTelemetry');
+    if (tel) {
+      tel.textContent = `RETÍCULA X:${String(e.clientX).padStart(4, '0')} Y:${String(e.clientY).padStart(4, '0')}`;
+    }
+  }, { passive: true });
 
   function ensureAudio() {
     const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -2241,7 +2575,7 @@
       osc.type = wave;
       osc.frequency.setValueAtTime(freqStart, now);
       osc.frequency.exponentialRampToValueAtTime(freqEnd, now + dur);
-      gain.gain.setValueAtTime(0.055, now);
+      gain.gain.setValueAtTime(0.05, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -2250,31 +2584,71 @@
     } catch (e) {}
   }
 
-  /* Procedural Night City FM Synthwave / Edgerunners Arpeggiator */
-  const synthNotes = [220, 261.63, 329.63, 392.00, 440, 392.00, 329.63, 293.66];
+  /* ==========================================================================
+     MULTI-STATION NIGHT CITY FM SYNTHESIZER
+     1. 98.7 BODY HEAT RADIO (Edgerunners Arpeggio)
+     2. 107.3 MORRO ROCK RADIO (Samurai Industrial Bass)
+     3. 89.3 PACIFIC DREAMS (Deep Netrunner Ambient)
+     ========================================================================== */
+  const radioStations = [
+    { name: 'OFF', notes: [], tempo: 0, wave: 'triangle' },
+    { name: '98.7 BODY HEAT FM', notes: [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23], tempo: 210, wave: 'triangle' },
+    { name: '107.3 MORRO ROCK', notes: [110, 110, 146.83, 110, 164.81, 146.83, 130.81, 98.00], tempo: 180, wave: 'sawtooth' },
+    { name: '89.3 PACIFIC DREAMS', notes: [196.00, 246.94, 293.66, 392.00, 329.63, 293.66], tempo: 340, wave: 'sine' }
+  ];
+  let stationIdx = 0;
   let noteStep = 0;
-  function toggleNightCityRadio() {
-    radioPlaying = !radioPlaying;
+  let radioInterval = null;
+
+  function cycleNightCityRadio() {
+    stationIdx = (stationIdx + 1) % radioStations.length;
+    clearInterval(radioInterval);
+    const st = radioStations[stationIdx];
     const btn = document.getElementById('radioBtn');
-    if (radioPlaying) {
-      btn.textContent = '📻 98.7 BODY HEAT: ON';
-      btn.classList.add('active');
-      toast('RÁDIO 98.7 BODY HEAT FM: Synthwave / Edgerunners Loop Ativo');
-      radioInterval = setInterval(() => {
-        if (!audioOn || !radioPlaying) return;
-        const f = synthNotes[noteStep % synthNotes.length];
-        noteStep++;
-        playUiSound(f, f * 1.005, 0.16, 'triangle');
-      }, 240);
-    } else {
+    if (stationIdx === 0) {
       btn.textContent = '📻 RÁDIO FM: OFF';
       btn.classList.remove('active');
-      clearInterval(radioInterval);
       toast('Rádio Night City FM desligada');
+    } else {
+      btn.textContent = '📻 ' + st.name;
+      btn.classList.add('active');
+      toast('SINTONIZADO: ' + st.name);
+      noteStep = 0;
+      radioInterval = setInterval(() => {
+        if (!audioOn || stationIdx === 0) return;
+        const f = st.notes[noteStep % st.notes.length];
+        noteStep++;
+        playUiSound(f, f * 1.01, st.tempo * 0.00075, st.wave);
+      }, st.tempo);
     }
   }
 
-  /* Militech "Apogee" Sandevistan Mode (David Martinez / Edgerunners) */
+  /* ==========================================================================
+     JOHNNY SILVERHAND ENGRAM SUMMON [G]
+     ========================================================================== */
+  const johnnyLines = [
+    '"Acorda, Samurai! Esse garoto mantém sistemas farmacêuticos em produção na Zetti e constrói APIs limpas em C#/.NET e SQL Server. Contrata logo antes que a Arasaka leve!"',
+    '"Sabe o que é mais difícil que invadir a Torre Arasaka? Refatorar sistema legado em VB6 para CNPJ Alfanumérico sem derrubar uma única farmácia. O Miqueias faz isso todo dia."',
+    '"Olha essa ficha: 8 repositórios auditáveis no GitHub, Árvore AVL em O(log n), Tabela Hash em nanossegundos e APIs com Docker e Swagger. Isso é código de Edgerunner raiz."',
+    '"Se você precisa de um Dev Júnior Backend que não treme na frente de Stored Procedures em SQL Server nem de código em produção, achou o mercenário certo."'
+  ];
+  let johnnyIdx = 0;
+
+  function summonJohnnyEngram() {
+    playUiSound(220, 1340, 0.19, 'sawtooth');
+    document.body.classList.add('relic-malfunction');
+    setTimeout(() => document.body.classList.remove('relic-malfunction'), 450);
+    const banner = document.getElementById('johnnyBanner');
+    const txt = document.getElementById('johnnyQuoteText');
+    txt.textContent = johnnyLines[johnnyIdx % johnnyLines.length];
+    johnnyIdx++;
+    banner.classList.add('active');
+    toast('🎸 ENGRAMA RELIC ATIVADO: JOHNNY SILVERHAND');
+  }
+
+  /* ==========================================================================
+     MILITECH "APOGEE" SANDEVISTAN & CYBERPSYCHOSIS OVERCLOCK
+     ========================================================================== */
   const sandyParticles = [];
   function toggleSandevistan() {
     sandevistanOn = !sandevistanOn;
@@ -2282,15 +2656,41 @@
     const btn = document.getElementById('sandevistanBtn');
     if (btn) btn.classList.toggle('active', sandevistanOn);
     playUiSound(sandevistanOn ? 180 : 980, sandevistanOn ? 1480 : 220, 0.22, 'sawtooth');
-    const hum = document.getElementById('humanityReadout');
-    if (hum) {
-      hum.textContent = sandevistanOn
-        ? '64 / 90 [SANDEVISTAN APOGEE ATIVO — DILATAÇÃO TEMPORAL 85%]'
-        : '78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]';
-    }
+    updateBiomonitorReadouts();
     toast(sandevistanOn
       ? '⚡ MILITECH "APOGEE" SANDEVISTAN ATIVADO (David Martinez Mode)!'
       : 'Sandevistan desativado — Sinapses estabilizadas');
+  }
+
+  let cwCapacity = 248;
+  function toggleCyberpsychosisOverclock() {
+    overclockOn = !overclockOn;
+    document.body.classList.toggle('cyberpsychosis-overclock', overclockOn);
+    playUiSound(overclockOn ? 140 : 620, overclockOn ? 1680 : 300, 0.25, 'sawtooth');
+    cwCapacity = overclockOn ? 298 : 248;
+    updateBiomonitorReadouts();
+    toast(overclockOn
+      ? '🔥 OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 ("I'm built different!")'
+      : 'Overclock desativado — Capacidade estabilizada em 248/300');
+  }
+
+  function updateBiomonitorReadouts() {
+    const hum = document.getElementById('humanityReadout');
+    const bar = document.getElementById('humanityBarFill');
+    const cap = document.getElementById('cwCapacityReadout');
+    if (overclockOn) {
+      if (hum) hum.textContent = '52 / 90 [OVERCLOCK LIMITE — MODO DAVID MARTINEZ]';
+      if (bar) bar.style.width = '58%';
+      if (cap) cap.textContent = `${cwCapacity} / 300 [OVERCLOCK MÁXIMO!]`;
+    } else if (sandevistanOn) {
+      if (hum) hum.textContent = '64 / 90 [SANDEVISTAN APOGEE — DILATAÇÃO 85%]';
+      if (bar) bar.style.width = '72%';
+      if (cap) cap.textContent = `${cwCapacity} / 300 [APOGEE ATIVO]`;
+    } else {
+      if (hum) hum.textContent = '78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]';
+      if (bar) bar.style.width = '88%';
+      if (cap) cap.textContent = `${cwCapacity} / 300 [EDGERUNNER]`;
+    }
   }
 
   /* Sandevistan Afterimage Trail Canvas */
@@ -2307,25 +2707,24 @@
     resize();
 
     window.addEventListener('mousemove', (e) => {
-      if (!sandevistanOn) return;
+      if (!sandevistanOn && !overclockOn) return;
       sandyParticles.push({
         x: e.clientX,
         y: e.clientY,
-        r: 16,
-        alpha: 0.75,
-        hue: (performance.now() * 0.25) % 360
+        r: 15,
+        alpha: 0.78
       });
-      if (sandyParticles.length > 28) sandyParticles.shift();
+      if (sandyParticles.length > 30) sandyParticles.shift();
     }, { passive: true });
 
     function render() {
       ctx.clearRect(0, 0, w, h);
-      if (sandevistanOn && sandyParticles.length > 0) {
+      if ((sandevistanOn || overclockOn) && sandyParticles.length > 0) {
         for (let i = sandyParticles.length - 1; i >= 0; i--) {
           const p = sandyParticles[i];
           ctx.save();
-          ctx.strokeStyle = i % 2 === 0 ? '#00FF66' : '#00F0FF';
-          ctx.fillStyle = 'rgba(0, 255, 102, 0.08)';
+          ctx.strokeStyle = overclockOn ? '#FF003C' : (i % 2 === 0 ? '#00FF66' : '#00F0FF');
+          ctx.fillStyle = overclockOn ? 'rgba(255, 0, 60, 0.09)' : 'rgba(0, 255, 102, 0.09)';
           ctx.globalAlpha = p.alpha;
           ctx.lineWidth = 2;
           ctx.beginPath();
@@ -2333,7 +2732,7 @@
           ctx.fill();
           ctx.stroke();
           ctx.restore();
-          p.r += 0.8;
+          p.r += 0.85;
           p.alpha -= 0.028;
           if (p.alpha <= 0) sandyParticles.splice(i, 1);
         }
@@ -2364,7 +2763,7 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(window._tTimer);
-    window._tTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    window._tTimer = setTimeout(() => t.classList.remove('show'), 2700);
   }
 
   function copyClip(txt, msg) {
@@ -2402,8 +2801,9 @@
   }
 
   /* ==========================================================================
-     SCREEN 1 DATA: CYBERWARE SLOTS + LORE QUOTES
+     SCREEN 1 DATA: CYBERWARE SLOTS + LORE QUOTES + REAL CODE SNIPPETS
      ========================================================================== */
+  let currentCwKey = 'sql_cortex';
   const cyberwareData = {
     sql_cortex: {
       tier: 'TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO',
@@ -2417,6 +2817,15 @@
         'Apoio direto a regras de negócio, correções críticas e atualizações em massa em bases de dados de múltiplas farmácias.',
         'Adequação de esquemas e relatórios para o novo formato alfanumérico do CNPJ e novos impostos.'
       ],
+      code: `-- SQL Server Procedure @ Zetti (CNPJ Alfanumérico & Impostos)
+CREATE OR ALTER PROCEDURE dbo.sp_ValidarAtualizarCNPJ_Alfa
+  @FarmaciaID INT, @NovoCNPJ CHAR(14)
+AS BEGIN
+  SET NOCOUNT ON;
+  UPDATE dbo.UnidadesFarmacia
+  SET CNPJ_Alfa = UPPER(@NovoCNPJ), AtualizadoEm = SYSDATETIME()
+  WHERE FarmaciaID = @FarmaciaID AND Ativo = 1;
+END;`,
       mods: ['SQL Server', 'MySQL', 'PostgreSQL', 'Queries & Views', 'Procedures', 'Modelagem Relacional']
     },
     dotnet_deck: {
@@ -2431,10 +2840,21 @@
         'Implementação de APIs REST com documentação interativa via <strong>Swagger</strong>, validação de dados e separação em camadas.',
         'Domínio de Programação Orientada a Objetos (POO), lógica de programação e tradução de regras de negócio.'
       ],
+      code: `// C# / .NET Core — Arquitetura Limpa & REST Controller
+[ApiController]
+[Route("api/v1/[controller]")]
+public class ProdutosFarmaciaController : ControllerBase {
+  private readonly IProdutoService _service;
+  public ProdutosFarmaciaController(IProdutoService service) => _service = service;
+
+  [HttpPost("atualizar-lote")]
+  public async Task<IActionResult> AtualizarLote([FromBody] LoteFiscalDto dto)
+    => Ok(await _service.ProcessarRegrasFiscaisAsync(dto));
+}`,
       mods: ['C#', '.NET', 'APIs REST', 'Swagger', 'POO', 'Arquitetura em Camadas']
     },
     vb6_chassis: {
-      tier: 'TIER 5 // BLINDAGEM SUBDÉRMICA DE PRODUÇÃO',
+      tier: 'TIER 5+ // BLINDAGEM SUBDÉRMICA DE PRODUÇÃO',
       ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
       title: 'VB6 Legacy Reactor @ Zetti',
       cat: 'ESQUELETO // SUSTENTAÇÃO DE SISTEMAS CRÍTICOS EM AMBIENTE REAL',
@@ -2445,10 +2865,17 @@
         'Entrega de demandas fiscais e regulatórias críticas como <strong>CNPJ alfanumérico</strong> e novos cálculos de impostos.',
         'Validação rigorosa das correções antes da conclusão de cada chamado em produção.'
       ],
+      code: `' VB6 Production Module @ Zetti — Adequação CNPJ Alfanumérico
+Public Function ValidarCNPJAlfanumerico(ByVal sCNPJ As String) As Boolean
+    Dim sLimpo As String
+    sLimpo = UCase$(Trim$(Replace(Replace(sCNPJ, ".", ""), "-", "")))
+    If Len(sLimpo) <> 14 Then Exit Function
+    ValidarCNPJAlfanumerico = ExecutarRegraFiscalSQL(sLimpo)
+End Function`,
       mods: ['VB6 Profissional', 'Regras de Negócio', 'Sistemas Legados', 'CNPJ Alfanumérico', 'Sustentação Crítica']
     },
     java_reflex: {
-      tier: 'TIER 5 // IMPULSOR NEURAL KERENZIKOV',
+      tier: 'TIER 5+ // IMPULSOR NEURAL KERENZIKOV',
       ram: 'CUSTO HUMANIDADE: 14 HC (4d6)',
       title: 'Java 17/21, Spring Boot 3 & Algoritmos',
       cat: 'SISTEMA NERVOSO // API CAMADAS, DESKTOP DAO & ESTRUTURAS DE DADOS',
@@ -2459,10 +2886,18 @@
         'Aplicação desktop gráfica com <strong>Java 21, JavaFX, JDBC e padrão DAO</strong> (controle-estoque-javafx).',
         'Implementação de <strong>Árvore AVL auto-balanceada, BST e Tabela Hash O(1)</strong> com benchmark em nanossegundos e testes JUnit 5.'
       ],
+      code: `// Java 17 — Tabela Hash O(1) & Balanceamento AVL O(log n)
+public RegistroCPF buscarO1(String cpf) {
+    long t0 = System.nanoTime();
+    int bucket = Math.abs(cpf.hashCode()) % capacidade;
+    RegistroCPF res = tabela[bucket].buscarPorChave(cpf);
+    this.ultimoTempoNs = System.nanoTime() - t0; // ~140ns
+    return res;
+}`,
       mods: ['Java 17 / 21', 'Spring Boot 3', 'Spring Data JPA', 'JavaFX DAO', 'Árvore AVL & BST', 'Hash Table O(1)', 'JUnit 5']
     },
     node_ts: {
-      tier: 'TIER 5 // MONOFIO TÉRMICO DE NETRUNNER (LUCY)',
+      tier: 'TIER 5++ // MONOFIO TÉRMICO DE NETRUNNER (LUCY)',
       ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
       title: 'Node.js, TypeScript, Express & NestJS',
       cat: 'BRAÇOS & INTERFACE // APIs REST PAGINADAS, TYPEORM & PRISMA',
@@ -2473,10 +2908,21 @@
         'Autor da <strong>vosso-cinema-api</strong> (NestJS, TypeScript, Prisma ORM, PostgreSQL com 5 entidades, Swagger e testes Jest).',
         'Integração ponta a ponta com frontend web responsivo (vosso-cinema-web).'
       ],
+      code: `// TypeScript + Express + TypeORM (api-gestao-produtos)
+export class ListProductsService {
+  async execute({ page = 1, limit = 10 }: PaginationParams) {
+    const [items, total] = await productRepository.findAndCount({
+      relations: ['category', 'situation'],
+      skip: (page - 1) * limit,
+      take: limit
+    });
+    return { items, total, page };
+  }
+}`,
       mods: ['Node.js', 'TypeScript', 'Express', 'NestJS', 'TypeORM', 'Prisma ORM', 'Docker', 'Jest']
     },
     git_optics: {
-      tier: 'TIER 5 // ÓPTICA KIROSHI "THE ORACLE" MK.5',
+      tier: 'TIER 5+ // ÓPTICA KIROSHI "THE ORACLE" MK.5',
       ram: 'CUSTO HUMANIDADE: 10 HC (2d6)',
       title: 'Git, GitKraken, Jira & Visual Studio',
       cat: 'SISTEMA ÓPTICO // FLUXO ÁGIL, VERSIONAMENTO & CONTAINERS',
@@ -2487,12 +2933,18 @@
         'Desenvolvimento e depuração utilizando <strong>Visual Studio, VS Code e containers Docker</strong>.',
         'Trabalho em equipe, organização, proatividade e resolução ágil de problemas.'
       ],
+      code: `# Pipeline Diário de Engenharia (Zetti & GitHub)
+$ git checkout -b fix/JIRA-408-cnpj-alfanumerico
+$ docker compose up -d mysql-db api-service
+$ npm run typeorm migration:run && npm test
+[✓] Todos os checks validados antes de fechar o chamado no Jira.`,
       mods: ['Git', 'GitHub', 'GitLab', 'GitKraken', 'Jira', 'Visual Studio', 'VS Code', 'Docker']
     }
   };
 
   function selectCyberware(key, btnEl) {
     playUiSound(580, 1180, 0.08);
+    currentCwKey = key;
     const d = cyberwareData[key];
     if (!d) return;
     document.querySelectorAll('.cw-slot-card').forEach(b => b.classList.remove('active'));
@@ -2507,23 +2959,41 @@
     document.getElementById('cwStat2').textContent = d.s2;
     document.getElementById('cwStat3').textContent = d.s3;
     document.getElementById('cwBullets').innerHTML = d.bullets.map(b => `<li>${b}</li>`).join('');
+    document.getElementById('cwCodePreview').textContent = d.code;
     document.getElementById('cwMods').innerHTML = d.mods.map(m => `<span>${m}</span>`).join('');
   }
 
+  function upgradeSelectedCyberware() {
+    if (!spendRam(2)) return;
+    playUiSound(320, 1640, 0.18, 'sawtooth');
+    const badge = document.getElementById('lvl-' + currentCwKey);
+    if (badge) badge.textContent = 'TIER 5++ MAX';
+    document.getElementById('cwTierText').textContent = 'TIER 5++ ICÔNICO OVERCLOCKADO // VIKTOR VEKTOR TUNED';
+    cwCapacity = Math.min(300, cwCapacity + 8);
+    updateBiomonitorReadouts();
+    toast('🔧 Implante aprimorado para TIER 5++ MAX! Capacidade: ' + cwCapacity + '/300');
+  }
+
   /* ==========================================================================
-     SCREEN 2 DATA: MAP PINS
+     SCREEN 2 DATA: MAP PINS + GPS ROUTE + LIVE TERMINAL SIMULATOR
      ========================================================================== */
-  let currentMapCloneCmd = 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git';
+  let currentMapKey = 'zetti_job';
+  let currentMapCloneCmd = 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)';
 
   const mapPinsData = {
     zetti_job: {
       coord: "COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI",
+      dist: '0.0 KM (QG OPERACIONAL ATUAL)',
       type: 'MISSÃO PRINCIPAL // EM OPERAÇÃO',
       reward: 'FIXER: ZETTI TECH',
       kicker: 'GOIÂNIA, GO · 08/12/2025 — ATUAL',
       title: 'Estagiário de Desenvolvimento — Zetti',
       desc: 'Manutenção, correção e evolução de sistema em produção utilizado diariamente por múltiplas farmácias, apoiando diretamente a operação dos clientes.',
       blueprint: '▸ Manutenção e evolução de sistema legado em VB6.<br>▸ Desenvolvimento e otimização de queries, views e procedures em SQL Server.<br>▸ Adequação ao CNPJ alfanumérico, novos impostos e atualizações em massa.<br>▸ Validação de chamados com Jira, GitHub, GitLab, GitKraken e Visual Studio.',
+      terminal: `$ zetti-prod-cli --exec-ticket JIRA-2077
+[SQL SERVER] Executando sp_AtualizarImpostosFarmacia...
+[VB6 RUNTIME] Módulo de CNPJ Alfanumérico compilado sem regressão.
+[QA CHECK] 100% validado em homologação antes da entrega.`,
       stack: ['VB6', 'SQL Server', 'Queries, Views & Procedures', 'Regras de Negócio', 'Jira', 'GitKraken'],
       link: 'https://www.linkedin.com/in/miqueias-henrique-88503b218/',
       linkText: 'Ver Perfil no LinkedIn ↗',
@@ -2531,12 +3001,17 @@
     },
     carvalho_job: {
       coord: "COORD: 16°41'S 49°16'W // CORP PLAZA: CARVALHO",
+      dist: '1.8 KM DO QG CENTRAL',
       type: 'MISSÃO CONCLUÍDA // HISTÓRICO',
       reward: '+2500 STREET CRED',
       kicker: 'GOIÂNIA, GO · 2021 — 2025',
       title: 'Auxiliar Administrativo — Carvalho Forros e Divisórias',
       desc: 'Início como Jovem Aprendiz e posterior efetivação devido à organização, disciplina e resolução de problemas no atendimento e gestão documental.',
       blueprint: '▸ Rotinas administrativas e controle de processos internos.<br>▸ Organização de documentos e atendimento direto.<br>▸ Base sólida de responsabilidade profissional e trabalho em equipe.',
+      terminal: `$ history-log --company "Carvalho Forros e Divisórias"
+[2021] Ingresso como Jovem Aprendiz
+[2022-2025] Efetivado como Auxiliar Administrativo
+[STATUS] Base sólida de processos, organização e atendimento.`,
       stack: ['Organização', 'Processos Administrativos', 'Atendimento', 'Trabalho em Equipe'],
       link: 'Curriculo_Miqueias_Carvalho.pdf',
       linkText: 'Baixar Currículo PDF ⬇',
@@ -2544,12 +3019,16 @@
     },
     'api-gestao-produtos': {
       coord: "COORD: 16°39'S 49°14'W // AFTERLIFE: CONTRATO DA ROGUE #01",
+      dist: '3.4 KM // ROTA RÁPIDA VIA AFTERLIFE',
       type: '★ CONTRATO TOP 1 // RECOMENDADO P/ AVALIAÇÃO',
       reward: 'FIXER: ROGUE (AFTERLIFE)',
       kicker: 'REPOSITÓRIO GITHUB // NODE.JS, TYPESCRIPT & MYSQL',
       title: 'api-gestao-produtos',
       desc: 'API REST completa em Node.js, TypeScript, Express e TypeORM com MySQL. Possui CRUD paginado para produtos, categorias, situações e usuários.',
       blueprint: '▸ Camadas: Express REST → Validação Yup → TypeORM → MySQL.<br>▸ Migrations versionadas e Seeds automatizadas para testes rápidos.<br>▸ Documentação interativa no Swagger + Ambiente Docker pronto.',
+      terminal: `$ docker compose up -d && curl -X GET http://localhost:3333/products?page=1
+HTTP/1.1 200 OK (Content-Type: application/json)
+{ "total": 48, "page": 1, "swagger": "/api-docs", "orm": "TypeORM + MySQL" }`,
       stack: ['Node.js', 'TypeScript', 'Express', 'TypeORM', 'MySQL', 'Yup', 'Swagger', 'Docker'],
       link: 'https://github.com/Miqueias-Henrique/api-gestao-produtos',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2557,12 +3036,17 @@
     },
     'vosso-cinema-api': {
       coord: "COORD: 16°38'S 49°13'W // AFTERLIFE: CONTRATO DA ROGUE #02",
+      dist: '4.2 KM // SETOR NESTJS',
       type: 'CONTRATO DE FIXER // ARQUITETURA MODULAR',
       reward: 'FIXER: ROGUE (+4200 CRED)',
       kicker: 'REPOSITÓRIO GITHUB // NESTJS, PRISMA & POSTGRESQL',
       title: 'vosso-cinema-api',
       desc: 'API REST para gerenciamento de cinema (filmes, salas, sessões, ingressos e lanches) com arquitetura modular NestJS e Prisma ORM.',
       blueprint: '▸ Modelagem relacional de 5 entidades no PostgreSQL via Prisma ORM.<br>▸ Documentação OpenAPI/Swagger completa.<br>▸ Testes automatizados configurados com Jest.',
+      terminal: `$ npx prisma migrate deploy && npm run test:cov
+PASS src/movies/movies.service.spec.ts
+PASS src/sessions/sessions.controller.spec.ts
+[NESTJS] 5 Entidades PostgreSQL + Swagger ativo em /api.`,
       stack: ['NestJS', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'Swagger', 'Jest'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-api',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2570,12 +3054,16 @@
     },
     'vital-conscious-api': {
       coord: "COORD: 16°39'S 49°12'W // AFTERLIFE: CONTRATO DA ROGUE #03",
+      dist: '5.1 KM // ARCOLOGIA SPRING BOOT',
       type: 'CONTRATO DE FIXER // 4 CAMADAS JAVA',
       reward: 'FIXER: WAKAKO (+4500 CRED)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & SPRING BOOT 3',
       title: 'vital-conscious-api',
       desc: 'API REST universitária estruturada em 4 camadas (Controller, Service, Repository e Entity) para gestão de alunos e professores.',
       blueprint: '▸ Arquitetura Spring Boot 3 + Spring Data JPA + Hibernate.<br>▸ Banco de dados PostgreSQL e redução de boilerplate com Lombok.<br>▸ Acompanhada de diagramas UML e documentação PDS.',
+      terminal: `$ ./mvnw spring-boot:run
+[Spring Boot 3.2] HikariPool-1 - Conectado ao PostgreSQL
+[JPA] Camadas Controller -> Service -> Repository -> Entity ativas!`,
       stack: ['Java 17', 'Spring Boot 3', 'Spring Data JPA', 'PostgreSQL', 'Lombok'],
       link: 'https://github.com/Miqueias-Henrique/vital-conscious-api',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2583,12 +3071,16 @@
     },
     'controle-estoque-javafx': {
       coord: "COORD: 16°42'S 49°17'W // JAPACTOWN: CONTRATO WAKAKO #04",
+      dist: '2.7 KM // DISTRITO JAVAFX',
       type: 'BICO TÉCNICO // PADRÃO DAO & SQL',
       reward: 'FIXER: WAKAKO OKADA',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 21, JAVAFX & JDBC',
       title: 'controle-estoque-javafx',
       desc: 'Aplicação desktop em Java 21 e JavaFX para controle de estoque com interface gráfica e persistência em PostgreSQL via JDBC.',
       blueprint: '▸ Isolamento da camada de persistência utilizando o Padrão DAO.<br>▸ Conexão JDBC segura com PostgreSQL.<br>▸ Interface JavaFX intuitiva para cadastro e consulta de produtos.',
+      terminal: `$ java --module-path javafx-sdk-21/lib --add-modules javafx.controls App
+[JDBC DAO] Conexão PostgreSQL estabelecida com sucesso.
+[JAVAFX] Tela de Controle de Estoque renderizada.`,
       stack: ['Java 21', 'JavaFX', 'JDBC', 'PostgreSQL', 'Padrão DAO'],
       link: 'https://github.com/Miqueias-Henrique/controle-estoque-javafx',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2596,12 +3088,16 @@
     },
     'catalogo-livros-avl-bst': {
       coord: "COORD: 16°43'S 49°16'W // JAPACTOWN: LAB DE ESTRUTURAS O(log n)",
+      dist: '3.1 KM // LAB ALGORITMOS',
       type: 'BICO TÉCNICO // ÁRVORES BINÁRIAS',
       reward: 'COMPLEXIDADE: O(log n)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17, AVL & BST',
       title: 'catalogo-livros-avl-bst',
       desc: 'Sistema de catálogo de livros em Java comparando Árvore Binária de Busca (BST) e Árvore AVL auto-balanceada.',
       blueprint: '▸ Rotações simples e duplas garantindo balanceamento AVL.<br>▸ Percursos In-Ordem, Pré-Ordem, Pós-Ordem e Busca em Largura (BFS).<br>▸ Persistência em CSV e telemetria de rotações e comparações.',
+      terminal: `$ java -cp bin CatalogoLivrosAVL --benchmark
+[BST] Altura: 14 | Comparações: 12
+[AVL] Altura: 4 (Balanceada O(log n)) | Rotações Duplas: 3 | CSV salvo!`,
       stack: ['Java 17', 'Árvore AVL', 'Árvore BST', 'BFS / DFS', 'CSV'],
       link: 'https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2609,12 +3105,16 @@
     },
     'tabela-hash-cpf-java': {
       coord: "COORD: 16°42'S 49°15'W // JAPACTOWN: NÚCLEO DE INDEXAÇÃO O(1)",
+      dist: '2.9 KM // NÚCLEO HASH O(1)',
       type: 'BICO TÉCNICO // BENCHMARK EM NANOSSEGUNDOS',
       reward: 'COMPLEXIDADE: O(1)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & HASH TABLE',
       title: 'tabela-hash-cpf-java',
       desc: 'Implementação de Tabela Hash em Java com tratamento de colisões por encadeamento separado (LinkedList) e validação de CPF.',
       blueprint: '▸ Tratamento de colisões via listas encadeadas independentes.<br>▸ Validador matemático de CPF integrado.<br>▸ Medição de desempenho real (colisões, comparações e tempo em ns).',
+      terminal: `$ java TabelaHashCPF --lookup 123.456.789-00
+[CPF VÁLIDO] Bucket #42 localizado via LinkedList
+[BENCHMARK] Tempo de busca O(1): 138 nanossegundos (ns)!`,
       stack: ['Java 17', 'Hash Table', 'LinkedList', 'Validação CPF', 'Benchmark (ns)'],
       link: 'https://github.com/Miqueias-Henrique/tabela-hash-cpf-java',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2622,12 +3122,16 @@
     },
     'quiz-cli-java': {
       coord: "COORD: 16°44'S 49°18'W // JAPACTOWN: TERMINAL JUNIT 5",
+      dist: '3.8 KM // TERMINAL MAVEN',
       type: 'BICO TÉCNICO // TESTES AUTOMATIZADOS',
       reward: '100% TEST PASS',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17, MAVEN & JUNIT 5',
       title: 'quiz-cli-java',
       desc: 'Aplicação interativa de quiz no terminal em Java 17 estruturada com Maven e bateria de testes unitários automatizados com JUnit 5.',
       blueprint: '▸ Validação segura de entradas no console.<br>▸ Cálculo de pontuação e percentual de aproveitamento.<br>▸ Cobertura de testes unitários com JUnit 5 Jupiter.',
+      terminal: `$ mvn clean test
+[INFO] Running com.miqueias.quiz.QuizServiceTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS!`,
       stack: ['Java 17', 'Maven', 'JUnit 5', 'POO', 'CLI'],
       link: 'https://github.com/Miqueias-Henrique/quiz-cli-java',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2635,12 +3139,16 @@
     },
     'vosso-cinema-web': {
       coord: "COORD: 16°42'S 49°13'W // SANTO DOMINGO: DISTRITO WEB UI",
+      dist: '3.5 KM // DISTRITO WEB',
       type: 'CONTRATO FRONTEND // INTERFACE RESPONSIVA',
       reward: 'RECOMPENSA: +3200 CRED',
       kicker: 'REPOSITÓRIO GITHUB // HTML5, CSS3, JS & BOOTSTRAP 5',
       title: 'vosso-cinema-web',
       desc: 'Interface web responsiva para gestão de filmes, salas, sessões e venda de ingressos de cinema com persistência via localStorage.',
       blueprint: '▸ Manipulação de DOM com JavaScript Vanilla.<br>▸ Layout responsivo construído com Bootstrap 5.<br>▸ Fluxo completo de cadastro e reserva salvo localmente.',
+      terminal: `$ open index.html --storage localStorage
+[DOM READY] Módulos de Filmes, Salas, Sessões e Ingressos carregados.
+[BOOTSTRAP 5] Grid responsivo sincronizado.`,
       stack: ['JavaScript', 'HTML5', 'CSS3', 'Bootstrap 5', 'LocalStorage'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-web',
       linkText: 'Abrir Repositório no GitHub ↗',
@@ -2648,12 +3156,16 @@
     },
     unifan_edu: {
       coord: "COORD: 16°43'S 49°12'W // SANTO DOMINGO: ACADEMIA UNIFAN",
+      dist: '4.0 KM // CAMPUS UNIFAN',
       type: 'FORMAÇÃO SUPERIOR // EM ANDAMENTO',
       reward: 'PREVISÃO: 2027 (68%)',
       kicker: 'GRADUAÇÃO // ENGENHARIA DE SOFTWARE',
       title: 'UNIFAN — Engenharia de Software',
       desc: 'Bacharelado em Engenharia de Software em andamento (conclusão em 2027), somado a cursos complementares e idiomas.',
       blueprint: '▸ Cursos: Banco de Dados (2026), C#, GitHub, Java Básico, Algoritmo, HTML, CSS e Kotlin.<br>▸ Inglês: Intermediário para leitura e compreensão, conversação básica.<br>▸ Espanhol: Intermediário.',
+      terminal: `$ unifan-academic-status --student "Miqueias Carvalho"
+[CURSO] Bacharelado em Engenharia de Software (68% concluído — 2027)
+[CERTIFICADOS] Banco de Dados (2026), C#, GitHub, Java, Algoritmo, Kotlin.`,
       stack: ['Engenharia de Software', 'UNIFAN 2027', 'Banco de Dados (2026)', 'C#', 'Inglês & Espanhol'],
       link: 'Curriculo_Miqueias_Carvalho.pdf',
       linkText: 'Baixar Currículo PDF ⬇',
@@ -2663,23 +3175,51 @@
 
   function selectMapPin(pinKey, btnEl) {
     playUiSound(660, 1320, 0.09);
+    currentMapKey = pinKey;
     const d = mapPinsData[pinKey];
     if (!d) return;
     document.querySelectorAll('.map-pin').forEach(p => p.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
+    if (btnEl) {
+      btnEl.classList.add('active');
+      const tx = btnEl.getAttribute('data-x') || '456';
+      const ty = btnEl.getAttribute('data-y') || '99';
+      const gpsLine = document.getElementById('gpsRouteLine');
+      const gpsPulse = document.getElementById('gpsTargetPulse');
+      if (gpsLine) {
+        gpsLine.setAttribute('x2', tx);
+        gpsLine.setAttribute('y2', ty);
+      }
+      if (gpsPulse) {
+        gpsPulse.setAttribute('cx', tx);
+        gpsPulse.setAttribute('cy', ty);
+      }
+    }
 
     document.getElementById('mapCoordReadout').textContent = d.coord;
+    document.getElementById('gpsDistanceReadout').textContent = 'ROTA GPS TRAÇADA // DISTÂNCIA: ' + d.dist;
     document.getElementById('gigTypeBadge').textContent = d.type;
     document.getElementById('gigRewardBadge').textContent = d.reward;
     document.getElementById('gigKicker').textContent = d.kicker;
     document.getElementById('gigTitle').textContent = d.title;
     document.getElementById('gigDesc').textContent = d.desc;
     document.getElementById('gigBlueprint').innerHTML = d.blueprint;
+    document.getElementById('gigTerminalOutput').textContent = d.terminal;
     document.getElementById('gigStackPills').innerHTML = d.stack.map(s => `<span>${s}</span>`).join('');
     const linkEl = document.getElementById('gigPrimaryLink');
     linkEl.href = d.link;
     linkEl.textContent = d.linkText;
     currentMapCloneCmd = d.clone;
+  }
+
+  function simulateCurrentGigTerminal() {
+    if (!spendRam(1)) return;
+    playUiSound(420, 1560, 0.14, 'sawtooth');
+    const d = mapPinsData[currentMapKey];
+    const out = document.getElementById('gigTerminalOutput');
+    if (out && d) {
+      out.textContent = `[EXECUTANDO SIMULAÇÃO KIROSHI — ${new Date().toLocaleTimeString()}]\n` + d.terminal + `\n[✓] STATUS HTTP 200 // TESTES VALIDADOS COM SUCESSO!`;
+    }
+    toast('▶ Simulação concluída para: ' + (d ? d.title : currentMapKey));
   }
 
   function copyMapClone() {
@@ -2803,8 +3343,16 @@
     toast('Vantagem Overclockada: ' + document.getElementById('perkTitle').textContent);
   }
 
+  function unlockAllPerksInTree() {
+    playUiSound(280, 1720, 0.22, 'sawtooth');
+    document.querySelectorAll('.perk-node').forEach(el => el.classList.add('unlocked'));
+    perkPoints = 0;
+    document.getElementById('perkPointsCount').textContent = 'ÁRVORE MAXIMIZADA // NÍVEL 50 EDGERUNNER';
+    toast('⚡ Todas as Vantagens da Árvore foram maximizadas!');
+  }
+
   /* ==========================================================================
-     SCREEN 4: CYBERPUNK RED 1d10 SKILL CHECK ROLLER
+     SCREEN 4: CYBERPUNK RED 1d10 ROLLER & NET ARCHITECTURE ELEVATOR
      ========================================================================== */
   function rollCyberpunkD10(taskName, statName, statVal, skillVal, dv) {
     playUiSound(340, 1480, 0.14);
@@ -2830,8 +3378,98 @@
     toast(`Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
   }
 
+  let currentNetFloor = 0;
+  const netFloorDVs = [12, 15, 17, 18, 20];
+  const netFloorNames = [
+    'ANDAR 01 // FIREWALL CORPORATIVO',
+    'ANDAR 02 // GELO NEGRO: HELLHOUND',
+    'ANDAR 03 // NODO SQL SERVER CLUSTER',
+    'ANDAR 04 // GELO NEGRO: KRAKEN',
+    'ANDAR 05 (ROOT) // CONTRATAR_MIQUEIAS.DAEMON'
+  ];
+
+  function advanceNetArchitecture() {
+    if (currentNetFloor >= 5) {
+      toast('★ Arquitetura NET já foi 100% dominada (ROOT ACCESS)!');
+      return;
+    }
+    const dv = netFloorDVs[currentNetFloor];
+    const fname = netFloorNames[currentNetFloor];
+    rollCyberpunkD10(fname, 'INTERFACE+INT', 10, 8, dv);
+
+    const row = document.getElementById('net-floor-' + currentNetFloor);
+    if (row) {
+      row.classList.remove('current');
+      row.classList.add('cleared');
+    }
+    currentNetFloor++;
+    const nextRow = document.getElementById('net-floor-' + currentNetFloor);
+    if (nextRow) {
+      nextRow.classList.add('current');
+    } else {
+      toast('🏆 ROOT ACCESS CONQUISTADO: Vírus CONTRATAR_MIQUEIAS.daemon instalado!');
+    }
+  }
+
+  function resetNetArchitecture() {
+    playUiSound(400, 820, 0.1);
+    currentNetFloor = 0;
+    for (let i = 0; i < 5; i++) {
+      const r = document.getElementById('net-floor-' + i);
+      if (r) {
+        r.classList.remove('cleared', 'current');
+        if (i === 0) r.classList.add('current');
+      }
+    }
+    toast('Arquitetura NET reiniciada para o Andar 01');
+  }
+
+  function exportCyberpunkRedSheet() {
+    playUiSound(520, 1280, 0.12);
+    const sheetText = `====================================================================
+CYBERPUNK RED // FICHA DE PERSONAGEM (R. TALSORIAN GAMES)
+====================================================================
+HANDLE: Miqueias "SQL_Runner" Carvalho
+ROLES: Netrunner Rank 8 (Interface) / Tech Rank 8 (Maker)
+LOCALIZAÇÃO: Goiânia, GO | CONTATO: (62) 99842-1308 | miqueiash989@gmail.com
+LINKEDIN: https://www.linkedin.com/in/miqueias-henrique-88503b218/
+GITHUB: https://github.com/Miqueias-Henrique
+
+[STATS CLÁSSICOS]
+INT: 10 | TECH: 10 | REF: 8 | DEX: 8 | COOL: 9
+WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
+
+[EXPERIÊNCIA EM PRODUÇÃO (GIGS REAIS)]
+1. Estagiário de Desenvolvimento — Zetti (08/12/2025 – Atual)
+   - Manutenção e evolução de sistema legado em VB6 (múltiplas farmácias)
+   - Queries, Views e Stored Procedures em SQL Server
+   - Adequação ao CNPJ Alfanumérico, novos impostos e atualizações em massa
+2. Auxiliar Administrativo — Carvalho Forros e Divisórias (2021 – 2025)
+
+[8 PROJETOS AUDITÁVEIS NO GITHUB]
+- api-gestao-produtos (Node.js, TS, Express, TypeORM, MySQL, Swagger, Docker)
+- vosso-cinema-api (NestJS, TS, Prisma ORM, PostgreSQL, Swagger, Jest)
+- vital-conscious-api (Java 17, Spring Boot 3, JPA, PostgreSQL, 4 Camadas)
+- controle-estoque-javafx (Java 21, JavaFX, JDBC, PostgreSQL, DAO)
+- catalogo-livros-avl-bst (Java 17, Árvores AVL & BST O(log n), CSV)
+- tabela-hash-cpf-java (Java 17, Tabela Hash O(1) em nanossegundos)
+- quiz-cli-java (Java 17, Maven, JUnit 5)
+- vosso-cinema-web (JS, HTML5, CSS3, Bootstrap 5)
+====================================================================`;
+    const blob = new Blob([sheetText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Ficha_Cyberpunk_RED_Miqueias_Carvalho.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('⬇ Ficha Cyberpunk RED (.TXT) exportada com sucesso!');
+  }
+
   /* ==========================================================================
-     SCREEN 5 DATA: JOURNAL QUEST LOG + JOHNNY SILVERHAND QUOTES
+     SCREEN 5 DATA: JOURNAL QUEST LOG + BRAINDANCE 3-LAYER + MISTY TAROT
      ========================================================================== */
   const journalQuests = {
     q_zetti: {
@@ -2842,7 +3480,7 @@
       narrative: 'Atuação profissional diária mantendo, corrigindo e evoluindo sistema utilizado em ambiente real por múltiplas farmácias, com forte atuação em banco de dados SQL Server e regras de negócio.',
       objs: [
         'Manutenção, correção e evolução de sistema legado em VB6 utilizado diariamente por múltiplas farmácias.',
-        'Desenvolvimento e otimização de queries, views e procedures em SQL Server.',
+        'Desenvolvimento e otimizar queries, views e procedures em SQL Server.',
         'Atuação em demandas como adequação ao novo formato alfanumérico do CNPJ, atualização de relatórios para novos impostos e atualizações em massa em bases de clientes.',
         'Validação de correções antes da conclusão dos chamados e uso de Jira, GitHub, GitLab, GitKraken e Visual Studio.'
       ]
@@ -2942,8 +3580,38 @@
     `).join('');
   }
 
+  const bdLayers = {
+    visual: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
+    audio: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
+    thermal: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos!'
+  };
+
+  function selectBdLayer(layerKey, btnEl) {
+    playUiSound(680, 1340, 0.08);
+    document.querySelectorAll('.bd-layer-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    const el = document.getElementById('bdLayerReadout');
+    if (el) el.textContent = bdLayers[layerKey] || '';
+  }
+
+  const tarotReadings = [
+    'MISTY OLSZEWSKI — ARCANO 0 (O LOUCO): "O início da jornada. Representa a coragem de Miqueias ao evoluir de Jovem Aprendiz e Auxiliar Administrativo (2021–2025) para mergulhar de cabeça na Engenharia de Software."',
+    'MISTY OLSZEWSKI — ARCANO I (O MAGO): "O domínio das ferramentas. C#/.NET, SQL Server, Java 17/21, Node.js/NestJS e Docker canalizados em 8 projetos reais e documentados no GitHub."',
+    'MISTY OLSZEWSKI — ARCANO IX (O EREMITA): "A sabedoria de quem decifra códigos ancestrais. Na Zetti, Miqueias domina sistemas legados em VB6 e procedures complexas que mantêm dezenas de farmácias operando."',
+    'MISTY OLSZEWSKI — ARCANO XXI (O MUNDO): "A realização. Com experiência real em produção e graduação na UNIFAN (2027), ele está pronto para assumir missões como Desenvolvedor Backend Júnior."'
+  ];
+
+  function inspectTarotCard(idx, cardEl) {
+    playUiSound(480, 1240, 0.11, 'triangle');
+    document.querySelectorAll('.tarot-card').forEach(c => c.classList.remove('active'));
+    if (cardEl) cardEl.classList.add('active');
+    const box = document.getElementById('tarotReadingBox');
+    if (box) box.textContent = tarotReadings[idx];
+    toast(tarotReadings[idx].split(':')[0]);
+  }
+
   /* ==========================================================================
-     SCREEN 6: HOLOCALL & BREACH PROTOCOL
+     SCREEN 6: HOLOCALL & BREACH PROTOCOL + AUTO-SOLVER
      ========================================================================== */
   function setSpeech(txt) {
     const el = document.getElementById('holoSpeechBox');
@@ -2952,7 +3620,7 @@
 
   let bpBuffer = [];
   function pickHex(btnEl, code) {
-    if (btnEl.classList.contains('used') || bpBuffer.length >= 4) return;
+    if (btnEl.classList.contains('used') || bpBuffer.length >= 5) return;
     playUiSound(780, 1480, 0.07);
     btnEl.classList.add('used');
     bpBuffer.push(code);
@@ -2974,16 +3642,27 @@
     }
   }
 
+  function autoSolveBreachProtocol() {
+    playUiSound(300, 1680, 0.22, 'sawtooth');
+    resetBreachMatrix();
+    const btns = document.querySelectorAll('#bpMatrixGrid .hex-btn');
+    const targetSeq = ['1C', '55', 'BD', 'E9', '7A'];
+    targetSeq.forEach((code, i) => {
+      setTimeout(() => {
+        if (btns[i]) pickHex(btns[i], code);
+      }, i * 160);
+    });
+  }
+
   function resetBreachMatrix() {
     playUiSound(400, 900, 0.1);
     bpBuffer = [];
-    document.getElementById('bpBufferText').textContent = 'BUFFER: [ _ _ _ ]';
+    document.getElementById('bpBufferText').textContent = 'BUFFER: [ _ _ _ _ _ ]';
     document.querySelectorAll('#bpMatrixGrid .hex-btn').forEach(b => b.classList.remove('used'));
     ['daemon1', 'daemon2', 'daemon3'].forEach(id => document.getElementById(id).classList.remove('unlocked'));
-    toast('Matriz Breach Protocol reiniciada');
   }
 
-  /* Hotkeys I, M, P, R, J, H, E */
+  /* Hotkeys I, M, P, R, J, H, E, G, O */
   window.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
     const k = e.key.toLowerCase();
@@ -2994,6 +3673,8 @@
     else if (k === 'j' || k === '5') openGameScreen('diario');
     else if (k === 'h' || k === '6') openGameScreen('holocall');
     else if (k === 'e') toggleSandevistan();
+    else if (k === 'g') summonJohnnyEngram();
+    else if (k === 'o') toggleCyberpsychosisOverclock();
   });
 </script>
 </body>
