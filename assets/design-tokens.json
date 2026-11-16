@@ -1,0 +1,118 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "primitive": {
+    "color": {
+      "cyber-yellow": {
+        "300": { "$value": "#FFF352", "$type": "color" },
+        "400": { "$value": "#FCEE09", "$type": "color" },
+        "500": { "$value": "#E5D600", "$type": "color" }
+      },
+      "kiroshi-cyan": {
+        "300": { "$value": "#66F7FF", "$type": "color" },
+        "400": { "$value": "#00F0FF", "$type": "color" },
+        "500": { "$value": "#00B8C4", "$type": "color" }
+      },
+      "samurai-red": {
+        "400": { "$value": "#FF3366", "$type": "color" },
+        "500": { "$value": "#FF003C", "$type": "color" },
+        "600": { "$value": "#CC0030", "$type": "color" }
+      },
+      "daemon-green": {
+        "400": { "$value": "#00FF66", "$type": "color" },
+        "500": { "$value": "#00CC52", "$type": "color" }
+      },
+      "edgerunner-magenta": {
+        "400": { "$value": "#D946EF", "$type": "color" }
+      },
+      "afterlife-amber": {
+        "400": { "$value": "#FF9E00", "$type": "color" }
+      },
+      "night-void": {
+        "700": { "$value": "#1C1D2A", "$type": "color" },
+        "800": { "$value": "#13141F", "$type": "color" },
+        "900": { "$value": "#0B0C14", "$type": "color" },
+        "950": { "$value": "#06060A", "$type": "color" }
+      },
+      "chrome": {
+        "50": { "$value": "#F8FAFC", "$type": "color" },
+        "200": { "$value": "#E2E8F0", "$type": "color" },
+        "400": { "$value": "#94A3B8", "$type": "color" },
+        "600": { "$value": "#475569", "$type": "color" }
+      }
+    },
+    "spacing": {
+      "1": { "$value": "0.25rem", "$type": "dimension" },
+      "2": { "$value": "0.5rem", "$type": "dimension" },
+      "3": { "$value": "0.75rem", "$type": "dimension" },
+      "4": { "$value": "1rem", "$type": "dimension" },
+      "5": { "$value": "1.25rem", "$type": "dimension" },
+      "6": { "$value": "1.5rem", "$type": "dimension" },
+      "8": { "$value": "2rem", "$type": "dimension" },
+      "10": { "$value": "2.5rem", "$type": "dimension" },
+      "12": { "$value": "3rem", "$type": "dimension" }
+    },
+    "fontSize": {
+      "xs": { "$value": "0.75rem", "$type": "dimension" },
+      "sm": { "$value": "0.875rem", "$type": "dimension" },
+      "base": { "$value": "1rem", "$type": "dimension" },
+      "lg": { "$value": "1.125rem", "$type": "dimension" },
+      "xl": { "$value": "1.375rem", "$type": "dimension" },
+      "2xl": { "$value": "1.75rem", "$type": "dimension" },
+      "3xl": { "$value": "2.25rem", "$type": "dimension" }
+    },
+    "radius": {
+      "none": { "$value": "0px", "$type": "dimension" },
+      "xs": { "$value": "2px", "$type": "dimension" },
+      "sm": { "$value": "4px", "$type": "dimension" },
+      "md": { "$value": "6px", "$type": "dimension" }
+    },
+    "duration": {
+      "fast": { "$value": "140ms", "$type": "duration" },
+      "normal": { "$value": "220ms", "$type": "duration" },
+      "slow": { "$value": "360ms", "$type": "duration" }
+    }
+  },
+  "semantic": {
+    "color": {
+      "background": { "$value": "{primitive.color.night-void.950}", "$type": "color" },
+      "surface-panel": { "$value": "{primitive.color.night-void.900}", "$type": "color" },
+      "surface-card": { "$value": "{primitive.color.night-void.800}", "$type": "color" },
+      "foreground": { "$value": "{primitive.color.chrome.50}", "$type": "color" },
+      "muted-foreground": { "$value": "{primitive.color.chrome.400}", "$type": "color" },
+      "primary": { "$value": "{primitive.color.cyber-yellow.400}", "$type": "color" },
+      "primary-foreground": { "$value": "{primitive.color.night-void.950}", "$type": "color" },
+      "secondary": { "$value": "{primitive.color.kiroshi-cyan.400}", "$type": "color" },
+      "secondary-foreground": { "$value": "{primitive.color.night-void.950}", "$type": "color" },
+      "accent": { "$value": "{primitive.color.samurai-red.500}", "$type": "color" },
+      "accent-foreground": { "$value": "{primitive.color.chrome.50}", "$type": "color" },
+      "success": { "$value": "{primitive.color.daemon-green.400}", "$type": "color" },
+      "border": { "$value": "{primitive.color.kiroshi-cyan.400}", "$type": "color" },
+      "ring": { "$value": "{primitive.color.cyber-yellow.400}", "$type": "color" }
+    },
+    "spacing": {
+      "panel": { "$value": "{primitive.spacing.6}", "$type": "dimension" },
+      "card": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "grid": { "$value": "{primitive.spacing.4}", "$type": "dimension" }
+    }
+  },
+  "component": {
+    "button": {
+      "bg": { "$value": "{semantic.color.primary}", "$type": "color" },
+      "fg": { "$value": "{semantic.color.primary-foreground}", "$type": "color" },
+      "border": { "$value": "{semantic.color.secondary}", "$type": "color" },
+      "padding-x": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "padding-y": { "$value": "{primitive.spacing.3}", "$type": "dimension" }
+    },
+    "card": {
+      "bg": { "$value": "{semantic.color.surface-card}", "$type": "color" },
+      "border": { "$value": "{semantic.color.border}", "$type": "color" },
+      "padding": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "radius": { "$value": "{primitive.radius.xs}", "$type": "dimension" }
+    },
+    "badge": {
+      "bg": { "$value": "{primitive.color.night-void.700}", "$type": "color" },
+      "fg": { "$value": "{semantic.color.secondary}", "$type": "color" },
+      "border": { "$value": "{semantic.color.secondary}", "$type": "color" }
+    }
+  }
+}

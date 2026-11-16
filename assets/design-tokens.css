@@ -1,0 +1,170 @@
+/* Design Tokens - Auto-generated */
+/* Do not edit directly - modify tokens.json instead */
+
+/* === PRIMITIVES === */
+:root {
+  --primitive-color-cyber-yellow-300: #FFF352;
+  --primitive-color-cyber-yellow-400: #FCEE09;
+  --primitive-color-cyber-yellow-500: #E5D600;
+  --primitive-color-kiroshi-cyan-300: #66F7FF;
+  --primitive-color-kiroshi-cyan-400: #00F0FF;
+  --primitive-color-kiroshi-cyan-500: #00B8C4;
+  --primitive-color-samurai-red-400: #FF3366;
+  --primitive-color-samurai-red-500: #FF003C;
+  --primitive-color-samurai-red-600: #CC0030;
+  --primitive-color-daemon-green-400: #00FF66;
+  --primitive-color-daemon-green-500: #00CC52;
+  --primitive-color-edgerunner-magenta-400: #D946EF;
+  --primitive-color-afterlife-amber-400: #FF9E00;
+  --primitive-color-night-void-700: #1C1D2A;
+  --primitive-color-night-void-800: #13141F;
+  --primitive-color-night-void-900: #0B0C14;
+  --primitive-color-night-void-950: #06060A;
+  --primitive-color-chrome-50: #F8FAFC;
+  --primitive-color-chrome-200: #E2E8F0;
+  --primitive-color-chrome-400: #94A3B8;
+  --primitive-color-chrome-600: #475569;
+  --primitive-spacing-1: 0.25rem;
+  --primitive-spacing-2: 0.5rem;
+  --primitive-spacing-3: 0.75rem;
+  --primitive-spacing-4: 1rem;
+  --primitive-spacing-5: 1.25rem;
+  --primitive-spacing-6: 1.5rem;
+  --primitive-spacing-8: 2rem;
+  --primitive-spacing-10: 2.5rem;
+  --primitive-spacing-12: 3rem;
+  --primitive-fontSize-xs: 0.75rem;
+  --primitive-fontSize-sm: 0.875rem;
+  --primitive-fontSize-base: 1rem;
+  --primitive-fontSize-lg: 1.125rem;
+  --primitive-fontSize-xl: 1.375rem;
+  --primitive-fontSize-2xl: 1.75rem;
+  --primitive-fontSize-3xl: 2.25rem;
+  --primitive-radius-none: 0px;
+  --primitive-radius-xs: 2px;
+  --primitive-radius-sm: 4px;
+  --primitive-radius-md: 6px;
+  --primitive-duration-fast: 140ms;
+  --primitive-duration-normal: 220ms;
+  --primitive-duration-slow: 360ms;
+}
+
+/* === SEMANTIC === */
+:root {
+  --color-background: #06060A;
+  --color-surface-panel: #0B0C14;
+  --color-surface-card: #13141F;
+  --color-foreground: #F8FAFC;
+  --color-muted-foreground: #94A3B8;
+  --color-primary: #FCEE09;
+  --color-primary-foreground: #06060A;
+  --color-secondary: #00F0FF;
+  --color-secondary-foreground: #06060A;
+  --color-accent: #FF003C;
+  --color-accent-foreground: #F8FAFC;
+  --color-success: #00FF66;
+  --color-border: #00F0FF;
+  --color-ring: #FCEE09;
+  --spacing-panel: 1.5rem;
+  --spacing-card: 1.25rem;
+  --spacing-grid: 1rem;
+}
+
+/* === COMPONENTS === */
+:root {
+  --button-bg: #FCEE09;
+  --button-fg: #06060A;
+  --button-border: #00F0FF;
+  --button-padding-x: 1.25rem;
+  --button-padding-y: 0.75rem;
+  --card-bg: #13141F;
+  --card-border: #00F0FF;
+  --card-padding: 1.25rem;
+  --card-radius: 2px;
+  --badge-bg: #1C1D2A;
+  --badge-fg: #00F0FF;
+  --badge-border: #00F0FF;
+}
+
+/* === SHADCN/UI + CYBERPUNK 2077 FACTION OS OVERRIDES === */
+:root,
+[data-cyber-os="night_city"] {
+  --cp-bg-void: #06060A;
+  --cp-bg-panel: rgba(11, 12, 20, 0.88);
+  --cp-bg-card: rgba(19, 20, 31, 0.92);
+  --cp-primary: #FCEE09;
+  --cp-secondary: #00F0FF;
+  --cp-accent: #FF003C;
+  --cp-success: #00FF66;
+  --cp-text-main: #F8FAFC;
+  --cp-text-body: #CBD5E1;
+  --cp-text-muted: #94A3B8;
+  --cp-on-primary: #06060A;
+  --cp-border: rgba(0, 240, 255, 0.42);
+  --cp-border-strong: rgba(252, 238, 9, 0.68);
+  --cp-glow: rgba(0, 240, 255, 0.35);
+  --cp-glow-primary: rgba(252, 238, 9, 0.38);
+  --cp-cut-sm: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  --cp-cut-md: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  --cp-cut-btn: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+
+[data-cyber-os="arasaka"] {
+  --cp-bg-void: #050507;
+  --cp-bg-panel: rgba(14, 10, 13, 0.90);
+  --cp-bg-card: rgba(22, 14, 18, 0.93);
+  --cp-primary: #FF003C;
+  --cp-secondary: #F8FAFC;
+  --cp-accent: #FF9E00;
+  --cp-success: #00F0FF;
+  --cp-on-primary: #FFFFFF;
+  --cp-border: rgba(255, 0, 60, 0.48);
+  --cp-border-strong: rgba(248, 250, 252, 0.68);
+  --cp-glow: rgba(255, 0, 60, 0.38);
+  --cp-glow-primary: rgba(255, 0, 60, 0.45);
+}
+
+[data-cyber-os="netwatch"] {
+  --cp-bg-void: #030906;
+  --cp-bg-panel: rgba(7, 19, 13, 0.90);
+  --cp-bg-card: rgba(11, 28, 19, 0.92);
+  --cp-primary: #00FF66;
+  --cp-secondary: #00F0FF;
+  --cp-accent: #FCEE09;
+  --cp-success: #00FF66;
+  --cp-on-primary: #030906;
+  --cp-border: rgba(0, 255, 102, 0.44);
+  --cp-border-strong: rgba(0, 240, 255, 0.65);
+  --cp-glow: rgba(0, 255, 102, 0.36);
+  --cp-glow-primary: rgba(0, 255, 102, 0.42);
+}
+
+[data-cyber-os="edgerunners"] {
+  --cp-bg-void: #070510;
+  --cp-bg-panel: rgba(15, 11, 29, 0.89);
+  --cp-bg-card: rgba(23, 17, 42, 0.92);
+  --cp-primary: #00F0FF;
+  --cp-secondary: #FCEE09;
+  --cp-accent: #D946EF;
+  --cp-success: #00FF66;
+  --cp-on-primary: #05050A;
+  --cp-border: rgba(0, 240, 255, 0.48);
+  --cp-border-strong: rgba(217, 70, 239, 0.68);
+  --cp-glow: rgba(217, 70, 239, 0.38);
+  --cp-glow-primary: rgba(0, 240, 255, 0.44);
+}
+
+[data-cyber-os="silverhand"] {
+  --cp-bg-void: #080706;
+  --cp-bg-panel: rgba(20, 16, 14, 0.90);
+  --cp-bg-card: rgba(29, 23, 20, 0.93);
+  --cp-primary: #FF9E00;
+  --cp-secondary: #E2E8F0;
+  --cp-accent: #FF003C;
+  --cp-success: #FCEE09;
+  --cp-on-primary: #080706;
+  --cp-border: rgba(255, 158, 0, 0.46);
+  --cp-border-strong: rgba(255, 0, 60, 0.68);
+  --cp-glow: rgba(255, 158, 0, 0.36);
+  --cp-glow-primary: rgba(255, 0, 60, 0.42);
+}
