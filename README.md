@@ -1,12 +1,12 @@
-# ⚡ Miqueias Carvalho — Cyberpunk 2077 / Edgerunners / Cyberpunk RED Interactive OS v2.1
+# ⚡ MIKOSHI // ENGRAMA MIQUEIAS CARVALHO
 
 > **"Wake the f*ck up, Samurai. We have legacy code to refactor and APIs to ship."**
 
-Portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor de Software Júnior | Backend | C#/.NET | SQL Server), construído do zero como uma recriação fiel do **Menu de Pausa In-Game do Cyberpunk 2077 (Patch 2.1)** fundido com mecânicas de **Cyberpunk: Edgerunners (Studio Trigger)**, **Cyberpunk RED / 2020 (RPG de Mesa de Mike Pondsmith)** e literatura clássica Cyberpunk (*Neuromancer* de William Gibson / *DataKrash* de Rache Bartmoss).
+Dossiê neural e portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor de Software Júnior | Backend | C#/.NET | SQL Server), construído do zero como uma recriação fiel do **Menu de Pausa In-Game do Cyberpunk 2077 (Patch 2.1)** fundido com mecânicas de **Cyberpunk: Edgerunners (Studio Trigger)**, **Cyberpunk RED / 2020 (RPG de Mesa de Mike Pondsmith)** e literatura clássica Cyberpunk (*Neuromancer* de William Gibson / *DataKrash* de Rache Bartmoss).
 
-- 🌐 **Live Demo (GitHub Pages):** [https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/](https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/)
-- 📦 **Repositório:** [https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077](https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077)
-- 📄 **Repositório Base (Dados Originais Preservados):** [https://github.com/Miqueias-Henrique/miqueias-henrique.github.io](https://github.com/Miqueias-henrique/miqueias-henrique.github.io)
+- 🌐 **Live Demo (GitHub Pages):** [https://miqueias-henrique.github.io/mikoshi-engrama/](https://miqueias-henrique.github.io/mikoshi-engrama/)
+- 📦 **Repositório:** [https://github.com/Miqueias-Henrique/mikoshi-engrama](https://github.com/Miqueias-Henrique/mikoshi-engrama)
+- 📄 **Repositório Base (Dados Originais Preservados):** [https://github.com/Miqueias-Henrique/miqueias-henrique.github.io](https://github.com/Miqueias-Henrique/miqueias-henrique.github.io)
 
 ---
 
