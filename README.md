@@ -1,57 +1,33 @@
-# Portfólio — Miqueias Carvalho // Cyberpunk 2077 Edition (`KIROSHI OPTICS HUD v2.077`)
+# ⚡ Miqueias Carvalho — Cyberpunk 2077 / Edgerunners / Cyberpunk RED Interactive Menu
 
-Repositório do portfólio e currículo online de **Miqueias Carvalho** com direção de arte e interface inspiradas em **Cyberpunk 2077** (*Kiroshi Optics HUD*, *Relic Biochip* e *Cyberdeck OS*).
+> **"Wake the f*ck up, Samurai. We have legacy code to refactor and APIs to ship."**
 
-- **Titular**: Miqueias Carvalho — Desenvolvedor de Software Júnior | Backend | C#/.NET | SQL Server
-- **Localização**: Goiânia, GO (Disponível Presencial / Híbrido / Remoto)
-- **Base de Dados**: Construído do zero em um novo repositório preservando 100% dos dados reais, fotos, projetos e currículo em PDF de [`miqueias-henrique.github.io`](https://github.com/Miqueias-Henrique/miqueias-henrique.github.io).
+Portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor de Software Júnior | Backend | C#/.NET | SQL Server), construído do zero como uma recriação fiel do **Menu de Pausa In-Game do Cyberpunk 2077 (Patch 2.1)** fundido com mecânicas de **Cyberpunk: Edgerunners (Studio Trigger)**, **Cyberpunk RED / 2020 (RPG de Mesa de Mike Pondsmith)** e literatura clássica Cyberpunk (*Neuromancer* de William Gibson / *DataKrash* de Rache Bartmoss).
 
----
-
-## Arquitetura & Design System
-
-Este projeto foi construído integrando quatro frentes de engenharia de interface:
-
-1. **Three-Layer Design Tokens (`assets/design-tokens.json` & `assets/design-tokens.css`)**:
-   - **Camada Primitiva**: Paleta cromática *Night City* (`--primitive-color-cyber-yellow-400: #FCEE09`, `--primitive-color-kiroshi-cyan-400: #00F0FF`, `--primitive-color-samurai-red-500: #FF003C`, `--primitive-color-daemon-green-400: #00FF66`), escalas tipográficas (`Orbitron`, `Rajdhani`, `JetBrains Mono`) e geometria chanfrada (`clip-path` em 45°).
-   - **Camada Semântica**: Variáveis dinâmicas para troca instantânea entre **5 Sistemas Operacionais de Facções de Cyberpunk 2077**:
-     - `NIGHT CITY // V` (Amarelo Cyber `#FCEE09` & Ciano Kiroshi `#00F0FF`)
-     - `ARASAKA // CORP` (Carmesim Corporativo `#FF003C` & Platina `#F8FAFC`)
-     - `NETWATCH // BREACH` (Verde Daemon `#00FF66` & Ciano Gelo `#00F0FF`)
-     - `EDGERUNNERS // SANDEVISTAN` (Ciano `#00F0FF`, Amarelo Choque `#FCEE09` & Magenta Lucy `#D946EF`)
-     - `SAMURAI // SILVERHAND` (Âmbar Afterlife `#FF9E00`, Vermelho Rebelde `#FF003C` & Cromo `#E2E8F0`)
-   - **Camada de Componentes**: Tokens dedicados para botões chanfrados, cards de telemetria, badges e modais.
-
-2. **Componentes Acessíveis (Padrão `shadcn/ui` + WAI-ARIA)**:
-   - **Tabs (`role="tablist"`, `role="tab"`, `role="tabpanel"`)**: Navegação acessível por teclado e atalhos rápidos (`1` a `4`):
-     - `01 // Dossiê Merc`: Resumo executivo, KPIs de produção, barras de telemetria e destaques de arquitetura.
-     - `02 // Gigs & Projetos`: Experiência profissional real (**Zetti** com VB6 e SQL Server; **Carvalho Forros e Divisórias**) e **8 projetos práticos no GitHub** com filtro por categoria e **Modal Inspetor de Arquitetura**.
-     - `03 // Cyberware & Tech`: Stack técnica categorizada (`SYS.LANG`, `SYS.DATA`, `SYS.API`, `SYS.GIT`, `SYS.TOOL`), graduação em **Engenharia de Software (UNIFAN — 2027)**, idiomas, cursos e mini-game interativo **Breach Protocol**.
-     - `04 // Holocall`: Canais diretos sem fricção (WhatsApp `(62) 99842-1308`, E-mail `miqueiash989@gmail.com`, LinkedIn, GitHub e download direto do currículo em PDF).
-   - **Command Console / Quickhacks (`Ctrl+K`)**: Modal rápido para acionar WhatsApp, copiar e-mail, inspecionar repositórios, baixar PDF ou trocar o tema Cyberpunk.
-
-3. **Efeitos Visuais & Áudio Sintetizado**:
-   - **Scanner Óptico Kiroshi**: Retrato interativo com anéis de mira rotativos e transição cromática entre as 4 fotos reais a cada seção.
-   - **Canvas Interativo (`#cyberdeckCanvas`)**: Malha tática e chuva de dados *Night City* em HTML5 Canvas que reage ao cursor e respeita `prefers-reduced-motion`.
-   - **Sintetizador WebAudio (`Áudio: ON/OFF`)**: Efeitos sonoros futuristas gerados via Web Audio API sem dependências externas.
+- 🌐 **Live Demo (GitHub Pages):** [https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/](https://miqueias-henrique.github.io/portfolio-cyberpunk-2077/)
+- 📦 **Repositório:** [https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077](https://github.com/Miqueias-Henrique/portfolio-cyberpunk-2077)
+- 📄 **Repositório Base (Dados Originais Preservados):** [https://github.com/Miqueias-Henrique/miqueias-henrique.github.io](https://github.com/Miqueias-Henrique/miqueias-henrique.github.io)
 
 ---
 
-## Estrutura de Arquivos
+## 🎮 As 6 Telas do Menu + Modos Especiais
 
-- `index.html` — Aplicação principal auto-contida com HUD Cyberpunk 2077.
-- `assets/design-tokens.json` — Fonte da verdade de Design Tokens (W3C DTCG em 3 camadas).
-- `assets/design-tokens.css` — Variáveis CSS compiladas + temas das 5 facções Cyberpunk.
-- `docs/brand-guidelines.md` — Diretrizes de marca e filosofia visual.
-- `design-system/cyberpunk-2077-portfolio/MASTER.md` — Especificação do sistema de design UI/UX.
-- `Curriculo_Miqueias_Carvalho.pdf` — Versão em PDF (1 página) do currículo.
-- `favicon.svg` — Emblema vetorial Cyberpunk MC.
+| Atalho | Tela / Sistema | Referência da Franquia | Conteúdo do Portfólio |
+| :--- | :--- | :--- | :--- |
+| **`[I]`** | **Ripperdoc & Cyberware** | Clínica de *Viktor Vektor* (*Cyberpunk 2077*) + Barra de *Cyberware Capacity* & *Humanity (EMP)* | 10 implantes cibernéticos mapeando `C#/.NET`, `SQL Server`, `Java 17/21`, `Node.js/NestJS`, `VB6 Legacy`, `AVL/Hash O(1)` com Custo de Humanidade (`4d6`) e scanner biométrico |
+| **`[M]`** | **Mapa de Gigs (11 Pinos)** | Mapa tático de *Night City* com briefings de *Fixers* (*Wakako Okada*, *Rogue Amendiares*, *Padre*, *Regina Jones*, *Faraday*) | Todos os **8 repositórios reais do GitHub** + experiências na **Zetti**, **Carvalho Forros** e **UNIFAN** posicionados como contratos de mercenário |
+| **`[P]`** | **Árvore de Habilidades 2.0** | Skill Tree do *Patch 2.0* (*Intelligence*, *Technical Ability*, *Cool*, *Reflexes*, *Relic*) | Constelação neural SVG clicável destrinchando competências técnicas, QA, GitFlow e arquitetura |
+| **`[R]`** | **Ficha RPG de Mesa (`1d10`)** | *Cyberpunk 2020 / Cyberpunk RED* (*R. Talsorian Games* / *Mike Pondsmith*) | Ficha completa multiclasse (`Netrunner Nv.8 / Tech Nv.8`), 10 atributos clássicos (`INT, REF, DEX, TECH, COOL, WILL, LUCK, MOVE, BODY, EMP`), *Lifepath* e **Rolador de Dados Interativo `1d10 + STAT + SKILL vs DV`** com explosão crítica no `10` |
+| **`[J]`** | **Diário, Shards & Tarô** | *Journal*, *Data Shards* e os **Arcanos Maiores do Tarô da Misty** (*The Fool, The Magician, The Hermit, The World*) | Linha do tempo profissional, formação acadêmica na UNIFAN, certificações e citações de *William Gibson (Neuromancer)* e *Rache Bartmoss* |
+| **`[H]`** | **Holocall & Breach Protocol** | Chamada holográfica + minigame *Breach Protocol* de matriz hexadecimal (`1C 55 BD E9 7A`) | Contato direto (WhatsApp, E-mail, LinkedIn, GitHub), download do currículo PDF e minigame para decriptar 3 Daemons (`ROOT_ACCESS`, `SQL_OPTIMIZER`, `HIRE_CANDIDATE`) |
+| **`[E]`** | **Modo Sandevistan (*Apogee*)** | *Cyberpunk: Edgerunners* (*David Martinez* & *Lucy Kushinada*) | Distorção temporal visual neon-verde/ciano com **rastro fantasma cromático do cursor** no `<canvas>` e desaceleração do pulso neural |
+| **`📻`** | **98.7 Body Heat Radio FM** | Rádio in-game (*98.7 Body Heat* / *107.3 Morro Rock* / *89.3 Pacific Dreams*) | Sintetizador WebAudio Darksynth em tempo real sem dependências externas |
 
 ---
 
-## Contato
+## 🎨 Arquitetura de Design Tokens (W3C DTCG)
 
-- **WhatsApp / Telefone**: [(62) 99842-1308](https://wa.me/5562998421308)
-- **E-mail**: [miqueiash989@gmail.com](mailto:miqueiash989@gmail.com)
-- **LinkedIn**: [linkedin.com/in/miqueias-henrique-88503b218](https://www.linkedin.com/in/miqueias-henrique-88503b218/)
-- **GitHub**: [github.com/Miqueias-Henrique](https://github.com/Miqueias-Henrique)
+- [`assets/design-tokens.json`](./assets/design-tokens.json) — Tokens em 3 camadas (*Primitive → Semantic → Component*)
+- [`assets/design-tokens.css`](./assets/design-tokens.css) — Variáveis CSS compiladas automaticamente via [`generate-tokens.cjs`](./generate-tokens.cjs)
+- [`design-system/cyberpunk-2077-portfolio/MASTER.md`](./design-system/cyberpunk-2077-portfolio/MASTER.md) — Especificação completa de UI/UX
+- [`docs/brand-guidelines.md`](./docs/brand-guidelines.md) — Guia de estilo e acessibilidade

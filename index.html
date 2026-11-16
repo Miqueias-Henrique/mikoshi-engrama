@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Miqueias Carvalho // MENU DE SISTEMA CYBERPUNK 2077 (Backend C#/.NET &amp; SQL Server)</title>
-  <meta name="description" content="Portfólio interativo em formato de Menu de Jogo Cyberpunk 2077 (Inventário de Cyberware, Mapa Tático de Contratos, Árvore de Habilidades, Diário de Missões e Holocall) de Miqueias Carvalho — Desenvolvedor Backend Júnior.">
+  <title>Miqueias Carvalho // CYBERPUNK 2077 · EDGERUNNERS · CYBERPUNK RED OS</title>
+  <meta name="description" content="Portfólio interativo de Miqueias Carvalho (Desenvolvedor Backend Júnior | C#/.NET & SQL Server) construído como o Menu de Jogo de Cyberpunk 2077, Cyberpunk: Edgerunners (Sandevistan) e Ficha de RPG de Mesa Cyberpunk RED.">
   <meta name="author" content="Miqueias Carvalho">
   <meta name="theme-color" content="#FF003C">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,34 +15,29 @@
 
   <style>
     /* ==========================================================================
-       AUTHENTIC CYBERPUNK 2077 IN-GAME PAUSE / CHARACTER / MAP MENU SYSTEM
-       REDengine 4 UI Architecture (Three-Layer Design Tokens)
+       ULTIMATE CYBERPUNK UNIVERSE DESIGN SYSTEM (THREE-LAYER TOKENS)
+       1. Cyberpunk 2077 (REDengine 4 Menu, Relic Biochip, Tarot, Breach, Fixers)
+       2. Cyberpunk: Edgerunners (Militech Apogee Sandevistan, Lucy Deep Dive, Humanity)
+       3. Cyberpunk 2020 / RED Tabletop RPG (10 Stats, Lifepath, 1d10 Skill Checks)
        ========================================================================== */
     :root {
-      /* Layer 1: Primitive Tokens */
-      --cp-red-500: #FF003C;
-      --cp-red-600: #D10031;
-      --cp-red-900: #2A040D;
-      --cp-red-950: #110206;
-      --cp-yellow-400: #FCEE09;
-      --cp-cyan-400: #00F0FF;
-      --cp-gold-400: #FF9E00;
-      --cp-green-400: #00FF66;
-      --cp-purple-400: #B829FF;
-      --cp-void: #080204;
+      --cp-red: #FF003C;
+      --cp-red-dim: rgba(255, 0, 60, 0.28);
+      --cp-yellow: #FCEE09;
+      --cp-cyan: #00F0FF;
+      --cp-green: #00FF66;
+      --cp-iconic: #FF9E00;
+      --cp-purple: #D946EF;
 
-      /* Layer 2: Semantic Menu Tokens (Default: REDengine 2.0 Pause Menu) */
-      --menu-bg: #090205;
-      --menu-surface: rgba(22, 4, 10, 0.88);
-      --menu-card: rgba(34, 6, 15, 0.92);
-      --menu-card-hover: rgba(54, 10, 22, 0.96);
-      --menu-border: rgba(255, 0, 60, 0.55);
-      --menu-border-dim: rgba(255, 0, 60, 0.28);
+      --menu-bg: #080204;
+      --menu-surface: rgba(20, 4, 9, 0.90);
+      --menu-card: rgba(32, 6, 14, 0.93);
+      --menu-card-hover: rgba(52, 9, 22, 0.97);
+      --menu-border: rgba(255, 0, 60, 0.56);
+      --menu-border-dim: rgba(255, 0, 60, 0.26);
       --menu-primary: #FCEE09;
       --menu-secondary: #00F0FF;
       --menu-accent: #FF003C;
-      --menu-iconic: #FF9E00;
-      --menu-success: #00FF66;
       --menu-text: #F8FAFC;
       --menu-text-sub: #E2E8F0;
       --menu-text-muted: #94A3B8;
@@ -51,35 +46,36 @@
       --font-sans: 'Rajdhani', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
-      /* Angled Cyberpunk Clip-Paths */
       --clip-panel: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
       --clip-card: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
       --clip-btn: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
-      --clip-tab: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+      --clip-tab: polygon(9px 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
     }
 
-    [data-cyber-os="netwatch"] {
-      --menu-bg: #020806;
-      --menu-surface: rgba(5, 22, 16, 0.90);
-      --menu-card: rgba(8, 34, 24, 0.93);
-      --menu-card-hover: rgba(14, 52, 36, 0.96);
-      --menu-border: rgba(0, 255, 102, 0.55);
-      --menu-border-dim: rgba(0, 240, 255, 0.28);
+    /* Edgerunners Sandevistan Theme Override */
+    body.sandevistan-active,
+    [data-cyber-os="edgerunners"] {
+      --menu-bg: #030906;
+      --menu-surface: rgba(6, 22, 16, 0.91);
+      --menu-card: rgba(10, 34, 24, 0.94);
+      --menu-card-hover: rgba(16, 52, 36, 0.97);
+      --menu-border: rgba(0, 255, 102, 0.62);
+      --menu-border-dim: rgba(0, 240, 255, 0.30);
       --menu-primary: #00FF66;
       --menu-secondary: #00F0FF;
       --menu-accent: #FCEE09;
     }
 
-    [data-cyber-os="edgerunners"] {
-      --menu-bg: #05030D;
-      --menu-surface: rgba(14, 9, 32, 0.90);
-      --menu-card: rgba(22, 14, 48, 0.93);
-      --menu-card-hover: rgba(34, 22, 72, 0.96);
-      --menu-border: rgba(0, 240, 255, 0.58);
-      --menu-border-dim: rgba(217, 70, 239, 0.30);
-      --menu-primary: #FCEE09;
-      --menu-secondary: #00F0FF;
-      --menu-accent: #D946EF;
+    [data-cyber-os="blackwall"] {
+      --menu-bg: #050103;
+      --menu-surface: rgba(18, 2, 6, 0.93);
+      --menu-card: rgba(28, 3, 9, 0.95);
+      --menu-card-hover: rgba(45, 4, 14, 0.98);
+      --menu-border: rgba(255, 0, 60, 0.78);
+      --menu-border-dim: rgba(255, 0, 60, 0.38);
+      --menu-primary: #FF003C;
+      --menu-secondary: #FCEE09;
+      --menu-accent: #00F0FF;
     }
 
     * {
@@ -92,9 +88,9 @@
       min-height: 100vh;
       background-color: var(--menu-bg);
       background-image:
-        radial-gradient(circle at 50% 0%, rgba(255, 0, 60, 0.22), transparent 55%),
-        radial-gradient(circle at 15% 85%, rgba(0, 240, 255, 0.10), transparent 45%),
-        radial-gradient(circle at 85% 80%, rgba(252, 238, 9, 0.09), transparent 45%);
+        radial-gradient(circle at 50% 0%, rgba(255, 0, 60, 0.24), transparent 55%),
+        radial-gradient(circle at 12% 88%, rgba(0, 240, 255, 0.12), transparent 45%),
+        radial-gradient(circle at 88% 82%, rgba(252, 238, 9, 0.10), transparent 45%);
       color: var(--menu-text);
       font-family: var(--font-sans);
       font-size: 16px;
@@ -103,7 +99,7 @@
       color-scheme: dark;
     }
 
-    /* Authentic REDengine 4 Perspective Wireframe Grid & Scanline Overlay */
+    /* REDengine 4 Perspective Wireframe Grid */
     body::before {
       content: "";
       position: fixed;
@@ -111,12 +107,13 @@
       pointer-events: none;
       z-index: 0;
       background-image:
-        linear-gradient(rgba(255, 0, 60, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 0, 60, 0.06) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse at center, black 35%, transparent 90%);
+        linear-gradient(rgba(255, 0, 60, 0.065) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 60, 0.065) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 92%);
     }
 
+    /* CRT Scanlines */
     body::after {
       content: "";
       position: fixed;
@@ -133,49 +130,69 @@
       opacity: 0.55;
     }
 
+    #sandevistanCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
     :focus-visible {
       outline: 2px solid var(--menu-primary);
       outline-offset: 2px;
     }
 
+    /* Relic Malfunction Glitch Animation */
+    @keyframes relicGlitch {
+      0% { transform: translate(0, 0) skewX(0deg); filter: none; }
+      20% { transform: translate(-4px, 1px) skewX(4deg); filter: hue-rotate(90deg) contrast(1.4); }
+      40% { transform: translate(4px, -2px) skewX(-4deg); filter: hue-rotate(-90deg); }
+      60% { transform: translate(-2px, 0) skewX(2deg); }
+      100% { transform: translate(0, 0) skewX(0deg); filter: none; }
+    }
+    body.relic-malfunction main.cp-game-stage {
+      animation: relicGlitch 0.42s ease;
+    }
+
     /* ==========================================================================
-       TOP GAME MENU HEADER (LEVEL / STREET CRED / TOP NAVIGATION BAR)
+       TOP GAME MENU HEADER (LEVEL / STREET CRED / RADIO FM / SANDEVISTAN / TABS)
        ========================================================================== */
     header.cp-top-hud {
       position: sticky;
       top: 0;
       z-index: 300;
-      background: linear-gradient(180deg, rgba(12, 2, 6, 0.96) 0%, rgba(18, 3, 9, 0.90) 100%);
+      background: linear-gradient(180deg, rgba(10, 2, 5, 0.97) 0%, rgba(18, 3, 9, 0.92) 100%);
       border-bottom: 2px solid var(--menu-accent);
-      box-shadow: 0 6px 32px rgba(255, 0, 60, 0.22);
-      backdrop-filter: blur(12px);
-      padding: 10px 24px;
+      box-shadow: 0 6px 32px rgba(255, 0, 60, 0.24);
+      backdrop-filter: blur(14px);
+      padding: 8px 20px;
     }
 
     .cp-top-row {
-      max-width: 1480px;
+      max-width: 1520px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    /* Player Level & Street Cred Bars (Left of Top Menu) */
     .cp-player-stats {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 14px;
     }
     .cp-stat-badge {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .cp-stat-num {
       font-family: var(--font-display);
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       color: var(--menu-primary);
       line-height: 1;
@@ -188,26 +205,26 @@
     .cp-stat-meta {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .cp-stat-meta span {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--menu-text-sub);
     }
     .cp-xp-bar {
-      width: 72px;
+      width: 62px;
       height: 4px;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.14);
       overflow: hidden;
     }
     .cp-xp-bar i {
       display: block;
       height: 100%;
-      width: 92%;
+      width: 94%;
       background: var(--menu-primary);
     }
     .cp-xp-bar.cred i {
@@ -215,41 +232,40 @@
       background: var(--menu-secondary);
     }
 
-    /* Center In-Game Menu Navigation Tabs */
     nav.cp-menu-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
     .cp-menu-tab {
       position: relative;
-      background: rgba(34, 6, 15, 0.78);
+      background: rgba(34, 6, 15, 0.80);
       color: var(--menu-text-sub);
       border: 1px solid var(--menu-border-dim);
-      padding: 9px 18px;
+      padding: 8px 13px;
       font-family: var(--font-display);
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 800;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
       clip-path: var(--clip-tab);
       transition: all 0.16s ease;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .cp-menu-tab .hotkey {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       padding: 1px 5px;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid var(--menu-border);
       color: var(--menu-secondary);
     }
     .cp-menu-tab:hover {
-      background: rgba(255, 0, 60, 0.24);
+      background: rgba(255, 0, 60, 0.25);
       color: #fff;
       border-color: var(--menu-accent);
       transform: translateY(-1px);
@@ -258,7 +274,7 @@
       background: var(--menu-primary);
       color: #080204;
       border-color: var(--menu-primary);
-      box-shadow: 0 0 22px rgba(252, 238, 9, 0.5);
+      box-shadow: 0 0 20px rgba(252, 238, 9, 0.5);
     }
     .cp-menu-tab.active .hotkey {
       background: #080204;
@@ -266,49 +282,51 @@
       border-color: #080204;
     }
 
-    /* Right Currency / RAM / Audio Controls */
     .cp-hud-right {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-    }
-    .cp-eddies {
-      color: var(--menu-primary);
-      font-weight: 700;
-      padding: 5px 10px;
-      background: rgba(252, 238, 9, 0.08);
-      border: 1px solid rgba(252, 238, 9, 0.35);
+      gap: 6px;
+      flex-wrap: wrap;
     }
     .cp-top-btn {
       background: var(--menu-card);
       color: var(--menu-secondary);
       border: 1px solid var(--menu-border);
-      padding: 6px 11px;
+      padding: 6px 10px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
       cursor: pointer;
       clip-path: var(--clip-btn);
       transition: all 0.15s ease;
     }
-    .cp-top-btn:hover {
+    .cp-top-btn:hover,
+    .cp-top-btn.active {
       background: var(--menu-primary);
       color: #080204;
       border-color: var(--menu-primary);
+      box-shadow: 0 0 14px rgba(252, 238, 9, 0.45);
+    }
+    .cp-top-btn.sandevistan-btn {
+      border-color: var(--cp-green);
+      color: var(--cp-green);
+    }
+    .cp-top-btn.sandevistan-btn.active {
+      background: var(--cp-green);
+      color: #020804;
+      box-shadow: 0 0 18px var(--cp-green);
     }
 
     /* ==========================================================================
-       MAIN STAGE CONTAINER
+       MAIN STAGE & SUB-BANNERS
        ========================================================================== */
     main.cp-game-stage {
       position: relative;
-      z-index: 2;
-      max-width: 1480px;
+      z-index: 3;
+      max-width: 1520px;
       margin: 0 auto;
-      padding: 20px 24px 36px;
+      padding: 18px 22px 38px;
     }
 
     .cp-screen {
@@ -319,7 +337,7 @@
       display: block;
     }
     @keyframes screenGlitchIn {
-      0% { opacity: 0; transform: scale(0.99) translateY(6px); filter: hue-rotate(45deg); }
+      0% { opacity: 0; transform: scale(0.992) translateY(5px); filter: hue-rotate(40deg); }
       100% { opacity: 1; transform: scale(1) translateY(0); filter: none; }
     }
 
@@ -329,14 +347,14 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--menu-border);
     }
     .screen-header-strip h1,
     .screen-header-strip h2 {
       font-family: var(--font-display);
-      font-size: clamp(20px, 2.4vw, 28px);
+      font-size: clamp(19px, 2.2vw, 26px);
       font-weight: 900;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -345,38 +363,36 @@
     }
     .screen-header-strip p {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--menu-secondary);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     /* ==========================================================================
-       SCREEN 1: INVENTÁRIO & CYBERWARE (RIPPERDOC ANATOMICAL LOADOUT)
+       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE & HUMANITY
        ========================================================================== */
     .cyberware-layout {
       display: grid;
       grid-template-columns: 330px minmax(280px, 370px) minmax(340px, 1fr);
-      gap: 20px;
+      gap: 18px;
       align-items: stretch;
     }
-
     .cw-slots-col {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .cw-col-label {
       font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10.5px;
+      font-weight: 800;
       letter-spacing: 0.14em;
       color: var(--menu-secondary);
       text-transform: uppercase;
       border-left: 3px solid var(--menu-primary);
       padding-left: 8px;
     }
-
     .cw-slot-card {
       position: relative;
       display: flex;
@@ -386,14 +402,14 @@
       text-align: left;
       background: var(--menu-card);
       border: 1px solid var(--menu-border);
-      border-left: 5px solid var(--menu-iconic);
-      padding: 12px 14px;
+      border-left: 5px solid var(--cp-iconic);
+      padding: 11px 13px;
       cursor: pointer;
       clip-path: var(--clip-card);
       transition: all 0.16s ease;
     }
-    .cw-slot-card.tier-epic {
-      border-left-color: var(--cp-purple-400);
+    .cw-slot-card.tier-edgerunner {
+      border-left-color: var(--cp-green);
     }
     .cw-slot-card:hover,
     .cw-slot-card.active {
@@ -403,16 +419,16 @@
       transform: translateX(4px);
     }
     .cw-slot-icon {
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       flex-shrink: 0;
-      background: rgba(8, 2, 4, 0.9);
-      border: 1px solid var(--menu-iconic);
+      background: rgba(8, 2, 4, 0.92);
+      border: 1px solid var(--cp-iconic);
       display: grid;
       place-items: center;
       color: var(--menu-primary);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
     }
     .cw-slot-info {
@@ -422,57 +438,73 @@
     .cw-slot-part {
       display: block;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       color: var(--menu-secondary);
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .cw-slot-name {
       display: block;
       font-family: var(--font-display);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--menu-text);
-      letter-spacing: 0.04em;
       margin: 2px 0;
     }
     .cw-slot-sub {
       display: block;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--menu-primary);
     }
 
-    /* Center Character / Ripperdoc Biomonitor Stage */
+    /* Center Character Stage */
     .cw-body-stage {
       background: var(--menu-surface);
       border: 1px solid var(--menu-border);
       clip-path: var(--clip-panel);
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       position: relative;
-      overflow: hidden;
       box-shadow: inset 0 0 40px rgba(255, 0, 60, 0.16);
     }
-    .cw-capacity-meter {
+    .cw-meters-top {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px solid var(--menu-border-dim);
+      padding-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+    }
+    .cw-meter-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--menu-primary);
-      border-bottom: 1px solid var(--menu-border-dim);
-      padding-bottom: 8px;
     }
+    .humanity-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--menu-border-dim);
+      overflow: hidden;
+    }
+    .humanity-bar span {
+      display: block;
+      height: 100%;
+      width: 88%;
+      background: linear-gradient(90deg, var(--cp-green), var(--menu-primary), var(--cp-iconic));
+    }
+
     .cw-avatar-rig {
       position: relative;
-      width: 240px;
-      height: 280px;
-      margin: 10px auto;
+      width: 236px;
+      height: 266px;
+      margin: 6px auto;
       display: grid;
       place-items: center;
     }
@@ -482,12 +514,11 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: 0.85;
     }
     .cw-portrait-hex {
       position: relative;
-      width: 138px;
-      height: 138px;
+      width: 136px;
+      height: 136px;
       clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
       border: 2px solid var(--menu-primary);
       overflow: hidden;
@@ -504,7 +535,6 @@
     }
     .cw-portrait-hex:hover img {
       transform: scale(1.06);
-      filter: contrast(1.15);
     }
     .cw-hotspot {
       position: absolute;
@@ -518,109 +548,113 @@
       cursor: pointer;
       transition: transform 0.16s ease;
     }
-    .cw-hotspot:hover,
-    .cw-hotspot.active {
+    .cw-hotspot:hover {
       transform: scale(1.45);
       background: var(--menu-secondary);
-      box-shadow: 0 0 16px var(--menu-secondary);
     }
 
     .cw-char-footer {
       width: 100%;
       text-align: center;
       border-top: 1px solid var(--menu-border-dim);
-      padding-top: 10px;
+      padding-top: 8px;
     }
     .cw-char-footer h2 {
       font-family: var(--font-display);
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
       letter-spacing: 0.06em;
-      color: var(--menu-text);
       text-transform: uppercase;
     }
     .cw-char-footer p {
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--menu-primary);
-      margin-top: 2px;
     }
     .cw-quick-ctas {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
-    /* Right RPG Item Tooltip / Inspector Panel */
+    /* Right RPG Item Tooltip */
     .cw-inspector-card {
       background: var(--menu-surface);
-      border: 2px solid var(--menu-iconic);
+      border: 2px solid var(--cp-iconic);
       clip-path: var(--clip-panel);
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.78), inset 0 0 28px rgba(255, 158, 0, 0.10);
+      gap: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 0 28px rgba(255, 158, 0, 0.10);
     }
     .cw-rarity-banner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: linear-gradient(90deg, rgba(255, 158, 0, 0.25), rgba(255, 0, 60, 0.18));
-      border-left: 4px solid var(--menu-iconic);
+      border-left: 4px solid var(--cp-iconic);
       padding: 6px 12px;
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--menu-iconic);
-      letter-spacing: 0.12em;
+      color: var(--cp-iconic);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
     .cw-item-title {
       font-family: var(--font-display);
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       color: var(--menu-primary);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
     }
     .cw-item-category {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--menu-secondary);
-      margin-top: 3px;
+      margin-top: 2px;
+    }
+    .cw-lore-quote {
+      background: rgba(255, 0, 60, 0.09);
+      border-left: 3px solid var(--menu-accent);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-style: italic;
+      color: var(--menu-text-sub);
     }
     .cw-stat-bars {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      background: rgba(8, 2, 4, 0.75);
+      background: rgba(8, 2, 4, 0.78);
       border: 1px solid var(--menu-border-dim);
-      padding: 10px;
+      padding: 9px;
       font-family: var(--font-mono);
     }
     .cw-stat-box span {
       display: block;
-      font-size: 10px;
+      font-size: 9.5px;
       color: var(--menu-text-muted);
       text-transform: uppercase;
     }
     .cw-stat-box strong {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--menu-secondary);
     }
     .cw-effects-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
     .cw-effects-list li {
       position: relative;
-      padding-left: 18px;
-      font-size: 15px;
+      padding-left: 16px;
+      font-size: 14.5px;
       color: var(--menu-text-sub);
     }
     .cw-effects-list li::before {
@@ -628,7 +662,7 @@
       position: absolute;
       left: 0;
       color: var(--menu-primary);
-      font-size: 11px;
+      font-size: 10px;
       top: 3px;
     }
     .cw-mod-pills {
@@ -640,20 +674,20 @@
     }
     .cw-mod-pills span {
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      padding: 3px 9px;
+      font-size: 11px;
+      padding: 3px 8px;
       background: rgba(8, 2, 4, 0.9);
       border: 1px solid var(--menu-secondary);
       color: var(--menu-secondary);
     }
 
     /* ==========================================================================
-       SCREEN 2: MAPA DE NIGHT CITY / GOIÂNIA (INTERACTIVE GIG & FIXER MAP)
+       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA
        ========================================================================== */
     .map-layout {
       display: grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.85fr);
-      gap: 20px;
+      gap: 18px;
       align-items: stretch;
     }
     .map-viewport-wrap {
@@ -661,34 +695,31 @@
       border: 2px solid var(--menu-accent);
       clip-path: var(--clip-panel);
       position: relative;
-      min-height: 540px;
+      min-height: 530px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       box-shadow: inset 0 0 50px rgba(255, 0, 60, 0.22);
     }
     .map-filter-bar {
-      position: relative;
-      z-index: 5;
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      padding: 12px 14px;
-      background: rgba(12, 2, 6, 0.92);
+      padding: 10px 14px;
+      background: rgba(12, 2, 6, 0.94);
       border-bottom: 1px solid var(--menu-border);
     }
     .map-filter-btn {
       background: var(--menu-card);
       color: var(--menu-text-sub);
       border: 1px solid var(--menu-border-dim);
-      padding: 6px 12px;
+      padding: 6px 11px;
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       cursor: pointer;
       clip-path: var(--clip-btn);
-      transition: all 0.15s ease;
     }
     .map-filter-btn.active,
     .map-filter-btn:hover {
@@ -696,24 +727,20 @@
       color: #080204;
       border-color: var(--menu-primary);
     }
-
     .map-canvas-stage {
       position: relative;
       flex: 1;
       width: 100%;
-      min-height: 440px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255, 0, 60, 0.12), rgba(5, 1, 3, 0.98) 78%);
+      min-height: 430px;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 0, 60, 0.14), rgba(5, 1, 3, 0.98) 78%);
       overflow: hidden;
     }
     .map-vector-svg {
       width: 100%;
       height: 100%;
-      min-height: 440px;
+      min-height: 430px;
       display: block;
     }
-
-    /* Interactive Map Pin Markers */
     .map-pin {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -721,13 +748,10 @@
       border: 2px solid var(--menu-primary);
       color: var(--menu-primary);
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       padding: 4px 8px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
       white-space: nowrap;
       box-shadow: 0 0 14px rgba(252, 238, 9, 0.45);
       transition: all 0.16s ease;
@@ -744,12 +768,12 @@
       box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
     }
     .map-pin.pin-edu {
-      border-color: var(--menu-iconic);
-      color: var(--menu-iconic);
+      border-color: var(--cp-iconic);
+      color: var(--cp-iconic);
     }
     .map-pin:hover,
     .map-pin.active {
-      transform: translate(-50%, -50%) scale(1.16);
+      transform: translate(-50%, -50%) scale(1.15);
       z-index: 10;
       background: var(--menu-accent);
       color: #fff;
@@ -759,7 +783,6 @@
     .map-pin.hidden-pin {
       display: none !important;
     }
-
     .map-coords-footer {
       padding: 8px 14px;
       background: rgba(12, 2, 6, 0.92);
@@ -770,18 +793,15 @@
       font-size: 11px;
       color: var(--menu-secondary);
     }
-
-    /* Right Fixer Gig Briefing Panel */
     .map-briefing-card {
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
       clip-path: var(--clip-panel);
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+      gap: 12px;
     }
     .gig-threat-bar {
       display: flex;
@@ -791,7 +811,7 @@
       border-left: 4px solid var(--menu-primary);
       padding: 6px 12px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       color: var(--menu-primary);
       text-transform: uppercase;
@@ -807,18 +827,18 @@
     }
 
     /* ==========================================================================
-       SCREEN 3: ÁRVORE DE HABILIDADES (PERK TREE 2.0 & 5 CORE ATTRIBUTES)
+       SCREEN 3: ÁRVORE DE HABILIDADES (PERK TREE 2.0)
        ========================================================================== */
     .attributes-top-bar {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .attr-pillar-btn {
       background: var(--menu-card);
       border: 1px solid var(--menu-border);
-      padding: 12px;
+      padding: 11px;
       text-align: left;
       cursor: pointer;
       clip-path: var(--clip-card);
@@ -839,8 +859,7 @@
       font-weight: 900;
     }
     .attr-pillar-top span {
-      font-size: 11px;
-      letter-spacing: 0.08em;
+      font-size: 10.5px;
       color: var(--menu-secondary);
     }
     .attr-pillar-btn.active .attr-pillar-top span,
@@ -850,44 +869,42 @@
       color: #080204;
     }
     .attr-pillar-top strong {
-      font-size: 22px;
+      font-size: 21px;
     }
     .attr-pillar-name {
       display: block;
       font-family: var(--font-display);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       text-transform: uppercase;
-      margin-top: 4px;
+      margin-top: 3px;
     }
     .attr-pillar-sub {
       display: block;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--menu-text-muted);
-      margin-top: 2px;
     }
-
     .perk-tree-layout {
       display: grid;
       grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.85fr);
-      gap: 20px;
+      gap: 18px;
       align-items: stretch;
     }
     .perk-canvas-box {
       background: var(--menu-surface);
       border: 1px solid var(--menu-border);
       clip-path: var(--clip-panel);
-      padding: 20px;
+      padding: 18px;
       position: relative;
-      min-height: 430px;
+      min-height: 410px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .perk-nodes-stage {
       position: relative;
-      height: 350px;
+      height: 330px;
       width: 100%;
     }
     .perk-lines-svg {
@@ -912,7 +929,7 @@
       justify-content: center;
       cursor: pointer;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
       text-align: center;
       padding: 4px;
@@ -928,9 +945,9 @@
     .perk-node.master-node {
       width: 82px;
       height: 82px;
-      border-color: var(--menu-iconic);
+      border-color: var(--cp-iconic);
       background: rgba(255, 158, 0, 0.22);
-      color: var(--menu-iconic);
+      color: var(--cp-iconic);
     }
     .perk-node.active,
     .perk-node:hover {
@@ -941,27 +958,145 @@
     }
 
     /* ==========================================================================
-       SCREEN 4: DIÁRIO DE MISSÕES (CYBERPUNK QUEST LOG & SHARDS)
+       SCREEN 4 (NEW!): FICHA DE RPG DE MESA // CYBERPUNK RED & 2020
+       (R. Talsorian Games Character Sheet + 1d10 Skill Roller + Lifepath)
+       ========================================================================== */
+    .trpg-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(350px, 0.85fr);
+      gap: 18px;
+    }
+    .trpg-sheet-card {
+      background: var(--menu-surface);
+      border: 2px solid var(--menu-accent);
+      clip-path: var(--clip-panel);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .trpg-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .trpg-stat-cell {
+      background: rgba(8, 2, 4, 0.88);
+      border: 1px solid var(--menu-border);
+      padding: 10px 8px;
+      text-align: center;
+      clip-path: var(--clip-btn);
+    }
+    .trpg-stat-cell b {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 11px;
+      color: var(--menu-secondary);
+      letter-spacing: 0.08em;
+    }
+    .trpg-stat-cell strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--menu-primary);
+      margin: 2px 0;
+    }
+    .trpg-stat-cell span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--menu-text-muted);
+    }
+    .lifepath-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .lifepath-box {
+      background: var(--menu-card);
+      border-left: 3px solid var(--menu-primary);
+      padding: 10px 12px;
+    }
+    .lifepath-box small {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--menu-secondary);
+      text-transform: uppercase;
+    }
+    .lifepath-box strong {
+      font-size: 14.5px;
+      color: var(--menu-text);
+    }
+
+    /* 1d10 Dice Roller Console */
+    .dice-roller-card {
+      background: var(--menu-surface);
+      border: 2px solid var(--menu-primary);
+      clip-path: var(--clip-panel);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .dice-display-stage {
+      background: #050103;
+      border: 1px solid var(--menu-border);
+      padding: 16px;
+      text-align: center;
+      position: relative;
+    }
+    .d10-big-number {
+      font-family: var(--font-display);
+      font-size: 46px;
+      font-weight: 900;
+      color: var(--menu-primary);
+      text-shadow: 0 0 22px rgba(252, 238, 9, 0.55);
+      line-height: 1.05;
+    }
+    .d10-formula {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--menu-secondary);
+      margin-top: 6px;
+    }
+    .d10-outcome {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--cp-green);
+      margin-top: 6px;
+    }
+    .skill-check-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       SCREEN 5: DIÁRIO DE MISSÕES & CARTAS DE TARÔ (MISTY'S ESOTERICA)
        ========================================================================== */
     .journal-layout {
       display: grid;
-      grid-template-columns: 380px minmax(0, 1fr);
-      gap: 20px;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
     }
     .quest-list-col {
       background: var(--menu-surface);
       border: 1px solid var(--menu-border);
       clip-path: var(--clip-panel);
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       max-height: 560px;
       overflow-y: auto;
     }
     .quest-cat-header {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       color: var(--menu-secondary);
       letter-spacing: 0.12em;
@@ -974,7 +1109,7 @@
       background: var(--menu-card);
       border: 1px solid var(--menu-border-dim);
       border-left: 4px solid var(--menu-primary);
-      padding: 11px 12px;
+      padding: 10px 12px;
       cursor: pointer;
       clip-path: var(--clip-btn);
       transition: all 0.15s ease;
@@ -988,14 +1123,13 @@
     .quest-row-btn strong {
       display: block;
       font-family: var(--font-display);
-      font-size: 13px;
-      letter-spacing: 0.04em;
+      font-size: 12.5px;
       text-transform: uppercase;
     }
     .quest-row-btn span {
       display: block;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--menu-secondary);
       margin-top: 2px;
     }
@@ -1003,12 +1137,11 @@
     .quest-row-btn:hover span {
       color: #080204;
     }
-
     .quest-detail-col {
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
       clip-path: var(--clip-panel);
-      padding: 24px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1017,8 +1150,8 @@
     .quest-objectives {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      background: rgba(8, 2, 4, 0.78);
+      gap: 9px;
+      background: rgba(8, 2, 4, 0.8);
       border: 1px solid var(--menu-border-dim);
       padding: 14px;
     }
@@ -1026,7 +1159,7 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--menu-text-sub);
     }
     .quest-obj-box {
@@ -1037,22 +1170,60 @@
       flex-shrink: 0;
     }
 
+    /* Tarot Cards Strip */
+    .tarot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .tarot-card {
+      background: #070205;
+      border: 1px solid var(--cp-iconic);
+      padding: 10px;
+      text-align: center;
+      clip-path: var(--clip-card);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .tarot-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--menu-primary);
+      box-shadow: 0 0 18px rgba(252, 238, 9, 0.35);
+    }
+    .tarot-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cp-iconic);
+    }
+    .tarot-name {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--menu-primary);
+      margin: 4px 0;
+    }
+    .tarot-meaning {
+      font-size: 11.5px;
+      color: var(--menu-text-sub);
+    }
+
     /* ==========================================================================
-       SCREEN 5: HOLOCALL & BREACH PROTOCOL (DIALOGUE CHOICES + HEX HACKING)
+       SCREEN 6: HOLOCALL, BREACH PROTOCOL & NIGHT CITY RADIO
        ========================================================================== */
     .holocall-layout {
       display: grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
-      gap: 20px;
+      gap: 18px;
     }
     .holo-panel {
       background: var(--menu-surface);
       border: 2px solid var(--menu-secondary);
       clip-path: var(--clip-panel);
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
     .holo-caller-header {
       display: flex;
@@ -1060,42 +1231,42 @@
       gap: 16px;
       background: rgba(0, 240, 255, 0.08);
       border: 1px solid rgba(0, 240, 255, 0.35);
-      padding: 14px;
+      padding: 12px;
       clip-path: var(--clip-card);
     }
     .holo-caller-avatar {
-      width: 78px;
-      height: 78px;
+      width: 74px;
+      height: 74px;
       border: 2px solid var(--menu-secondary);
       object-fit: cover;
       flex-shrink: 0;
     }
     .holo-Dialogue-speech {
-      background: rgba(8, 2, 4, 0.85);
+      background: rgba(8, 2, 4, 0.88);
       border-left: 4px solid var(--menu-primary);
-      padding: 14px 16px;
-      font-size: 15.5px;
+      padding: 12px 15px;
+      font-size: 15px;
       color: var(--menu-text);
     }
     .dialogue-choices {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
     .dialogue-choice-btn {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       text-align: left;
       background: rgba(252, 238, 9, 0.12);
       border: 1px solid var(--menu-primary);
       border-left: 6px solid var(--menu-primary);
       color: var(--menu-primary);
-      padding: 12px 16px;
+      padding: 11px 14px;
       font-family: var(--font-sans);
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
@@ -1110,7 +1281,7 @@
     }
     .dialogue-choice-btn span.d-tag {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       padding: 2px 7px;
       background: rgba(8, 2, 4, 0.85);
       color: var(--menu-secondary);
@@ -1118,12 +1289,11 @@
       white-space: nowrap;
     }
 
-    /* Breach Protocol 5x5 Matrix */
     .breach-panel {
       background: #060906;
-      border: 2px solid var(--menu-success);
+      border: 2px solid var(--cp-green);
       clip-path: var(--clip-panel);
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1137,11 +1307,11 @@
     .hex-btn {
       background: rgba(0, 255, 102, 0.08);
       border: 1px solid rgba(0, 255, 102, 0.35);
-      color: var(--menu-success);
+      color: var(--cp-green);
       font-family: var(--font-mono);
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
-      padding: 10px 0;
+      padding: 9px 0;
       cursor: pointer;
       transition: all 0.14s ease;
     }
@@ -1155,26 +1325,25 @@
     .daemon-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
     }
     .daemon-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 10px;
+      padding: 7px 10px;
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid rgba(0, 255, 102, 0.3);
       color: var(--menu-text-sub);
     }
     .daemon-row.unlocked {
       background: rgba(0, 255, 102, 0.22);
-      border-color: var(--menu-success);
-      color: var(--menu-success);
+      border-color: var(--cp-green);
+      color: var(--cp-green);
       font-weight: 800;
     }
 
-    /* Shared Action Buttons */
     .cp-action-btn {
       display: inline-flex;
       align-items: center;
@@ -1183,9 +1352,9 @@
       background: var(--menu-primary);
       color: #080204;
       border: 1px solid var(--menu-primary);
-      padding: 10px 16px;
+      padding: 10px 15px;
       font-family: var(--font-display);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -1212,9 +1381,9 @@
       background: var(--menu-primary);
       color: #080204;
       font-family: var(--font-mono);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 12px 20px;
+      padding: 12px 18px;
       clip-path: var(--clip-btn);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 22px var(--menu-primary);
       transform: translateY(130%);
@@ -1227,10 +1396,11 @@
       opacity: 1;
     }
 
-    @media (max-width: 1120px) {
+    @media (max-width: 1150px) {
       .cyberware-layout,
       .map-layout,
       .perk-tree-layout,
+      .trpg-layout,
       .journal-layout,
       .holocall-layout {
         grid-template-columns: 1fr;
@@ -1238,13 +1408,30 @@
       .attributes-top-bar {
         grid-template-columns: repeat(2, 1fr);
       }
+      .trpg-stats-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .tarot-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 680px) {
+      .trpg-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .lifepath-grid,
+      .tarot-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
+<canvas id="sandevistanCanvas" aria-hidden="true"></canvas>
+
 <!-- ==========================================================================
-     CYBERPUNK 2077 IN-GAME PAUSE MENU TOP BAR
+     CYBERPUNK 2077 / EDGERUNNERS / CYBERPUNK RED TOP MENU BAR
      ========================================================================== -->
 <header class="cp-top-hud" role="banner">
   <div class="cp-top-row">
@@ -1256,27 +1443,30 @@
           <div class="cp-xp-bar"><i></i></div>
         </div>
       </div>
-      <div class="cp-stat-badge" title="Reputação em Produção Real (Zetti + GitHub)">
+      <div class="cp-stat-badge" title="Street Cred em Produção Real (Zetti + GitHub)">
         <span class="cp-stat-num cred">50</span>
         <div class="cp-stat-meta">
-          <span>CRED. DE RUA</span>
+          <span>STREET CRED</span>
           <div class="cp-xp-bar cred"><i></i></div>
         </div>
       </div>
     </div>
 
-    <nav class="cp-menu-nav" role="tablist" aria-label="Menu Principal Cyberpunk 2077">
+    <nav class="cp-menu-nav" role="tablist" aria-label="Menu de Sistema Cyberpunk 2077">
       <button type="button" role="tab" aria-selected="true" data-screen="cyberware" class="cp-menu-tab active" onclick="openGameScreen('cyberware', this)">
-        <span class="hotkey">I</span> INVENTÁRIO &amp; CYBERWARE
+        <span class="hotkey">I</span> RIPPERDOC &amp; CYBERWARE
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="mapa" class="cp-menu-tab" onclick="openGameScreen('mapa', this)">
-        <span class="hotkey">M</span> MAPA DE CONTRATOS [8]
+        <span class="hotkey">M</span> MAPA DE GIGS [11]
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="perks" class="cp-menu-tab" onclick="openGameScreen('perks', this)">
-        <span class="hotkey">P</span> ÁRVORE DE HABILIDADES
+        <span class="hotkey">P</span> HABILIDADES 2.0
+      </button>
+      <button type="button" role="tab" aria-selected="false" data-screen="trpg" class="cp-menu-tab" onclick="openGameScreen('trpg', this)">
+        <span class="hotkey">R</span> FICHA RPG DE MESA [1d10]
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="diario" class="cp-menu-tab" onclick="openGameScreen('diario', this)">
-        <span class="hotkey">J</span> DIÁRIO &amp; CURRÍCULO
+        <span class="hotkey">J</span> DIÁRIO &amp; TARÔ
       </button>
       <button type="button" role="tab" aria-selected="false" data-screen="holocall" class="cp-menu-tab" onclick="openGameScreen('holocall', this)">
         <span class="hotkey">H</span> HOLOCALL &amp; BREACH
@@ -1284,12 +1474,14 @@
     </nav>
 
     <div class="cp-hud-right">
-      <span class="cp-eddies" title="Eurodólares / Recursos">€$ 2077 · GOIÂNIA</span>
-      <button type="button" class="cp-top-btn" onclick="cycleCyberTheme()" title="Alternar Paleta do Menu (REDengine / NetWatch / Edgerunners)">
-        OS: <span id="osModeLabel">REDENGINE</span>
+      <button type="button" id="sandevistanBtn" class="cp-top-btn sandevistan-btn" onclick="toggleSandevistan()" title="Ativar Militech 'Apogee' Sandevistan (Edgerunners)">
+        ⚡ SANDEVISTAN [E]
       </button>
-      <button type="button" id="sfxBtn" class="cp-top-btn" onclick="toggleAudio()">
-        SOM: ON
+      <button type="button" id="radioBtn" class="cp-top-btn" onclick="toggleNightCityRadio()" title="Rádio 98.7 Body Heat FM / Morro Rock Synth">
+        📻 RÁDIO FM: OFF
+      </button>
+      <button type="button" class="cp-top-btn" onclick="triggerRelicGlitch()" title="Pulso Biochip Relic / Trocar Facção">
+        OS: <span id="osModeLabel">REDENGINE</span>
       </button>
     </div>
   </div>
@@ -1298,114 +1490,120 @@
 <main class="cp-game-stage">
 
   <!-- ========================================================================
-       SCREEN 1: INVENTÁRIO & CYBERWARE (RIPPERDOC LOADOUT)
+       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE & HUMANITY
        ======================================================================== -->
   <section id="screen-cyberware" class="cp-screen active" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>RIPPERDOC CLINIC // LOADOUT ANATÔMICO DE ENGENHARIA DE SOFTWARE</p>
-        <h1>INVENTÁRIO &amp; CYBERWARE — MIQUEIAS CARVALHO</h1>
+        <p>CLÍNICA DO VIKTOR VEKTOR (LITTLE CHINA) // EDGERUNNERS &amp; PATCH 2.1 CYBERWARE</p>
+        <h1>RIPPERDOC &amp; CYBERWARE — MIQUEIAS CARVALHO</h1>
       </div>
-      <p>CLIQUE EM QUALQUER IMPLANTE PARA INSPECIONAR TELEMETRIA REAL</p>
+      <p>IMPLANTES TÉCNICOS COM CUSTO DE HUMANIDADE (CYBERPUNK RED) &amp; CAPACIDADE</p>
     </div>
 
     <div class="cyberware-layout">
-      <!-- Left Column: Neural, Optical & Core Slots -->
+      <!-- Left Column: Iconic Cyberware Slots -->
       <div class="cw-slots-col">
-        <span class="cw-col-label">IMPLANTES NEURAIS &amp; DADOS</span>
+        <span class="cw-col-label">CÓRTEX, SISTEMA OPERACIONAL &amp; CHASSI</span>
 
         <button type="button" class="cw-slot-card active" onclick="selectCyberware('sql_cortex', this)">
           <div class="cw-slot-icon">SQL</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">CÓRTEX FRONTAL // TIER 5++</span>
-            <strong class="cw-slot-name">SQL Server Engine MK.5</strong>
+            <span class="cw-slot-part">CÓRTEX FRONTAL // RELIC CO-PROCESSOR</span>
+            <strong class="cw-slot-name">SQL Server Engine MK.5++</strong>
             <span class="cw-slot-sub">Queries, Views &amp; Procedures (Zetti)</span>
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card" onclick="selectCyberware('dotnet_deck', this)">
+        <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('dotnet_deck', this)">
           <div class="cw-slot-icon">.NET</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">CYBERDECK OS // TIER 5++</span>
-            <strong class="cw-slot-name">C# / .NET Runtime Deck</strong>
-            <span class="cw-slot-sub">POO, APIs REST, Swagger &amp; Clean Code</span>
+            <span class="cw-slot-part">SISTEMA OPERACIONAL // APOGEE DECK</span>
+            <strong class="cw-slot-name">C# / .NET Sandevistan Deck</strong>
+            <span class="cw-slot-sub">POO, APIs REST, Swagger &amp; Clean Arch</span>
           </div>
         </button>
 
         <button type="button" class="cw-slot-card" onclick="selectCyberware('vb6_chassis', this)">
           <div class="cw-slot-icon">VB6</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">ESQUELETO // PRODUÇÃO REAL</span>
+            <span class="cw-slot-part">ESQUELETO // CHASSI DE TITÂNIO</span>
             <strong class="cw-slot-name">VB6 Legacy Reactor @ Zetti</strong>
             <span class="cw-slot-sub">Múltiplas Farmácias · CNPJ Alfanumérico</span>
           </div>
         </button>
 
-        <span class="cw-col-label" style="margin-top: 6px;">SISTEMA NERVOSO &amp; FERRAMENTAS</span>
+        <span class="cw-col-label" style="margin-top: 4px;">SISTEMA NERVOSO, MONOFIO &amp; ÓPTICA KIROSHI</span>
 
         <button type="button" class="cw-slot-card" onclick="selectCyberware('java_reflex', this)">
           <div class="cw-slot-icon">JAVA</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">SISTEMA NERVOSO // TIER 5</span>
+            <span class="cw-slot-part">SISTEMA NERVOSO // KERENZIKOV</span>
             <strong class="cw-slot-name">Java 17/21 &amp; Spring Boot 3</strong>
             <span class="cw-slot-sub">JPA, JavaFX DAO, Árvores AVL &amp; Hash O(1)</span>
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card tier-epic" onclick="selectCyberware('node_ts', this)">
+        <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('node_ts', this)">
           <div class="cw-slot-icon">TS</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">SINAPSE API // TIER 5</span>
+            <span class="cw-slot-part">BRAÇOS // MONOFIO DA LUCY (DEEP DIVE)</span>
             <strong class="cw-slot-name">Node.js, TypeScript &amp; NestJS</strong>
             <span class="cw-slot-sub">TypeORM, Prisma ORM, MySQL &amp; PostgreSQL</span>
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card tier-epic" onclick="selectCyberware('git_optics', this)">
-          <div class="cw-slot-icon">GIT</div>
+        <button type="button" class="cw-slot-card" onclick="selectCyberware('git_optics', this)">
+          <div class="cw-slot-icon">OPT</div>
           <div class="cw-slot-info">
-            <span class="cw-slot-part">ÓPTICA KIROSHI // WORKFLOW</span>
+            <span class="cw-slot-part">ÓPTICA // KIROSHI "THE ORACLE" MK.5</span>
             <strong class="cw-slot-name">Git, GitKraken, Jira &amp; Docker</strong>
             <span class="cw-slot-sub">GitHub, GitLab, Visual Studio &amp; VS Code</span>
           </div>
         </button>
       </div>
 
-      <!-- Center Column: Biomonitor Body Silhouette & Real Portrait -->
+      <!-- Center Column: Biomonitor Body Silhouette & Humanity Meter -->
       <div class="cw-body-stage">
-        <div class="cw-capacity-meter">
-          <span>CAPACIDADE DE CYBERWARE</span>
-          <strong>248 / 250 [MÁX]</strong>
+        <div class="cw-meters-top">
+          <div class="cw-meter-row">
+            <span style="color: var(--cp-green);">HUMANIDADE (EMPATIA 9/10)</span>
+            <strong id="humanityReadout" style="color: var(--menu-primary);">78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]</strong>
+          </div>
+          <div class="humanity-bar"><span></span></div>
+          <div class="cw-meter-row">
+            <span>CAPACIDADE DE CYBERWARE (EDGERUNNER)</span>
+            <strong>248 / 250 [TIER 5++]</strong>
+          </div>
         </div>
 
         <div class="cw-avatar-rig">
-          <svg class="cw-silhouette-svg" viewBox="0 0 240 280" fill="none" aria-hidden="true">
-            <!-- Tactical Targeting & Body Wireframe -->
-            <circle cx="120" cy="115" r="92" stroke="var(--menu-accent)" stroke-opacity="0.32" stroke-width="1.2" stroke-dasharray="10 6"/>
-            <circle cx="120" cy="115" r="106" stroke="var(--menu-secondary)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 10"/>
-            <!-- Anatomical Connector Lines -->
-            <path d="M12 45 L72 72 M12 115 L58 115 M12 185 L76 165 M228 65 L168 85 M228 150 L172 135" stroke="var(--menu-primary)" stroke-opacity="0.55" stroke-width="1.4"/>
-            <polygon points="75,205 165,205 188,272 52,272" fill="rgba(255,0,60,0.08)" stroke="var(--menu-accent)" stroke-width="1.5"/>
+          <svg class="cw-silhouette-svg" viewBox="0 0 240 270" fill="none" aria-hidden="true">
+            <circle cx="120" cy="112" r="90" stroke="var(--menu-accent)" stroke-opacity="0.34" stroke-width="1.2" stroke-dasharray="10 6"/>
+            <circle cx="120" cy="112" r="104" stroke="var(--menu-secondary)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 10"/>
+            <!-- Edgerunners David Martinez Spine / Sandevistan Neural Vertebrae -->
+            <line x1="120" y1="15" x2="120" y2="255" stroke="var(--cp-green)" stroke-opacity="0.4" stroke-width="4" stroke-dasharray="6 4"/>
+            <path d="M12 42 L72 70 M12 112 L58 112 M12 182 L76 162 M228 62 L168 82 M228 148 L172 132" stroke="var(--menu-primary)" stroke-opacity="0.55" stroke-width="1.4"/>
+            <polygon points="75,200 165,200 188,264 52,264" fill="rgba(255,0,60,0.08)" stroke="var(--menu-accent)" stroke-width="1.5"/>
           </svg>
 
-          <!-- Interactive Anatomical Hotspots -->
-          <button type="button" class="cw-hotspot active" style="top: 18px; left: 120px;" onclick="selectCyberware('sql_cortex')" title="Córtex Frontal: SQL Server"></button>
-          <button type="button" class="cw-hotspot" style="top: 86px; left: 26px;" onclick="selectCyberware('dotnet_deck')" title="Cyberdeck: C# / .NET"></button>
-          <button type="button" class="cw-hotspot" style="top: 168px; left: 32px;" onclick="selectCyberware('vb6_chassis')" title="Esqueleto: VB6 Produção"></button>
-          <button type="button" class="cw-hotspot" style="top: 86px; left: 210px;" onclick="selectCyberware('java_reflex')" title="Sistema Nervoso: Java & Spring"></button>
-          <button type="button" class="cw-hotspot" style="top: 168px; left: 206px;" onclick="selectCyberware('git_optics')" title="Óptica: Git, Jira & Docker"></button>
+          <button type="button" class="cw-hotspot" style="top: 16px; left: 120px;" onclick="selectCyberware('sql_cortex')" title="Córtex Frontal: SQL Server"></button>
+          <button type="button" class="cw-hotspot" style="top: 82px; left: 26px;" onclick="selectCyberware('dotnet_deck')" title="Sandevistan Deck: C# / .NET"></button>
+          <button type="button" class="cw-hotspot" style="top: 162px; left: 32px;" onclick="selectCyberware('vb6_chassis')" title="Esqueleto: VB6 Produção"></button>
+          <button type="button" class="cw-hotspot" style="top: 82px; left: 210px;" onclick="selectCyberware('java_reflex')" title="Kerenzikov: Java & Spring"></button>
+          <button type="button" class="cw-hotspot" style="top: 162px; left: 206px;" onclick="selectCyberware('git_optics')" title="Kiroshi Oracle: Git, Jira & Docker"></button>
 
-          <div class="cw-portrait-hex" onclick="cycleCharacterPhoto()" title="Clique para alternar foto do perfil">
+          <div class="cw-portrait-hex" onclick="cycleCharacterPhoto()" title="Clique para alternar entre as 4 fotos reais">
             <img id="charPortraitImg" src="data:image/jpeg;base64,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" alt="Miqueias Carvalho">
           </div>
         </div>
 
         <div class="cw-char-footer">
           <h2>Miqueias Carvalho</h2>
-          <p>DEV BACKEND JÚNIOR // C# .NET &amp; SQL SERVER</p>
+          <p>NETRUNNER &amp; TECH // BACKEND C#/.NET &amp; SQL SERVER</p>
           <div class="cw-quick-ctas">
             <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
-              ⬇ PDF (1 Pág.)
+              ⬇ Dossiê PDF
             </a>
             <a href="https://wa.me/5562998421308" target="_blank" rel="noopener noreferrer" class="cp-action-btn outline">
               ⚡ WhatsApp
@@ -1414,20 +1612,24 @@
         </div>
       </div>
 
-      <!-- Right Column: RPG Item Inspector Tooltip -->
-      <div class="cw-inspector-card" id="cwInspectorCard">
+      <!-- Right Column: RPG Item Tooltip with Viktor Vektor / Edgerunners Lore Quote -->
+      <div class="cw-inspector-card">
         <div>
           <div class="cw-rarity-banner">
             <span id="cwTierText">TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO</span>
-            <span id="cwRamText">CUSTO: 24 CAPACIDADE</span>
+            <span id="cwRamText">CUSTO HUMANIDADE: 14 HC (4d6)</span>
           </div>
 
-          <div style="margin-top: 14px;">
-            <h3 class="cw-item-title" id="cwTitle">SQL Server Engine MK.5</h3>
+          <div style="margin-top: 12px;">
+            <h3 class="cw-item-title" id="cwTitle">SQL Server Engine MK.5++</h3>
             <p class="cw-item-category" id="cwCategory">CÓRTEX FRONTAL // BANCO DE DADOS RELACIONAL EM PRODUÇÃO</p>
           </div>
 
-          <div class="cw-stat-bars" style="margin-top: 14px;">
+          <div class="cw-lore-quote" id="cwLoreQuote" style="margin-top: 10px;">
+            "Garoto, esse co-processador SQL aguenta a pressão de dezenas de farmácias rodando ao mesmo tempo sem fritar uma única sinapse." — Viktor Vektor, Ripperdoc
+          </div>
+
+          <div class="cw-stat-bars" style="margin-top: 12px;">
             <div class="cw-stat-box">
               <span>PROFICIÊNCIA</span>
               <strong id="cwStat1">92% PROD</strong>
@@ -1437,12 +1639,12 @@
               <strong id="cwStat2">ZETTI REAL</strong>
             </div>
             <div class="cw-stat-box">
-              <span>LATÊNCIA</span>
-              <strong id="cwStat3">OTIMIZADA</strong>
+              <span>DADO TRPG</span>
+              <strong id="cwStat3">INT 10 + 8</strong>
             </div>
           </div>
 
-          <ul class="cw-effects-list" id="cwBullets" style="margin-top: 16px;">
+          <ul class="cw-effects-list" id="cwBullets" style="margin-top: 14px;">
             <li>Desenvolvimento e otimização diária de <strong>queries, views e stored procedures</strong> em SQL Server na Zetti.</li>
             <li>Apoio direto a regras de negócio, correções críticas e atualizações em massa em bases de dados de múltiplas farmácias.</li>
             <li>Adequação de esquemas e relatórios para o novo formato alfanumérico do CNPJ e novos impostos.</li>
@@ -1458,12 +1660,12 @@
             <span>Stored Procedures</span>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
-            <button type="button" class="cp-action-btn" onclick="openGameScreen('mapa', document.querySelector('[data-screen=mapa]'))">
-              Ver no Mapa de Contratos ▶
+          <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+            <button type="button" class="cp-action-btn" onclick="toggleSandevistan()">
+              ⚡ Ativar Sandevistan (Apogee)
             </button>
-            <button type="button" class="cp-action-btn outline" onclick="cycleCharacterPhoto()">
-              Trocar Foto Biomonitor ⟳
+            <button type="button" class="cp-action-btn outline" onclick="openGameScreen('trpg', document.querySelector('[data-screen=trpg]'))">
+              🎲 Testar na Ficha RPG [1d10]
             </button>
           </div>
         </div>
@@ -1472,15 +1674,15 @@
   </section>
 
   <!-- ========================================================================
-       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA (GIGS & MAIN JOBS)
+       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA (GIGS & FIXERS)
        ======================================================================== -->
   <section id="screen-mapa" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>SATÉLITE KIROSHI // GOIÂNIA SECTOR &amp; SUB-REDE GITHUB</p>
-        <h2>MAPA TÁTICO — CARREIRA &amp; 8 CONTRATOS DE CÓDIGO</h2>
+        <p>SATÉLITE KIROSHI &amp; FIXERS (ROGUE AMENDIARES / WAKAKO / FARADAY) // GOIÂNIA SECTOR</p>
+        <h2>MAPA TÁTICO — CARREIRA REAL &amp; 8 CONTRATOS DE CÓDIGO</h2>
       </div>
-      <p>CLIQUE NOS MARCADORES [!] E [★] NO MAPA PARA ABRIR O DOSSIÊ DA MISSÃO</p>
+      <p>CLIQUE NOS MARCADORES [!] E [★] NO MAPA PARA LER O BRIEFING DO FIXER</p>
     </div>
 
     <div class="map-layout">
@@ -1488,106 +1690,80 @@
         <div class="map-filter-bar" role="toolbar" aria-label="Filtrar marcadores do mapa">
           <button type="button" class="map-filter-btn active" onclick="filterMapPins('all', this)">Todos [11]</button>
           <button type="button" class="map-filter-btn" onclick="filterMapPins('job', this)">★ Carreira Real [2]</button>
-          <button type="button" class="map-filter-btn" onclick="filterMapPins('api', this)">! APIs REST &amp; Backend [3]</button>
-          <button type="button" class="map-filter-btn" onclick="filterMapPins('java', this)">! Java &amp; Algoritmos [4]</button>
-          <button type="button" class="map-filter-btn" onclick="filterMapPins('web', this)">! Web &amp; Academia [2]</button>
+          <button type="button" class="map-filter-btn" onclick="filterMapPins('api', this)">! Fixer Rogue: APIs REST [3]</button>
+          <button type="button" class="map-filter-btn" onclick="filterMapPins('java', this)">! Fixer Wakako: Java &amp; Algo [4]</button>
+          <button type="button" class="map-filter-btn" onclick="filterMapPins('web', this)">! Lucy Net &amp; Academia [2]</button>
         </div>
 
-        <div class="map-canvas-stage" id="mapCanvasStage">
-          <!-- Cyberpunk 2077 3D District Vector Map -->
-          <svg class="map-vector-svg" viewBox="0 0 800 460" preserveAspectRatio="none">
+        <div class="map-canvas-stage">
+          <svg class="map-vector-svg" viewBox="0 0 800 450" preserveAspectRatio="none">
             <defs>
               <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="#FF003C" stop-opacity="0.24"/>
                 <stop offset="100%" stop-color="#FF003C" stop-opacity="0"/>
               </radialGradient>
             </defs>
-            <circle cx="400" cy="230" r="210" fill="url(#radarGlow)"/>
-            <!-- District Polygons -->
+            <circle cx="400" cy="225" r="210" fill="url(#radarGlow)"/>
             <polygon points="40,40 350,30 320,210 55,190" fill="rgba(255,0,60,0.08)" stroke="#FF003C" stroke-width="1.5" stroke-dasharray="6 4"/>
-            <text x="70" y="65" fill="#FF003C" font-family="monospace" font-size="11" font-weight="bold">SETOR 01 // ZETTI CORP PLAZA</text>
+            <text x="65" y="62" fill="#FF003C" font-family="monospace" font-size="11" font-weight="bold">CORP PLAZA // ZETTI &amp; CARVALHO</text>
 
-            <polygon points="370,30 750,45 730,225 340,210" fill="rgba(252,238,9,0.06)" stroke="#FCEE09" stroke-width="1.5"/>
-            <text x="390" y="65" fill="#FCEE09" font-family="monospace" font-size="11" font-weight="bold">SETOR 02 // ARCOLOGIA API REST &amp; BACKEND</text>
+            <polygon points="370,30 750,45 730,220 340,210" fill="rgba(252,238,9,0.06)" stroke="#FCEE09" stroke-width="1.5"/>
+            <text x="390" y="62" fill="#FCEE09" font-family="monospace" font-size="11" font-weight="bold">AFTERLIFE SECTOR // APIs REST (ROGUE)</text>
 
-            <polygon points="55,215 390,230 370,425 45,410" fill="rgba(0,240,255,0.06)" stroke="#00F0FF" stroke-width="1.5"/>
-            <text x="75" y="400" fill="#00F0FF" font-family="monospace" font-size="11" font-weight="bold">SETOR 03 // FUNDIÇÃO JAVA &amp; ALGORITMOS</text>
+            <polygon points="55,215 390,230 370,420 45,405" fill="rgba(0,240,255,0.06)" stroke="#00F0FF" stroke-width="1.5"/>
+            <text x="75" y="395" fill="#00F0FF" font-family="monospace" font-size="11" font-weight="bold">JAPACTOWN // JAVA, SPRING &amp; ALGORITMOS (WAKAKO)</text>
 
-            <polygon points="410,235 745,245 730,425 395,425" fill="rgba(255,158,0,0.07)" stroke="#FF9E00" stroke-width="1.5" stroke-dasharray="8 4"/>
-            <text x="425" y="400" fill="#FF9E09" font-family="monospace" font-size="11" font-weight="bold">SETOR 04 // DISTRITO ACADÊMICO UNIFAN &amp; WEB</text>
+            <polygon points="410,235 745,245 730,420 395,420" fill="rgba(255,158,0,0.07)" stroke="#FF9E00" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <text x="425" y="395" fill="#FF9E00" font-family="monospace" font-size="11" font-weight="bold">SANTO DOMINGO // UNIFAN 2027 &amp; WEB UI</text>
 
-            <!-- Glowing Highway & Data Routes -->
             <path d="M180 110 L460 115 L640 140 L540 310 L220 300 Z" stroke="#00F0FF" stroke-opacity="0.4" stroke-width="2" fill="none" stroke-dasharray="8 6"/>
             <path d="M180 110 L260 160 M460 115 L550 175 M220 300 L310 345" stroke="#FCEE09" stroke-opacity="0.55" stroke-width="1.8"/>
           </svg>
 
-          <!-- Clickable Map Pins -->
-          <button type="button" class="map-pin pin-job active" data-pin-cat="job" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">
-            ★ ZETTI [ATUAL]
-          </button>
-          <button type="button" class="map-pin pin-job" data-pin-cat="job" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">
-            ★ CARVALHO [2021–25]
-          </button>
+          <button type="button" class="map-pin pin-job active" data-pin-cat="job" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">★ ZETTI [ATUAL]</button>
+          <button type="button" class="map-pin pin-job" data-pin-cat="job" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">★ CARVALHO [2021–25]</button>
 
-          <button type="button" class="map-pin" data-pin-cat="api" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">
-            ! TOP 1: api-gestao-produtos
-          </button>
-          <button type="button" class="map-pin" data-pin-cat="api" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">
-            ! vosso-cinema-api
-          </button>
-          <button type="button" class="map-pin" data-pin-cat="api java" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">
-            ! vital-conscious-api
-          </button>
+          <button type="button" class="map-pin" data-pin-cat="api" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">! TOP 1: api-gestao-produtos</button>
+          <button type="button" class="map-pin" data-pin-cat="api" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">! vosso-cinema-api</button>
+          <button type="button" class="map-pin" data-pin-cat="api java" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">! vital-conscious-api</button>
 
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">
-            ! controle-estoque-javafx
-          </button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">
-            ! catalogo-livros-avl-bst
-          </button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">
-            ! tabela-hash-cpf-java
-          </button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">
-            ! quiz-cli-java
-          </button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">! controle-estoque-javafx</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">! catalogo-livros-avl-bst</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">! tabela-hash-cpf-java</button>
+          <button type="button" class="map-pin pin-algo" data-pin-cat="java" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">! quiz-cli-java</button>
 
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">
-            ! vosso-cinema-web
-          </button>
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">
-            ◆ UNIFAN ENG. SOFTWARE
-          </button>
+          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">! vosso-cinema-web</button>
+          <button type="button" class="map-pin pin-edu" data-pin-cat="web" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">◆ UNIFAN ENG. SOFTWARE</button>
         </div>
 
         <div class="map-coords-footer">
-          <span id="mapCoordReadout">COORD: 16°40'S 49°15'W // GOIÂNIA SECTOR</span>
-          <span>11 MARCADORES ATIVOS // ZOOM ÓPTICO 1.0x</span>
+          <span id="mapCoordReadout">COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI</span>
+          <span>SATÉLITE: NIGHT CITY // GOIÂNIA</span>
         </div>
       </div>
 
-      <!-- Right Briefing Card -->
-      <div class="map-briefing-card" id="mapBriefingCard">
+      <!-- Right Fixer Briefing Card -->
+      <div class="map-briefing-card">
         <div>
           <div class="gig-threat-bar">
             <span id="gigTypeBadge">MISSÃO PRINCIPAL // EM OPERAÇÃO</span>
-            <span id="gigRewardBadge">RECOMPENSA: +5000 CRED</span>
+            <span id="gigRewardBadge">FIXER: ZETTI TECH</span>
           </div>
 
-          <div style="margin-top: 12px;">
+          <div style="margin-top: 10px;">
             <p id="gigKicker" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); text-transform: uppercase;">
               GOIÂNIA, GO · 08/12/2025 — ATUAL
             </p>
-            <h3 id="gigTitle" style="font-family: var(--font-display); font-size: 21px; color: var(--menu-primary); text-transform: uppercase; margin-top: 3px;">
+            <h3 id="gigTitle" style="font-family: var(--font-display); font-size: 20px; color: var(--menu-primary); text-transform: uppercase; margin-top: 2px;">
               Estagiário de Desenvolvimento — Zetti
             </h3>
           </div>
 
-          <p id="gigDesc" style="color: var(--menu-text-sub); font-size: 15px; margin-top: 10px;">
+          <p id="gigDesc" style="color: var(--menu-text-sub); font-size: 14.5px; margin-top: 8px;">
             Atuação diária em produção mantendo e evoluindo sistema utilizado por múltiplas farmácias, com foco direto em estabilidade operacional, regras de negócio e banco de dados SQL Server.
           </p>
 
-          <div class="gig-blueprint-box" id="gigBlueprint" style="margin-top: 14px;">
+          <div class="gig-blueprint-box" id="gigBlueprint" style="margin-top: 12px;">
             ▸ Manutenção, correção e evolução de sistema legado em VB6 em produção diária.<br>
             ▸ Desenvolvimento e otimização de queries, views e procedures em SQL Server.<br>
             ▸ Adequação ao novo formato alfanumérico do CNPJ, novos impostos e atualizações em massa.<br>
@@ -1604,12 +1780,12 @@
             <span>GitHub / GitLab / GitKraken</span>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;" id="gigActionsRow">
+          <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
             <a href="https://github.com/Miqueias-Henrique?tab=repositories" target="_blank" rel="noopener noreferrer" class="cp-action-btn" id="gigPrimaryLink">
               Acessar GitHub ↗
             </a>
-            <button type="button" class="cp-action-btn outline" id="gigCloneBtn" onclick="copyMapClone()">
-              Copiar Comando / Info
+            <button type="button" class="cp-action-btn outline" onclick="copyMapClone()">
+              Copiar git clone / Info
             </button>
           </div>
         </div>
@@ -1618,59 +1794,40 @@
   </section>
 
   <!-- ========================================================================
-       SCREEN 3: ÁRVORE DE HABILIDADES (PERK TREE 2.0)
+       SCREEN 3: ÁRVORE DE HABILIDADES 2.0 (PERK TREE & OVERCLOCK)
        ======================================================================== -->
   <section id="screen-perks" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>BIOMONITOR NEURAL // DISTRIBUIÇÃO DE ATRIBUTOS E VANTAGENS (PATCH 2.0)</p>
+        <p>BIOMONITOR NEURAL // DISTRIBUIÇÃO DE ATRIBUTOS E VANTAGENS (PATCH 2.1 + EDGERUNNER PERK)</p>
         <h2>ÁRVORE DE HABILIDADES — <span id="perkPointsCount" style="color: var(--menu-secondary);">3 PONTOS DE VANTAGEM DISPONÍVEIS</span></h2>
       </div>
       <p>SELECIONE UM ATRIBUTO ACIMA E CLIQUE NOS NÓS DA ÁRVORE PARA FAZER OVERCLOCK</p>
     </div>
 
-    <div class="attributes-top-bar" role="toolbar" aria-label="5 Atributos Principais">
+    <div class="attributes-top-bar" role="toolbar">
       <button type="button" class="attr-pillar-btn active" onclick="selectAttributeTree('int', this)">
-        <div class="attr-pillar-top">
-          <span>ATRIBUTO 01</span>
-          <strong>20</strong>
-        </div>
+        <div class="attr-pillar-top"><span>ATRIBUTO 01</span><strong>20</strong></div>
         <span class="attr-pillar-name">INTELIGÊNCIA</span>
         <span class="attr-pillar-sub">SQL Server, Queries &amp; Dados</span>
       </button>
-
       <button type="button" class="attr-pillar-btn" onclick="selectAttributeTree('tech', this)">
-        <div class="attr-pillar-top">
-          <span>ATRIBUTO 02</span>
-          <strong>20</strong>
-        </div>
+        <div class="attr-pillar-top"><span>ATRIBUTO 02</span><strong>20</strong></div>
         <span class="attr-pillar-name">HAB. TÉCNICA</span>
         <span class="attr-pillar-sub">C#/.NET, APIs REST &amp; Docker</span>
       </button>
-
       <button type="button" class="attr-pillar-btn" onclick="selectAttributeTree('ref', this)">
-        <div class="attr-pillar-top">
-          <span>ATRIBUTO 03</span>
-          <strong>18</strong>
-        </div>
+        <div class="attr-pillar-top"><span>ATRIBUTO 03</span><strong>18</strong></div>
         <span class="attr-pillar-name">REFLEXOS</span>
         <span class="attr-pillar-sub">Java 17/21, Spring &amp; AVL/Hash</span>
       </button>
-
       <button type="button" class="attr-pillar-btn" onclick="selectAttributeTree('body', this)">
-        <div class="attr-pillar-top">
-          <span>ATRIBUTO 04</span>
-          <strong>19</strong>
-        </div>
+        <div class="attr-pillar-top"><span>ATRIBUTO 04</span><strong>19</strong></div>
         <span class="attr-pillar-name">CORPO // PROD</span>
         <span class="attr-pillar-sub">VB6 Legado &amp; Regras Críticas</span>
       </button>
-
       <button type="button" class="attr-pillar-btn" onclick="selectAttributeTree('cool', this)">
-        <div class="attr-pillar-top">
-          <span>ATRIBUTO 05</span>
-          <strong>18</strong>
-        </div>
+        <div class="attr-pillar-top"><span>ATRIBUTO 05</span><strong>18</strong></div>
         <span class="attr-pillar-name">SANGUE FRIO</span>
         <span class="attr-pillar-sub">UNIFAN 2027, Git &amp; Idiomas</span>
       </button>
@@ -1678,42 +1835,30 @@
 
     <div class="perk-tree-layout">
       <div class="perk-canvas-box">
-        <div class="cw-capacity-meter">
+        <div class="cw-meter-row" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-primary); border-bottom: 1px solid var(--menu-border-dim); padding-bottom: 8px;">
           <span id="activeTreeTitle">ÁRVORE ATIVA: INTELIGÊNCIA // ENGENHARIA DE DADOS &amp; SQL SERVER</span>
-          <span>NÍVEL MESTRE DESBLOQUEADO</span>
+          <span>PERK SUPREMA: EDGERUNNER</span>
         </div>
 
-        <div class="perk-nodes-stage" id="perkNodesStage">
-          <svg class="perk-lines-svg" viewBox="0 0 600 350" preserveAspectRatio="none">
-            <line x1="300" y1="55" x2="170" y2="165" stroke="var(--menu-primary)" stroke-width="2.5"/>
-            <line x1="300" y1="55" x2="430" y2="165" stroke="var(--menu-primary)" stroke-width="2.5"/>
-            <line x1="170" y1="165" x2="120" y2="285" stroke="var(--menu-secondary)" stroke-width="2" stroke-dasharray="6 4"/>
-            <line x1="170" y1="165" x2="300" y2="285" stroke="var(--menu-primary)" stroke-width="2"/>
-            <line x1="430" y1="165" x2="300" y2="285" stroke="var(--menu-primary)" stroke-width="2"/>
-            <line x1="430" y1="165" x2="480" y2="285" stroke="var(--menu-secondary)" stroke-width="2" stroke-dasharray="6 4"/>
+        <div class="perk-nodes-stage">
+          <svg class="perk-lines-svg" viewBox="0 0 600 330" preserveAspectRatio="none">
+            <line x1="300" y1="50" x2="170" y2="155" stroke="var(--menu-primary)" stroke-width="2.5"/>
+            <line x1="300" y1="50" x2="430" y2="155" stroke="var(--menu-primary)" stroke-width="2.5"/>
+            <line x1="170" y1="155" x2="120" y2="270" stroke="var(--menu-secondary)" stroke-width="2" stroke-dasharray="6 4"/>
+            <line x1="170" y1="155" x2="300" y2="270" stroke="var(--menu-primary)" stroke-width="2"/>
+            <line x1="430" y1="155" x2="300" y2="270" stroke="var(--menu-primary)" stroke-width="2"/>
+            <line x1="430" y1="155" x2="480" y2="270" stroke="var(--menu-secondary)" stroke-width="2" stroke-dasharray="6 4"/>
           </svg>
 
-          <button type="button" class="perk-node master-node unlocked active" style="top: 16%; left: 50%;" id="pnode-0" onclick="inspectPerkNode(0)">
-            <span id="pnode-label-0">MESTRE SQL</span>
-          </button>
-          <button type="button" class="perk-node unlocked" style="top: 47%; left: 28%;" id="pnode-1" onclick="inspectPerkNode(1)">
-            <span id="pnode-label-1">PROCEDURES</span>
-          </button>
-          <button type="button" class="perk-node unlocked" style="top: 47%; left: 72%;" id="pnode-2" onclick="inspectPerkNode(2)">
-            <span id="pnode-label-2">VIEWS &amp; JOIN</span>
-          </button>
-          <button type="button" class="perk-node unlocked" style="top: 81%; left: 20%;" id="pnode-3" onclick="inspectPerkNode(3)">
-            <span id="pnode-label-3">MYSQL ORM</span>
-          </button>
-          <button type="button" class="perk-node unlocked" style="top: 81%; left: 50%;" id="pnode-4" onclick="inspectPerkNode(4)">
-            <span id="pnode-label-4">POSTGRES</span>
-          </button>
-          <button type="button" class="perk-node" style="top: 81%; left: 80%;" id="pnode-5" onclick="inspectPerkNode(5)">
-            <span id="pnode-label-5">MASS UPDATE</span>
-          </button>
+          <button type="button" class="perk-node master-node unlocked active" style="top: 15%; left: 50%;" id="pnode-0" onclick="inspectPerkNode(0)"><span id="pnode-label-0">MESTRE SQL</span></button>
+          <button type="button" class="perk-node unlocked" style="top: 47%; left: 28%;" id="pnode-1" onclick="inspectPerkNode(1)"><span id="pnode-label-1">PROCEDURES</span></button>
+          <button type="button" class="perk-node unlocked" style="top: 47%; left: 72%;" id="pnode-2" onclick="inspectPerkNode(2)"><span id="pnode-label-2">VIEWS &amp; JOIN</span></button>
+          <button type="button" class="perk-node unlocked" style="top: 81%; left: 20%;" id="pnode-3" onclick="inspectPerkNode(3)"><span id="pnode-label-3">MYSQL ORM</span></button>
+          <button type="button" class="perk-node unlocked" style="top: 81%; left: 50%;" id="pnode-4" onclick="inspectPerkNode(4)"><span id="pnode-label-4">POSTGRES</span></button>
+          <button type="button" class="perk-node" style="top: 81%; left: 80%;" id="pnode-5" onclick="inspectPerkNode(5)"><span id="pnode-label-5">MASS UPDATE</span></button>
         </div>
 
-        <div class="cw-capacity-meter" style="border-bottom: none; border-top: 1px solid var(--menu-border-dim); padding-top: 8px; padding-bottom: 0;">
+        <div class="cw-meter-row" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); border-top: 1px solid var(--menu-border-dim); padding-top: 8px;">
           <span>CURSOS: BANCO DE DADOS (2026) · C# · GITHUB · JAVA · ALGORITMO · HTML/CSS · KOTLIN</span>
           <span>UNIFAN 68%</span>
         </div>
@@ -1725,37 +1870,132 @@
             <span id="perkTierBadge">VANTAGEM SUPREMA // NÍVEL 20</span>
             <span id="perkStatusBadge">STATUS: EQUIPADA</span>
           </div>
-
-          <h3 class="cw-item-title" id="perkTitle" style="margin-top: 14px;">Arquiteto de Queries, Views &amp; Procedures</h3>
+          <h3 class="cw-item-title" id="perkTitle" style="margin-top: 12px;">Arquiteto de Queries, Views &amp; Procedures</h3>
           <p class="cw-item-category" id="perkSub">ATRIBUTO: INTELIGÊNCIA (BANCO DE DADOS &amp; PRODUÇÃO)</p>
-
-          <p id="perkDesc" style="color: var(--menu-text-sub); font-size: 15px; margin-top: 14px; line-height: 1.6;">
+          <p id="perkDesc" style="color: var(--menu-text-sub); font-size: 14.5px; margin-top: 12px; line-height: 1.6;">
             Domínio prático de SQL Server no cotidiano da Zetti, criando e otimizando queries complexas, views e stored procedures para apoiar regras de negócio e atualizações críticas em bases de múltiplas farmácias.
           </p>
-
-          <div class="gig-blueprint-box" id="perkProof" style="margin-top: 14px;">
+          <div class="gig-blueprint-box" id="perkProof" style="margin-top: 12px;">
             ✓ Comprovação em Produção: Zetti (dez/2025 – Atual)<br>
             ✓ Comprovação em Código: api-gestao-produtos (MySQL) &amp; vosso-cinema-api (PostgreSQL)
           </div>
         </div>
+        <button type="button" class="cp-action-btn" style="width: 100%;" onclick="overclockCurrentPerk()">
+          ⚡ Investir Ponto de Vantagem (Overclock Node)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SCREEN 4 (NEW!): FICHA DE RPG DE MESA // CYBERPUNK RED & 2020 (1d10)
+       ======================================================================== -->
+  <section id="screen-trpg" class="cp-screen" role="tabpanel">
+    <div class="screen-header-strip">
+      <div>
+        <p>R. TALSORIAN GAMES (MIKE PONDSMITH) // CYBERPUNK 2020 &amp; CYBERPUNK RED CHARACTER SHEET</p>
+        <h2>FICHA DE RPG DE MESA — ARQUÉTIPO: NETRUNNER &amp; TECH (NÍVEL 8)</h2>
+      </div>
+      <p>ROLE OS DADOS 1d10 + STAT + PERÍCIA CONTRA A DIFICULDADE (DV) DE MERCADO</p>
+    </div>
+
+    <div class="trpg-layout">
+      <!-- Left: 10 Classic Stats + Lifepath -->
+      <div class="trpg-sheet-card">
+        <div class="cw-rarity-banner">
+          <span>HANDLE: MIQUEIAS "SQL_RUNNER" CARVALHO</span>
+          <span>ROLE ABILITY: INTERFACE NV. 8 // MAKER NV. 8</span>
+        </div>
+
+        <div class="trpg-stats-grid" aria-label="10 Atributos do RPG de Mesa Cyberpunk RED">
+          <div class="trpg-stat-cell"><b>INT</b><strong>10</strong><span>SQL &amp; Dados</span></div>
+          <div class="trpg-stat-cell"><b>TECH</b><strong>10</strong><span>C#/.NET &amp; VB6</span></div>
+          <div class="trpg-stat-cell"><b>REF</b><strong>8</strong><span>Java &amp; Hotfix</span></div>
+          <div class="trpg-stat-cell"><b>DEX</b><strong>8</strong><span>Git &amp; CLI</span></div>
+          <div class="trpg-stat-cell"><b>COOL</b><strong>9</strong><span>Produção Real</span></div>
+          <div class="trpg-stat-cell"><b>WILL</b><strong>9</strong><span>Regras Fiscais</span></div>
+          <div class="trpg-stat-cell"><b>LUCK</b><strong id="luckPoolNum">8/8</strong><span>Dados Sorte</span></div>
+          <div class="trpg-stat-cell"><b>MOVE</b><strong>8</strong><span>Sprints Jira</span></div>
+          <div class="trpg-stat-cell"><b>BODY</b><strong>8</strong><span>Sistemas Legados</span></div>
+          <div class="trpg-stat-cell"><b>EMP</b><strong>9</strong><span>Equipe (78 HC)</span></div>
+        </div>
 
         <div>
-          <button type="button" class="cp-action-btn" style="width: 100%;" onclick="overclockCurrentPerk()">
-            ⚡ Investir Ponto de Vantagem (Overclock Node)
-          </button>
+          <span class="cw-col-label" style="display:block; margin-bottom: 8px;">CAMINHO DE VIDA (CYBERPUNK RED LIFEPATH)</span>
+          <div class="lifepath-grid">
+            <div class="lifepath-box">
+              <small>ORIGEM &amp; BASE OPERACIONAL</small>
+              <strong>Goiânia, GO (Disponível Presencial / Remoto)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>CORPORAÇÃO / CONTRATO ATUAL</small>
+              <strong>Zetti — Estagiário de Desenvolvimento (VB6 &amp; SQL Server)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>ACADEMIA ARCOLOGY</small>
+              <strong>UNIFAN — Engenharia de Software (Conclusão 2027)</strong>
+            </div>
+            <div class="lifepath-box">
+              <small>MOTIVAÇÃO DE EDGERUNNER</small>
+              <strong>Atuar como Dev Júnior Backend (C#/.NET, SQL, Java ou Node)</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="cw-lore-quote">
+          "O céu sobre o porto tinha a cor de uma TV sintonizada em um canal fora do ar." — William Gibson, Neuromancer (1984) // No RPG de mesa Cyberpunk RED, um teste de perícia soma <strong>1d10 + Atributo + Nível da Perícia</strong> contra o Valor de Dificuldade (DV).
+        </div>
+      </div>
+
+      <!-- Right: Interactive 1d10 Skill Check Roller -->
+      <div class="dice-roller-card">
+        <div>
+          <div class="gig-threat-bar">
+            <span>ROLADOR DE DADOS OFICIAL // CYBERPUNK RED (1d10)</span>
+            <span>CRÍTICO NO 10 (EXPLOSÃO!)</span>
+          </div>
+
+          <div class="dice-display-stage" style="margin-top: 12px;">
+            <div class="d10-big-number" id="d10ResultNumber">26</div>
+            <div class="d10-formula" id="d10FormulaText">1d10 [8] + INT [10] + Banco de Dados [8] = 26 vs DV 17</div>
+            <div class="d10-outcome" id="d10OutcomeText">✓ SUCESSO LENDÁRIO // QUERY OTIMIZADA EM PRODUÇÃO!</div>
+          </div>
+
+          <div class="skill-check-btns" style="margin-top: 14px;">
+            <button type="button" class="dialogue-choice-btn" onclick="rollCyberpunkD10('Otimizar Procedure SQL Server (Zetti)', 'INT', 10, 8, 17)">
+              <span>🎲 Rolar Teste: SQL Server, Views &amp; Procedures (INT 10 + Perícia 8)</span>
+              <span class="d-tag">DV 17</span>
+            </button>
+            <button type="button" class="dialogue-choice-btn" onclick="rollCyberpunkD10('Arquitetura API REST C#/.NET &amp; TypeORM', 'TECH', 10, 8, 17)">
+              <span>🎲 Rolar Teste: Backend C#/.NET, APIs REST &amp; Swagger (TECH 10 + 8)</span>
+              <span class="d-tag">DV 17</span>
+            </button>
+            <button type="button" class="dialogue-choice-btn" onclick="rollCyberpunkD10('Sustentação VB6 &amp; CNPJ Alfanumérico', 'COOL', 9, 8, 15)">
+              <span>🎲 Rolar Teste: Hotfix em Produção VB6 @ Zetti (COOL 9 + 8)</span>
+              <span class="d-tag">DV 15</span>
+            </button>
+            <button type="button" class="dialogue-choice-btn" onclick="rollCyberpunkD10('Balanceamento Árvore AVL O(log n) &amp; Hash O(1)', 'REF', 8, 8, 15)">
+              <span>🎲 Rolar Teste: Estruturas de Dados Java &amp; Spring Boot 3 (REF 8 + 8)</span>
+              <span class="d-tag">DV 15</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); text-align: center;">
+          DICA: TIRE 10 NO DADO PARA ATIVAR UM <strong>SUCESSO CRÍTICO (EXPLOSÃO DE DADO +1d10)</strong>!
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========================================================================
-       SCREEN 4: DIÁRIO DE MISSÕES (QUEST LOG & CURRÍCULO COMPLETO)
+       SCREEN 5: DIÁRIO DE MISSÕES & CARTAS DE TARÔ (MISTY'S ESOTERICA)
        ======================================================================== -->
   <section id="screen-diario" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>REGISTRO DE MISSÕES // HISTÓRICO PROFISSIONAL, ACADÊMICO E SHARDS</p>
-        <h2>DIÁRIO DE MISSÕES &amp; CURRÍCULO OFICIAL</h2>
+        <p>DIÁRIO DE BORDO, COMENTÁRIOS DO JOHNNY SILVERHAND &amp; TARÔ DE NIGHT CITY</p>
+        <h2>DIÁRIO DE MISSÕES, TARÔ &amp; CURRÍCULO PDF</h2>
       </div>
       <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
         ⬇ Baixar Shard Original: Curriculo_Miqueias_Carvalho.pdf
@@ -1763,7 +2003,7 @@
     </div>
 
     <div class="journal-layout">
-      <div class="quest-list-col" role="listbox" aria-label="Lista de Missões do Diário">
+      <div class="quest-list-col" role="listbox">
         <div class="quest-cat-header">MISSÕES PRINCIPAIS (CARREIRA &amp; FORMAÇÃO)</div>
         <button type="button" class="quest-row-btn active" onclick="selectJournalQuest('q_zetti', this)">
           <strong>[EM CURSO] Operação Zetti: Backend &amp; SQL</strong>
@@ -1778,7 +2018,7 @@
           <span>Auxiliar Administrativo · 2021 – 2025</span>
         </button>
 
-        <div class="quest-cat-header" style="margin-top: 8px;">CONTRATOS DE FIXER (PROJETOS EM DESTAQUE)</div>
+        <div class="quest-cat-header" style="margin-top: 6px;">CONTRATOS DE FIXER (8 PROJETOS GITHUB)</div>
         <button type="button" class="quest-row-btn" onclick="selectJournalQuest('q_api_produtos', this)">
           <strong>[★ TOP 1] api-gestao-produtos</strong>
           <span>Node.js · TypeScript · Express · TypeORM · MySQL · Docker</span>
@@ -1804,60 +2044,69 @@
             <span id="jqLoc">LOCAL: GOIÂNIA, GO</span>
           </div>
 
-          <h3 id="jqTitle" style="font-family: var(--font-display); font-size: 24px; color: var(--menu-primary); text-transform: uppercase; margin-top: 12px;">
+          <h3 id="jqTitle" style="font-family: var(--font-display); font-size: 22px; color: var(--menu-primary); text-transform: uppercase; margin-top: 10px;">
             Estagiário de Desenvolvimento — Zetti (08/12/2025 – Atual)
           </h3>
 
-          <p id="jqNarrative" style="color: var(--menu-text-sub); font-size: 15.5px; margin-top: 10px; line-height: 1.6;">
+          <div class="cw-lore-quote" id="jqJohnnyQuote" style="margin-top: 8px;">
+            "Acorda, Samurai! Manter sistema em produção rodando em dezenas de farmácias todo santo dia é o que separa os mercenários de verdade dos turistas de Night City." — Johnny Silverhand
+          </div>
+
+          <p id="jqNarrative" style="color: var(--menu-text-sub); font-size: 15px; margin-top: 10px; line-height: 1.55;">
             Estudante de Engenharia de Software atuando diretamente na sustentação, correção de bugs e evolução de sistemas utilizados diariamente por múltiplas farmácias em ambiente real de produção.
           </p>
 
-          <div class="quest-objectives" id="jqObjectives" style="margin-top: 16px;">
-            <div class="quest-obj-item">
-              <span class="quest-obj-box">[✓]</span>
-              <span>Manter, corrigir e evoluir sistema legado em VB6 utilizado diariamente por múltiplas farmácias.</span>
-            </div>
-            <div class="quest-obj-item">
-              <span class="quest-obj-box">[✓]</span>
-              <span>Desenvolver e otimizar queries, views e procedures em SQL Server apoiando regras de negócio.</span>
-            </div>
-            <div class="quest-obj-item">
-              <span class="quest-obj-box">[✓]</span>
-              <span>Executar adequação ao novo formato alfanumérico do CNPJ, novos impostos e atualizações em massa.</span>
-            </div>
-            <div class="quest-obj-item">
-              <span class="quest-obj-box">[✓]</span>
-              <span>Validar correções antes do fechamento de chamados usando Jira, GitHub, GitLab, GitKraken e Visual Studio.</span>
+          <div class="quest-objectives" id="jqObjectives" style="margin-top: 12px;">
+            <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Manter, corrigir e evoluir sistema legado em VB6 utilizado diariamente por múltiplas farmácias.</span></div>
+            <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Desenvolver e otimizar queries, views e procedures em SQL Server apoiando regras de negócio.</span></div>
+            <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Executar adequação ao novo formato alfanumérico do CNPJ, novos impostos e atualizações em massa.</span></div>
+            <div class="quest-obj-item"><span class="quest-obj-box">[✓]</span><span>Validar correções antes da conclusão dos chamados usando Jira, GitHub, GitLab, GitKraken e Visual Studio.</span></div>
+          </div>
+
+          <!-- 4 Collectible Cyberpunk 2077 Tarot Cards -->
+          <div style="margin-top: 14px;">
+            <span class="cw-col-label" style="display:block;">COLEÇÃO DE TARÔ DE NIGHT CITY (FOOL'S JOURNEY — 4/4 ENCONTRADAS)</span>
+            <div class="tarot-grid">
+              <div class="tarot-card" onclick="toast('TARÔ 0 — O LOUCO: Da base administrativa ao início na Engenharia de Software.')">
+                <div class="tarot-num">ARCANO 0</div>
+                <div class="tarot-name">O LOUCO</div>
+                <div class="tarot-meaning">O Salto para a Engenharia de Software (UNIFAN)</div>
+              </div>
+              <div class="tarot-card" onclick="toast('TARÔ I — O MAGO: Domínio sobre código em 8 projetos práticos no GitHub.')">
+                <div class="tarot-num">ARCANO I</div>
+                <div class="tarot-name">O MAGO</div>
+                <div class="tarot-meaning">8 Arquiteturas Práticas no GitHub (APIs &amp; Java)</div>
+              </div>
+              <div class="tarot-card" onclick="toast('TARÔ VII — O CARRO: Impulso real mantendo sistemas de farmácias na Zetti.')">
+                <div class="tarot-num">ARCANO VII</div>
+                <div class="tarot-name">O CARRO</div>
+                <div class="tarot-meaning">Produção Real Diária na Zetti (VB6 &amp; SQL Server)</div>
+              </div>
+              <div class="tarot-card" onclick="toast('TARÔ XXI — O MUNDO: Pronto para atuar como Dev Júnior Backend C#/.NET & SQL!')">
+                <div class="tarot-num">ARCANO XXI</div>
+                <div class="tarot-name">O MUNDO</div>
+                <div class="tarot-meaning">Pronto p/ Desenvolvedor Backend Júnior</div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--menu-border-dim); padding-top: 14px;">
-          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--menu-secondary);">
-            IDIOMAS: INGLÊS INTERMEDIÁRIO (LEITURA/COMPREENSÃO) · ESPANHOL INTERMEDIÁRIO
-          </span>
-          <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
-            ⬇ Baixar Currículo PDF Completo
-          </a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========================================================================
-       SCREEN 5: HOLOCALL & BREACH PROTOCOL (DIALOGUE CHOICES + HEX MATRIX)
+       SCREEN 6: HOLOCALL & BREACH PROTOCOL
        ======================================================================== -->
   <section id="screen-holocall" class="cp-screen" role="tabpanel">
     <div class="screen-header-strip">
       <div>
-        <p>TRANSMISSÃO CRIPTOGRAFADA // CANAL DIRETO DE RECRUTAMENTO</p>
+        <p>TRANSMISSÃO CRIPTOGRAFADA // CANAL DIRETO DE RECRUTAMENTO &amp; QUEBRA DE GELO (ICE)</p>
         <h2>HOLOCALL INTERATIVO &amp; BREACH PROTOCOL</h2>
       </div>
       <p>ESCOLHA UMA OPÇÃO DE DIÁLOGO ABAIXO PARA ACIONAR CONTATO IMEDIATO</p>
     </div>
 
     <div class="holocall-layout">
-      <!-- Left: Cyberpunk 2077 Incoming Holocall & Yellow Dialogue Bars -->
       <div class="holo-panel">
         <div class="holo-caller-header">
           <img src="data:image/jpeg;base64,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" alt="Miqueias Carvalho" class="holo-caller-avatar">
@@ -1875,47 +2124,42 @@
         </div>
 
         <div class="holo-Dialogue-speech" id="holoSpeechBox">
-          "E aí! Estou disponível para entrevistas e oportunidades como <strong>Desenvolvedor de Software Júnior (Backend — C#/.NET, SQL Server, Java ou Node.js)</strong>. Qual canal você prefere usar para conversarmos?"
+          "E aí, Choom! Estou disponível para entrevistas e oportunidades como <strong>Desenvolvedor de Software Júnior (Backend — C#/.NET, SQL Server, Java ou Node.js)</strong>. Qual canal você prefere usar?"
         </div>
 
-        <div class="dialogue-choices" role="group" aria-label="Opções de Diálogo RPG">
-          <a href="https://wa.me/5562998421308" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Excelente escolha! O WhatsApp (62) 99842-1308 é o canal mais rápido para agendarmos uma entrevista.')">
+        <div class="dialogue-choices" role="group">
+          <a href="https://wa.me/5562998421308" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Nova mensagem para o Fixer! O WhatsApp (62) 99842-1308 é o canal mais rápido para agendarmos uma entrevista.')">
             <span>[⚡ Chamar no WhatsApp] Vamos agendar uma entrevista pelo (62) 99842-1308.</span>
             <span class="d-tag">RECOMENDADO ↗</span>
           </a>
-
-          <button type="button" class="dialogue-choice-btn" onclick="copyClip('(62) 99842-1308', 'Telefone copiado: (62) 99842-1308')" onmouseenter="setSpeech('Número copiado direto para o seu Cyberdeck: (62) 99842-1308.')">
+          <button type="button" class="dialogue-choice-btn" onclick="copyClip('(62) 99842-1308', 'Telefone copiado: (62) 99842-1308')" onmouseenter="setSpeech('Número salvo direto na memória do seu Cyberdeck: (62) 99842-1308.')">
             <span>[📋 Copiar Telefone] Salvar (62) 99842-1308 na área de transferência.</span>
             <span class="d-tag">COPIAR</span>
           </button>
-
-          <a href="mailto:miqueiash989@gmail.com" class="dialogue-choice-btn" onmouseenter="setSpeech('Pode mandar seu NetMail para miqueiash989@gmail.com que respondo rapidamente!')">
+          <a href="mailto:miqueiash989@gmail.com" class="dialogue-choice-btn" onmouseenter="setSpeech('Pode disparar seu NetMail para miqueiash989@gmail.com!')">
             <span>[✉ Enviar E-mail] Abrir cliente de e-mail para miqueiash989@gmail.com.</span>
             <span class="d-tag">NETMAIL</span>
           </a>
-
-          <button type="button" class="dialogue-choice-btn" onclick="copyClip('miqueiash989@gmail.com', 'E-mail copiado: miqueiash989@gmail.com')" onmouseenter="setSpeech('E-mail miqueiash989@gmail.com copiado sem fricção!')">
+          <button type="button" class="dialogue-choice-btn" onclick="copyClip('miqueiash989@gmail.com', 'E-mail copiado: miqueiash989@gmail.com')" onmouseenter="setSpeech('Endereço miqueiash989@gmail.com copiado sem fricção!')">
             <span>[📋 Copiar E-mail] Copiar endereço miqueiash989@gmail.com.</span>
             <span class="d-tag">COPIAR</span>
           </button>
-
-          <a href="https://www.linkedin.com/in/miqueias-henrique-88503b218/" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Conecte-se comigo no LinkedIn para acompanhar minha trajetória na Zetti e na UNIFAN!')">
+          <a href="https://www.linkedin.com/in/miqueias-henrique-88503b218/" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Conecte-se comigo no LinkedIn para acompanhar minha evolução na Zetti e na UNIFAN!')">
             <span>[🔗 Conectar no LinkedIn] Acessar linkedin.com/in/miqueias-henrique-88503b218.</span>
             <span class="d-tag">LINKEDIN ↗</span>
           </a>
-
-          <a href="https://github.com/Miqueias-Henrique" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Confira meus 8 repositórios auditáveis com código limpo, testes e documentação!')">
+          <a href="https://github.com/Miqueias-Henrique" target="_blank" rel="noopener noreferrer" class="dialogue-choice-btn" onmouseenter="setSpeech('Acesse a sub-rede com meus 8 repositórios auditáveis no GitHub!')">
             <span>[💻 Inspecionar GitHub] Abrir github.com/Miqueias-Henrique (8 Projetos).</span>
             <span class="d-tag">GITHUB ↗</span>
           </a>
         </div>
       </div>
 
-      <!-- Right: Playable Breach Protocol 5x5 Hex Mini-Game -->
+      <!-- Right: Breach Protocol 5x5 Matrix -->
       <div class="breach-panel">
         <div>
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--menu-success); margin-bottom: 10px;">
-            <span>BREACH PROTOCOL // SUB-REDE RECRUTADOR</span>
+          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--cp-green); margin-bottom: 10px;">
+            <span>BREACH PROTOCOL // QUEBRA DE GELO (ICE)</span>
             <span id="bpBufferText">BUFFER: [ _ _ _ ]</span>
           </div>
 
@@ -1949,8 +2193,8 @@
               <span>+100% XP</span>
             </div>
             <div class="daemon-row" id="daemon3">
-              <span>BD E9 7A — DAEMON: ACESSO_DIRETO_WHATSAPP</span>
-              <span>INSTANT</span>
+              <span>BD E9 7A — DAEMON: DEEP_DIVE_LUCY (MOON)</span>
+              <span>EDGERUNNERS</span>
             </div>
           </div>
         </div>
@@ -1974,34 +2218,144 @@
   let audioOn = true;
   let audioCtx = null;
   let perkPoints = 3;
+  let sandevistanOn = false;
+  let radioPlaying = false;
+  let radioInterval = null;
 
-  function playUiSound(freqStart = 640, freqEnd = 1280, dur = 0.09) {
+  function ensureAudio() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!audioCtx) audioCtx = new Ctx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playUiSound(freqStart = 640, freqEnd = 1280, dur = 0.09, wave = 'sawtooth') {
     if (!audioOn) return;
     try {
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return;
-      if (!audioCtx) audioCtx = new Ctx();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = wave;
       osc.frequency.setValueAtTime(freqStart, now);
       osc.frequency.exponentialRampToValueAtTime(freqEnd, now + dur);
       gain.gain.setValueAtTime(0.055, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(ctx.destination);
       osc.start(now);
       osc.stop(now + dur + 0.01);
     } catch (e) {}
   }
 
-  function toggleAudio() {
-    audioOn = !audioOn;
-    document.getElementById('sfxBtn').textContent = audioOn ? 'SOM: ON' : 'SOM: OFF';
-    if (audioOn) playUiSound(520, 1040, 0.08);
-    toast(audioOn ? 'Áudio de Menu Cyberpunk: ATIVADO' : 'Áudio de Menu Cyberpunk: SILENCIADO');
+  /* Procedural Night City FM Synthwave / Edgerunners Arpeggiator */
+  const synthNotes = [220, 261.63, 329.63, 392.00, 440, 392.00, 329.63, 293.66];
+  let noteStep = 0;
+  function toggleNightCityRadio() {
+    radioPlaying = !radioPlaying;
+    const btn = document.getElementById('radioBtn');
+    if (radioPlaying) {
+      btn.textContent = '📻 98.7 BODY HEAT: ON';
+      btn.classList.add('active');
+      toast('RÁDIO 98.7 BODY HEAT FM: Synthwave / Edgerunners Loop Ativo');
+      radioInterval = setInterval(() => {
+        if (!audioOn || !radioPlaying) return;
+        const f = synthNotes[noteStep % synthNotes.length];
+        noteStep++;
+        playUiSound(f, f * 1.005, 0.16, 'triangle');
+      }, 240);
+    } else {
+      btn.textContent = '📻 RÁDIO FM: OFF';
+      btn.classList.remove('active');
+      clearInterval(radioInterval);
+      toast('Rádio Night City FM desligada');
+    }
+  }
+
+  /* Militech "Apogee" Sandevistan Mode (David Martinez / Edgerunners) */
+  const sandyParticles = [];
+  function toggleSandevistan() {
+    sandevistanOn = !sandevistanOn;
+    document.body.classList.toggle('sandevistan-active', sandevistanOn);
+    const btn = document.getElementById('sandevistanBtn');
+    if (btn) btn.classList.toggle('active', sandevistanOn);
+    playUiSound(sandevistanOn ? 180 : 980, sandevistanOn ? 1480 : 220, 0.22, 'sawtooth');
+    const hum = document.getElementById('humanityReadout');
+    if (hum) {
+      hum.textContent = sandevistanOn
+        ? '64 / 90 [SANDEVISTAN APOGEE ATIVO — DILATAÇÃO TEMPORAL 85%]'
+        : '78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]';
+    }
+    toast(sandevistanOn
+      ? '⚡ MILITECH "APOGEE" SANDEVISTAN ATIVADO (David Martinez Mode)!'
+      : 'Sandevistan desativado — Sinapses estabilizadas');
+  }
+
+  /* Sandevistan Afterimage Trail Canvas */
+  (function initSandevistanCanvas() {
+    const canvas = document.getElementById('sandevistanCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w = 0, h = 0;
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    window.addEventListener('mousemove', (e) => {
+      if (!sandevistanOn) return;
+      sandyParticles.push({
+        x: e.clientX,
+        y: e.clientY,
+        r: 16,
+        alpha: 0.75,
+        hue: (performance.now() * 0.25) % 360
+      });
+      if (sandyParticles.length > 28) sandyParticles.shift();
+    }, { passive: true });
+
+    function render() {
+      ctx.clearRect(0, 0, w, h);
+      if (sandevistanOn && sandyParticles.length > 0) {
+        for (let i = sandyParticles.length - 1; i >= 0; i--) {
+          const p = sandyParticles[i];
+          ctx.save();
+          ctx.strokeStyle = i % 2 === 0 ? '#00FF66' : '#00F0FF';
+          ctx.fillStyle = 'rgba(0, 255, 102, 0.08)';
+          ctx.globalAlpha = p.alpha;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+          p.r += 0.8;
+          p.alpha -= 0.028;
+          if (p.alpha <= 0) sandyParticles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(render);
+    }
+    render();
+  })();
+
+  const osModes = ['default', 'edgerunners', 'blackwall'];
+  const osLabels = { default: 'REDENGINE', edgerunners: 'EDGERUNNERS', blackwall: 'BLACKWALL' };
+  let osIdx = 0;
+  function triggerRelicGlitch() {
+    playUiSound(260, 1180, 0.16);
+    document.body.classList.add('relic-malfunction');
+    setTimeout(() => document.body.classList.remove('relic-malfunction'), 440);
+    osIdx = (osIdx + 1) % osModes.length;
+    const mode = osModes[osIdx];
+    if (mode === 'default') document.body.removeAttribute('data-cyber-os');
+    else document.body.setAttribute('data-cyber-os', mode);
+    document.getElementById('osModeLabel').textContent = osLabels[mode];
+    toast('RELIC BIOCHIP SYNC // MODO: ' + osLabels[mode]);
   }
 
   function toast(msg) {
@@ -2010,7 +2364,7 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(window._tTimer);
-    window._tTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    window._tTimer = setTimeout(() => t.classList.remove('show'), 2600);
   }
 
   function copyClip(txt, msg) {
@@ -2023,7 +2377,7 @@
   }
 
   function openGameScreen(screenId, btnEl) {
-    playUiSound(440, 980, 0.11);
+    playUiSound(440, 980, 0.10);
     document.querySelectorAll('.cp-screen').forEach(s => s.classList.remove('active'));
     const target = document.getElementById('screen-' + screenId);
     if (target) target.classList.add('active');
@@ -2044,45 +2398,34 @@
     portraitIdx = (portraitIdx + 1) % portraits.length;
     const img = document.getElementById('charPortraitImg');
     if (img) img.src = portraits[portraitIdx];
-    toast('Biomonitor: Foto ' + (portraitIdx + 1) + '/4 carregada');
-  }
-
-  const osModes = ['default', 'netwatch', 'edgerunners'];
-  const osLabels = { default: 'REDENGINE', netwatch: 'NETWATCH', edgerunners: 'EDGERUNNERS' };
-  let osIdx = 0;
-  function cycleCyberTheme() {
-    playUiSound(320, 1240, 0.14);
-    osIdx = (osIdx + 1) % osModes.length;
-    const mode = osModes[osIdx];
-    if (mode === 'default') document.body.removeAttribute('data-cyber-os');
-    else document.body.setAttribute('data-cyber-os', mode);
-    document.getElementById('osModeLabel').textContent = osLabels[mode];
-    toast('Interface alterada para: ' + osLabels[mode]);
+    toast('Kiroshi Biomonitor: Foto ' + (portraitIdx + 1) + '/4 carregada');
   }
 
   /* ==========================================================================
-     SCREEN 1 DATA: CYBERWARE SLOTS
+     SCREEN 1 DATA: CYBERWARE SLOTS + LORE QUOTES
      ========================================================================== */
   const cyberwareData = {
     sql_cortex: {
       tier: 'TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO',
-      ram: 'CUSTO: 45 CAPACIDADE',
-      title: 'SQL Server Engine MK.5',
+      ram: 'CUSTO HUMANIDADE: 14 HC (4d6)',
+      title: 'SQL Server Engine MK.5++',
       cat: 'CÓRTEX FRONTAL // BANCO DE DADOS RELACIONAL EM PRODUÇÃO',
-      s1: '92% PROD', s2: 'ZETTI REAL', s3: 'OTIMIZADA',
+      quote: '"Garoto, esse co-processador SQL aguenta a pressão de dezenas de farmácias rodando ao mesmo tempo sem fritar uma única sinapse." — Viktor Vektor, Ripperdoc',
+      s1: '92% PROD', s2: 'ZETTI REAL', s3: 'INT 10 + 8',
       bullets: [
         'Desenvolvimento e otimização diária de <strong>queries, views e stored procedures</strong> em SQL Server na Zetti.',
         'Apoio direto a regras de negócio, correções críticas e atualizações em massa em bases de dados de múltiplas farmácias.',
-        'Adequação de relatórios e bases para o novo formato alfanumérico do CNPJ e novos impostos.'
+        'Adequação de esquemas e relatórios para o novo formato alfanumérico do CNPJ e novos impostos.'
       ],
       mods: ['SQL Server', 'MySQL', 'PostgreSQL', 'Queries & Views', 'Procedures', 'Modelagem Relacional']
     },
     dotnet_deck: {
-      tier: 'TIER 5++ // CYBERDECK PRINCIPAL',
-      ram: 'CUSTO: 48 CAPACIDADE',
-      title: 'C# / .NET Runtime Cyberdeck',
+      tier: 'TIER 5++ // MILITECH "APOGEE" SANDEVISTAN DECK',
+      ram: 'CUSTO HUMANIDADE: 16 HC (4d6+2)',
+      title: 'C# / .NET Sandevistan Runtime',
       cat: 'SISTEMA OPERACIONAL // BACKEND, POO & APIs REST',
-      s1: 'FOCO #1', s2: 'APIs REST', s3: 'SWAGGER',
+      quote: '"Esse é o implante que o David Martinez usava para enxergar o código em câmera lenta. C# e .NET puro, direto na espinha dorsal." — Lucy Kushinada',
+      s1: 'FOCO #1', s2: 'APIs REST', s3: 'TECH 10 + 8',
       bullets: [
         'Conhecimentos sólidos em <strong>C# e ecossistema .NET</strong> aplicados na construção de projetos estruturados.',
         'Implementação de APIs REST com documentação interativa via <strong>Swagger</strong>, validação de dados e separação em camadas.',
@@ -2091,11 +2434,12 @@
       mods: ['C#', '.NET', 'APIs REST', 'Swagger', 'POO', 'Arquitetura em Camadas']
     },
     vb6_chassis: {
-      tier: 'TIER 5 // BLINDAGEM DE PRODUÇÃO',
-      ram: 'CUSTO: 40 CAPACIDADE',
+      tier: 'TIER 5 // BLINDAGEM SUBDÉRMICA DE PRODUÇÃO',
+      ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
       title: 'VB6 Legacy Reactor @ Zetti',
       cat: 'ESQUELETO // SUSTENTAÇÃO DE SISTEMAS CRÍTICOS EM AMBIENTE REAL',
-      s1: '100% DIÁRIO', s2: 'FARMÁCIAS', s3: 'ZERO DOWNTIME',
+      quote: '"Tecnologia pré-DataKrash de Rache Bartmoss que ainda move o mundo real. Quem domina esse reator mantém a cidade inteira de pé." — Johnny Silverhand',
+      s1: '100% DIÁRIO', s2: 'FARMÁCIAS', s3: 'COOL 9 + 8',
       bullets: [
         'Manutenção, correção de bugs e evolução de sistema legado em <strong>VB6</strong> utilizado diariamente por múltiplas farmácias.',
         'Entrega de demandas fiscais e regulatórias críticas como <strong>CNPJ alfanumérico</strong> e novos cálculos de impostos.',
@@ -2104,11 +2448,12 @@
       mods: ['VB6 Profissional', 'Regras de Negócio', 'Sistemas Legados', 'CNPJ Alfanumérico', 'Sustentação Crítica']
     },
     java_reflex: {
-      tier: 'TIER 5 // CO-PROCESSADOR DE ENGENHARIA',
-      ram: 'CUSTO: 42 CAPACIDADE',
+      tier: 'TIER 5 // IMPULSOR NEURAL KERENZIKOV',
+      ram: 'CUSTO HUMANIDADE: 14 HC (4d6)',
       title: 'Java 17/21, Spring Boot 3 & Algoritmos',
       cat: 'SISTEMA NERVOSO // API CAMADAS, DESKTOP DAO & ESTRUTURAS DE DADOS',
-      s1: '5 PROJETOS', s2: 'O(log n) / O(1)', s3: 'JUNIT 5',
+      quote: '"Busca em Árvore AVL em O(log n) e Tabela Hash em O(1) medido em nanossegundos. Rápido como um Kerenzikov em combate." — Wakako Okada',
+      s1: '5 PROJETOS', s2: 'O(log n) / O(1)', s3: 'REF 8 + 8',
       bullets: [
         'Arquitetura em 4 camadas (Controller, Service, Repository JPA e Entity) com <strong>Spring Boot 3 e PostgreSQL</strong> (vital-conscious-api).',
         'Aplicação desktop gráfica com <strong>Java 21, JavaFX, JDBC e padrão DAO</strong> (controle-estoque-javafx).',
@@ -2117,10 +2462,11 @@
       mods: ['Java 17 / 21', 'Spring Boot 3', 'Spring Data JPA', 'JavaFX DAO', 'Árvore AVL & BST', 'Hash Table O(1)', 'JUnit 5']
     },
     node_ts: {
-      tier: 'TIER 5 // MÓDULO DE MICROSSERVIÇOS & ORM',
-      ram: 'CUSTO: 38 CAPACIDADE',
+      tier: 'TIER 5 // MONOFIO TÉRMICO DE NETRUNNER (LUCY)',
+      ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
       title: 'Node.js, TypeScript, Express & NestJS',
-      cat: 'SINAPSE DE REDE // APIs REST PAGINADAS, TYPEORM & PRISMA',
+      cat: 'BRAÇOS & INTERFACE // APIs REST PAGINADAS, TYPEORM & PRISMA',
+      quote: '"Fatia qualquer requisição HTTP com precisão cirúrgica: Express, NestJS, TypeORM, Prisma e Docker prontos para deploy." — Rogue Amendiares',
       s1: 'TOP 1 REPO', s2: 'DOCKER', s3: 'JEST + YUP',
       bullets: [
         'Autor da <strong>api-gestao-produtos</strong> (Express, TypeScript, TypeORM, MySQL, Migrations, Seeds, Yup, Swagger e Docker).',
@@ -2130,10 +2476,11 @@
       mods: ['Node.js', 'TypeScript', 'Express', 'NestJS', 'TypeORM', 'Prisma ORM', 'Docker', 'Jest']
     },
     git_optics: {
-      tier: 'TIER 5 // LENTE TÁTICA DE EQUIPE',
-      ram: 'CUSTO: 35 CAPACIDADE',
+      tier: 'TIER 5 // ÓPTICA KIROSHI "THE ORACLE" MK.5',
+      ram: 'CUSTO HUMANIDADE: 10 HC (2d6)',
       title: 'Git, GitKraken, Jira & Visual Studio',
-      cat: 'ÓPTICA KIROSHI // FLUXO ÁGIL, VERSIONAMENTO & CONTAINERS',
+      cat: 'SISTEMA ÓPTICO // FLUXO ÁGIL, VERSIONAMENTO & CONTAINERS',
+      quote: '"Enxerga conflitos de merge através das paredes e rastreia cada ticket no Jira até a validação final." — Viktor Vektor',
       s1: 'FLUXO REAL', s2: 'GITLAB/HUB', s3: 'DOCKER',
       bullets: [
         'Uso diário de <strong>Jira, Git, GitHub, GitLab e GitKraken</strong> no ciclo de chamados e code review na Zetti.',
@@ -2155,6 +2502,7 @@
     document.getElementById('cwRamText').textContent = d.ram;
     document.getElementById('cwTitle').textContent = d.title;
     document.getElementById('cwCategory').textContent = d.cat;
+    document.getElementById('cwLoreQuote').textContent = d.quote;
     document.getElementById('cwStat1').textContent = d.s1;
     document.getElementById('cwStat2').textContent = d.s2;
     document.getElementById('cwStat3').textContent = d.s3;
@@ -2163,15 +2511,15 @@
   }
 
   /* ==========================================================================
-     SCREEN 2 DATA: MAP PINS (JOBS + 8 GITHUB REPOS + UNIFAN)
+     SCREEN 2 DATA: MAP PINS
      ========================================================================== */
   let currentMapCloneCmd = 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git';
 
   const mapPinsData = {
     zetti_job: {
-      coord: "COORD: 16°40'S 49°15'W // SETOR 01: ZETTI CORP PLAZA",
+      coord: "COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI",
       type: 'MISSÃO PRINCIPAL // EM OPERAÇÃO',
-      reward: 'EXPERIÊNCIA REAL EM PRODUÇÃO',
+      reward: 'FIXER: ZETTI TECH',
       kicker: 'GOIÂNIA, GO · 08/12/2025 — ATUAL',
       title: 'Estagiário de Desenvolvimento — Zetti',
       desc: 'Manutenção, correção e evolução de sistema em produção utilizado diariamente por múltiplas farmácias, apoiando diretamente a operação dos clientes.',
@@ -2182,7 +2530,7 @@
       clone: 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)'
     },
     carvalho_job: {
-      coord: "COORD: 16°41'S 49°16'W // SETOR 01: DISTRITO ADMINISTRATIVO",
+      coord: "COORD: 16°41'S 49°16'W // CORP PLAZA: CARVALHO",
       type: 'MISSÃO CONCLUÍDA // HISTÓRICO',
       reward: '+2500 STREET CRED',
       kicker: 'GOIÂNIA, GO · 2021 — 2025',
@@ -2195,9 +2543,9 @@
       clone: 'Experiência: Carvalho Forros e Divisórias (2021 - 2025)'
     },
     'api-gestao-produtos': {
-      coord: "COORD: 16°39'S 49°14'W // SETOR 02: ARCOLOGIA API REST",
+      coord: "COORD: 16°39'S 49°14'W // AFTERLIFE: CONTRATO DA ROGUE #01",
       type: '★ CONTRATO TOP 1 // RECOMENDADO P/ AVALIAÇÃO',
-      reward: 'RECOMPENSA: TIER 5++ BACKEND',
+      reward: 'FIXER: ROGUE (AFTERLIFE)',
       kicker: 'REPOSITÓRIO GITHUB // NODE.JS, TYPESCRIPT & MYSQL',
       title: 'api-gestao-produtos',
       desc: 'API REST completa em Node.js, TypeScript, Express e TypeORM com MySQL. Possui CRUD paginado para produtos, categorias, situações e usuários.',
@@ -2208,9 +2556,9 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git'
     },
     'vosso-cinema-api': {
-      coord: "COORD: 16°38'S 49°13'W // SETOR 02: ARCOLOGIA NESTJS",
+      coord: "COORD: 16°38'S 49°13'W // AFTERLIFE: CONTRATO DA ROGUE #02",
       type: 'CONTRATO DE FIXER // ARQUITETURA MODULAR',
-      reward: 'RECOMPENSA: +4200 CRED',
+      reward: 'FIXER: ROGUE (+4200 CRED)',
       kicker: 'REPOSITÓRIO GITHUB // NESTJS, PRISMA & POSTGRESQL',
       title: 'vosso-cinema-api',
       desc: 'API REST para gerenciamento de cinema (filmes, salas, sessões, ingressos e lanches) com arquitetura modular NestJS e Prisma ORM.',
@@ -2221,9 +2569,9 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-api.git'
     },
     'vital-conscious-api': {
-      coord: "COORD: 16°39'S 49°12'W // SETOR 02: TORRE SPRING BOOT",
+      coord: "COORD: 16°39'S 49°12'W // AFTERLIFE: CONTRATO DA ROGUE #03",
       type: 'CONTRATO DE FIXER // 4 CAMADAS JAVA',
-      reward: 'RECOMPENSA: +4500 CRED',
+      reward: 'FIXER: WAKAKO (+4500 CRED)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & SPRING BOOT 3',
       title: 'vital-conscious-api',
       desc: 'API REST universitária estruturada em 4 camadas (Controller, Service, Repository e Entity) para gestão de alunos e professores.',
@@ -2234,9 +2582,9 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/vital-conscious-api.git'
     },
     'controle-estoque-javafx': {
-      coord: "COORD: 16°42'S 49°17'W // SETOR 03: FUNDIÇÃO JAVA DESKTOP",
+      coord: "COORD: 16°42'S 49°17'W // JAPACTOWN: CONTRATO WAKAKO #04",
       type: 'BICO TÉCNICO // PADRÃO DAO & SQL',
-      reward: 'RECOMPENSA: +3800 CRED',
+      reward: 'FIXER: WAKAKO OKADA',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 21, JAVAFX & JDBC',
       title: 'controle-estoque-javafx',
       desc: 'Aplicação desktop em Java 21 e JavaFX para controle de estoque com interface gráfica e persistência em PostgreSQL via JDBC.',
@@ -2247,7 +2595,7 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/controle-estoque-javafx.git'
     },
     'catalogo-livros-avl-bst': {
-      coord: "COORD: 16°43'S 49°16'W // SETOR 03: LAB DE ESTRUTURAS O(log n)",
+      coord: "COORD: 16°43'S 49°16'W // JAPACTOWN: LAB DE ESTRUTURAS O(log n)",
       type: 'BICO TÉCNICO // ÁRVORES BINÁRIAS',
       reward: 'COMPLEXIDADE: O(log n)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17, AVL & BST',
@@ -2260,7 +2608,7 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst.git'
     },
     'tabela-hash-cpf-java': {
-      coord: "COORD: 16°42'S 49°15'W // SETOR 03: NÚCLEO DE INDEXAÇÃO O(1)",
+      coord: "COORD: 16°42'S 49°15'W // JAPACTOWN: NÚCLEO DE INDEXAÇÃO O(1)",
       type: 'BICO TÉCNICO // BENCHMARK EM NANOSSEGUNDOS',
       reward: 'COMPLEXIDADE: O(1)',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & HASH TABLE',
@@ -2273,7 +2621,7 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/tabela-hash-cpf-java.git'
     },
     'quiz-cli-java': {
-      coord: "COORD: 16°44'S 49°18'W // SETOR 03: TERMINAL JUNIT 5",
+      coord: "COORD: 16°44'S 49°18'W // JAPACTOWN: TERMINAL JUNIT 5",
       type: 'BICO TÉCNICO // TESTES AUTOMATIZADOS',
       reward: '100% TEST PASS',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17, MAVEN & JUNIT 5',
@@ -2286,7 +2634,7 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/quiz-cli-java.git'
     },
     'vosso-cinema-web': {
-      coord: "COORD: 16°42'S 49°13'W // SETOR 04: DISTRITO WEB UI",
+      coord: "COORD: 16°42'S 49°13'W // SANTO DOMINGO: DISTRITO WEB UI",
       type: 'CONTRATO FRONTEND // INTERFACE RESPONSIVA',
       reward: 'RECOMPENSA: +3200 CRED',
       kicker: 'REPOSITÓRIO GITHUB // HTML5, CSS3, JS & BOOTSTRAP 5',
@@ -2299,7 +2647,7 @@
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-web.git'
     },
     unifan_edu: {
-      coord: "COORD: 16°43'S 49°12'W // SETOR 04: ACADEMIA UNIFAN",
+      coord: "COORD: 16°43'S 49°12'W // SANTO DOMINGO: ACADEMIA UNIFAN",
       type: 'FORMAÇÃO SUPERIOR // EM ANDAMENTO',
       reward: 'PREVISÃO: 2027 (68%)',
       kicker: 'GRADUAÇÃO // ENGENHARIA DE SOFTWARE',
@@ -2434,11 +2782,7 @@
     const tree = perkTrees[currentTreeKey];
     const n = tree.nodes[idx];
     if (!n) return;
-
-    document.querySelectorAll('.perk-node').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-    });
-
+    document.querySelectorAll('.perk-node').forEach((el, i) => el.classList.toggle('active', i === idx));
     document.getElementById('perkTitle').textContent = n.title;
     document.getElementById('perkSub').textContent = n.sub;
     document.getElementById('perkDesc').textContent = n.desc;
@@ -2460,13 +2804,41 @@
   }
 
   /* ==========================================================================
-     SCREEN 4 DATA: JOURNAL QUEST LOG
+     SCREEN 4: CYBERPUNK RED 1d10 SKILL CHECK ROLLER
+     ========================================================================== */
+  function rollCyberpunkD10(taskName, statName, statVal, skillVal, dv) {
+    playUiSound(340, 1480, 0.14);
+    let d10 = Math.floor(Math.random() * 10) + 1;
+    let bonusCrit = 0;
+    let critLabel = '';
+    if (d10 === 10) {
+      bonusCrit = Math.floor(Math.random() * 10) + 1;
+      critLabel = ` [CRÍTICO 10! +${bonusCrit}]`;
+    }
+    const total = d10 + bonusCrit + statVal + skillVal;
+    const numEl = document.getElementById('d10ResultNumber');
+    const formEl = document.getElementById('d10FormulaText');
+    const outEl = document.getElementById('d10OutcomeText');
+
+    numEl.textContent = total;
+    formEl.textContent = `1d10 [${d10}${critLabel}] + ${statName} [${statVal}] + Perícia [${skillVal}] = ${total} vs DV ${dv}`;
+    if (d10 === 10) {
+      outEl.textContent = `★ SUCESSO CRÍTICO EXPLOSIVO // ${taskName.toUpperCase()}!`;
+    } else {
+      outEl.textContent = `✓ SUCESSO LENDÁRIO (+${total - dv} ACIMA DA DV) // ${taskName.toUpperCase()}`;
+    }
+    toast(`Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
+  }
+
+  /* ==========================================================================
+     SCREEN 5 DATA: JOURNAL QUEST LOG + JOHNNY SILVERHAND QUOTES
      ========================================================================== */
   const journalQuests = {
     q_zetti: {
       status: 'STATUS: MISSÃO PRINCIPAL EM RASTREAMENTO',
       loc: 'LOCAL: GOIÂNIA, GO (08/12/2025 – ATUAL)',
       title: 'Estagiário de Desenvolvimento — Zetti',
+      quote: '"Acorda, Samurai! Manter sistema em produção rodando em dezenas de farmácias todo santo dia é o que separa os mercenários de verdade dos turistas de Night City." — Johnny Silverhand',
       narrative: 'Atuação profissional diária mantendo, corrigindo e evoluindo sistema utilizado em ambiente real por múltiplas farmácias, com forte atuação em banco de dados SQL Server e regras de negócio.',
       objs: [
         'Manutenção, correção e evolução de sistema legado em VB6 utilizado diariamente por múltiplas farmácias.',
@@ -2479,6 +2851,7 @@
       status: 'STATUS: FORMAÇÃO ACADÊMICA EM CURSO (68%)',
       loc: 'PREVISÃO DE CONCLUSÃO: 2027',
       title: 'UNIFAN — Bacharelado em Engenharia de Software',
+      quote: '"Conhecimento de arquitetura e banco de dados é a única munição que nenhuma megacorporação pode tirar de você." — Alt Cunningham',
       narrative: 'Graduação focada em arquitetura de software, programação orientada a objetos, estruturas de dados, engenharia de requisitos e bancos de dados relacionais.',
       objs: [
         'Cursando Engenharia de Software na UNIFAN (Conclusão em 2027).',
@@ -2490,6 +2863,7 @@
       status: 'STATUS: MISSÃO CONCLUÍDA COM SUCESSO',
       loc: 'PERÍODO: 2021 — 2025 · GOIÂNIA, GO',
       title: 'Auxiliar Administrativo — Carvalho Forros e Divisórias',
+      quote: '"Todo Edgerunner de respeito começou aprendendo disciplina e organização na linha de frente." — Viktor Vektor',
       narrative: 'Trajetória iniciada como Jovem Aprendiz e seguida de efetivação, consolidando organização, atendimento ao cliente e gestão de rotinas administrativas.',
       objs: [
         'Execução de rotinas administrativas e organização de documentos.',
@@ -2501,6 +2875,7 @@
       status: 'STATUS: ★ CONTRATO TOP 1 AUDITÁVEL NO GITHUB',
       loc: 'STACK: NODE.JS · TYPESCRIPT · EXPRESS · TYPEORM · MYSQL',
       title: 'api-gestao-produtos — API REST Completa com Docker',
+      quote: '"Esse é o meu contrato favorito no Afterlife: CRUD paginado, TypeORM, MySQL, Swagger e Docker prontos para rodar." — Rogue Amendiares',
       narrative: 'Projeto destaque para avaliação técnica backend: API REST estruturada com CRUD paginado, migrations, seeds, validação com Yup, documentação Swagger e containerização Docker.',
       objs: [
         'CRUD paginado para produtos, categorias, situações e usuários.',
@@ -2512,6 +2887,7 @@
       status: 'STATUS: CONTRATO CONCLUÍDO NO GITHUB',
       loc: 'STACK: NESTJS · TYPESCRIPT · PRISMA ORM · POSTGRESQL',
       title: 'vosso-cinema-api — Arquitetura Modular NestJS',
+      quote: '"Cinco entidades relacionais no PostgreSQL orquestradas com NestJS, Prisma e testes no Jest. Trabalho limpo." — Lucy Kushinada',
       narrative: 'API REST para gerenciamento completo de redes de cinema (filmes, salas, sessões, ingressos e lanches) com Prisma ORM e testes automatizados.',
       objs: [
         '5 entidades relacionais modeladas no PostgreSQL com Prisma ORM.',
@@ -2523,6 +2899,7 @@
       status: 'STATUS: CONTRATO CONCLUÍDO NO GITHUB',
       loc: 'STACK: JAVA 17 · SPRING BOOT 3 · SPRING DATA JPA · POSTGRESQL',
       title: 'vital-conscious-api — API em 4 Camadas',
+      quote: '"Quatro camadas bem separadas com Spring Boot 3 e diagramas de engenharia. Elegante e letal." — Wakako Okada',
       narrative: 'API REST universitária estruturada em Controller, Service, Repository e Entity para gestão acadêmica, acompanhada de diagramas UML e PDS.',
       objs: [
         'Arquitetura em 4 camadas com Spring Boot 3 e Spring Data JPA.',
@@ -2534,6 +2911,7 @@
       status: 'STATUS: SUITE DE 4 REPOSITÓRIOS JAVA NO GITHUB',
       loc: 'STACK: JAVA 17/21 · JAVAFX · AVL/BST · HASH O(1) · JUNIT 5',
       title: 'Projetos Java Desktop, Estruturas de Dados & Testes',
+      quote: '"Árvore AVL auto-balanceada e Tabela Hash medida em nanossegundos. Isso é engenharia raiz." — Rache Bartmoss',
       narrative: 'Conjunto de 4 repositórios demonstrando domínio da linguagem Java desde interfaces desktop com banco SQL até algoritmos clássicos de alta performance.',
       objs: [
         'controle-estoque-javafx: Aplicação desktop Java 21 + JavaFX + JDBC + PostgreSQL no padrão DAO.',
@@ -2554,6 +2932,7 @@
     document.getElementById('jqStatus').textContent = q.status;
     document.getElementById('jqLoc').textContent = q.loc;
     document.getElementById('jqTitle').textContent = q.title;
+    document.getElementById('jqJohnnyQuote').textContent = q.quote;
     document.getElementById('jqNarrative').textContent = q.narrative;
     document.getElementById('jqObjectives').innerHTML = q.objs.map(o => `
       <div class="quest-obj-item">
@@ -2564,7 +2943,7 @@
   }
 
   /* ==========================================================================
-     SCREEN 5: HOLOCALL & BREACH PROTOCOL MINI-GAME
+     SCREEN 6: HOLOCALL & BREACH PROTOCOL
      ========================================================================== */
   function setSpeech(txt) {
     const el = document.getElementById('holoSpeechBox');
@@ -2590,7 +2969,8 @@
     }
     if (seq.includes('BD E9 7A')) {
       document.getElementById('daemon3').classList.add('unlocked');
-      toast('DAEMON DESBLOQUEADO: ACESSO_DIRETO_WHATSAPP!');
+      if (!sandevistanOn) toggleSandevistan();
+      toast('DAEMON DESBLOQUEADO: DEEP_DIVE_LUCY (SANDEVISTAN ATIVO)!');
     }
   }
 
@@ -2603,15 +2983,17 @@
     toast('Matriz Breach Protocol reiniciada');
   }
 
-  /* Hotkeys I, M, P, J, H & 1-5 */
+  /* Hotkeys I, M, P, R, J, H, E */
   window.addEventListener('keydown', (e) => {
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
     const k = e.key.toLowerCase();
     if (k === 'i' || k === '1') openGameScreen('cyberware');
     else if (k === 'm' || k === '2') openGameScreen('mapa');
     else if (k === 'p' || k === '3') openGameScreen('perks');
-    else if (k === 'j' || k === '4') openGameScreen('diario');
-    else if (k === 'h' || k === '5') openGameScreen('holocall');
+    else if (k === 'r' || k === '4') openGameScreen('trpg');
+    else if (k === 'j' || k === '5') openGameScreen('diario');
+    else if (k === 'h' || k === '6') openGameScreen('holocall');
+    else if (k === 'e') toggleSandevistan();
   });
 </script>
 </body>
