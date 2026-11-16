@@ -28,3 +28,25 @@ Dossiê neural e portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor d
    - Alterne entre a **Camada Visual**, **Camada de Áudio** e **Camada Térmica / SQL** da operação profissional de Miqueias, além de consultar a leitura esotérica de *Misty Olszewski* para os 4 Arcanos Maiores do Tarô.
 7. **Holocall & Breach Protocol (`[H]`) com Auto-Hack Kiroshi & Rádio Multi-Estações:**
    - Botão **Auto-Hack Kiroshi** que resolve automaticamente a matriz hexadecimal desbloqueando os 3 Daemons em sequência, e **Rádio FM** com 3 estações sintetizadas via WebAudio (*98.7 Body Heat FM*, *107.3 Morro Rock* e *89.3 Pacific Dreams*).
+
+---
+
+## ⚡ Arquitetura & Otimizações de Performance (v2.2)
+
+- **Pipeline Modular e Build Reprodutível (`node scripts/build.mjs`):**
+  - Código-fonte separado em [`src/styles.css`](src/styles.css) e [`src/app.js`](src/app.js), minificado em CSS crítico inline no [`index.html`](index.html) e JavaScript externo em cache com `defer` em [`assets/js/app.min.js`](assets/js/app.min.js) (validado via `vm.Script` + `node --check`).
+- **Retrato Único Otimizado (`portrait-2.webp`):**
+  - Mantido exclusivamente o retrato [`assets/img/portrait-2.webp`](assets/img/portrait-2.webp) (`7,21 KB` / `272×363`) no slot do Ripperdoc e no Holocall com `fetchpriority="high"` + `<link rel="preload" as="image">`, eliminando ~185 KB de Base64 inline bloqueante.
+- **CPU, GPU e Renderização Sob Demanda:**
+  - Loop do `sandevistanCanvas`, regeneração de RAM e eventos de `mousemove` (fundidos com `requestAnimationFrame` + `{ passive: true }`) operam exclusivamente sob demanda e pausam em aba oculta (`visibilitychange`), levando o consumo ocioso de canvas a zero.
+  - Flash de painéis via **Web Animations API (`element.animate`)** sem reflow forçado, contenção de layout CSS (`contain: content / strict / layout style`), fontes assíncronas não-bloqueantes (`media="print"`) e suporte a `prefers-reduced-motion`.
+
+| Métrica (Chromium Headless CDP) | Antes (`v2.1`) | Depois (`v2.2`) | Ganho |
+| :--- | :---: | :---: | :---: |
+| **`index.html` (crítico p/ 1ª renderização, gzip)** | `132.138 B` (`129 KB`) | `21.641 B` (`21,1 KB`) | **-83,6%** |
+| **Transferência inicial total (raw / gzip)** | `295.478 B` / `133.876 B` | `167.755 B` / `52.064 B` | **-43,2% raw / -61,1% gzip** |
+| **Desenhos em Canvas ocioso (`500 ms`)** | `31 chamadas` | `0 chamadas` | **-100%** |
+| **Recálculos de Layout sob stress interativo** | `58` (`81 ms`) | `8` (`17 ms`) | **-86,2% layouts / -79,0% ms** |
+| **Recálculos de Estilo sob stress interativo** | `65` | `42` | **-35,4%** |
+| **Overflow horizontal mobile (`390×844`, 6 telas)** | — | `0 px` | **100% responsivo** |
+
