@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Miqueias Carvalho // CYBERPUNK 2077 · EDGERUNNERS · CYBERPUNK RED OS v2.1</title>
+  <title>Miqueias Carvalho // CYBERPUNK 2077 · EDGERUNNERS · CYBERPUNK RED OS v2.2</title>
   <meta name="description" content="Portfólio interativo de Miqueias Carvalho (Desenvolvedor Backend Júnior | C#/.NET & SQL Server) construído como o Menu de Jogo de Cyberpunk 2077 Patch 2.1, Cyberpunk: Edgerunners (Sandevistan & Cyberpsychosis) e Ficha de RPG de Mesa Cyberpunk RED (1d10 & NET Architecture).">
   <meta name="author" content="Miqueias Carvalho">
   <meta name="theme-color" content="#FF003C">
@@ -14,12 +14,6 @@
   <link rel="stylesheet" href="assets/design-tokens.css">
 
   <style>
-    /* ==========================================================================
-       ULTIMATE CYBERPUNK UNIVERSE DESIGN SYSTEM v2.1 (THREE-LAYER TOKENS)
-       1. Cyberpunk 2077 Patch 2.1 (REDengine 4 Menu, Relic Biochip, Braindance, Breach)
-       2. Cyberpunk: Edgerunners (Militech Apogee Sandevistan, Cyberpsychosis Overclock)
-       3. Cyberpunk 2020 / RED Tabletop RPG (10 Stats, 1d10 Roller, NET Architecture)
-       ========================================================================== */
     :root {
       --cp-red: #FF003C;
       --cp-red-dim: rgba(255, 0, 60, 0.28);
@@ -52,7 +46,6 @@
       --clip-tab: polygon(9px 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
     }
 
-    /* Edgerunners Sandevistan Theme Override */
     body.sandevistan-active,
     [data-cyber-os="edgerunners"] {
       --menu-bg: #020906;
@@ -103,7 +96,6 @@
       color-scheme: dark;
     }
 
-    /* REDengine 4 Perspective Wireframe Grid */
     body::before {
       content: "";
       position: fixed;
@@ -117,7 +109,6 @@
       mask-image: radial-gradient(ellipse at center, black 40%, transparent 92%);
     }
 
-    /* CRT Scanlines */
     body::after {
       content: "";
       position: fixed;
@@ -148,7 +139,6 @@
       outline-offset: 2px;
     }
 
-    /* Relic Malfunction Glitch Animation */
     @keyframes relicGlitch {
       0% { transform: translate(0, 0) skewX(0deg); filter: none; }
       20% { transform: translate(-5px, 2px) skewX(4deg); filter: hue-rotate(90deg) contrast(1.45); }
@@ -158,6 +148,15 @@
     }
     body.relic-malfunction main.cp-game-stage {
       animation: relicGlitch 0.45s ease;
+    }
+
+    @keyframes panelPulse {
+      0% { box-shadow: 0 0 0 rgba(252, 238, 9, 0); }
+      50% { box-shadow: 0 0 32px rgba(252, 238, 9, 0.65), inset 0 0 24px rgba(0, 240, 255, 0.28); }
+      100% { box-shadow: 0 0 0 rgba(252, 238, 9, 0); }
+    }
+    .panel-flash {
+      animation: panelPulse 0.36s ease;
     }
 
     /* ==========================================================================
@@ -186,6 +185,14 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .ram-slots-wrap:hover {
+      border-color: var(--menu-primary);
+      background: rgba(252, 238, 9, 0.1);
     }
     .ram-pip {
       display: inline-block;
@@ -201,7 +208,6 @@
       border: 1px solid var(--menu-accent);
     }
 
-    /* Johnny Silverhand Hologram Banner */
     .johnny-engram-banner {
       display: none;
       max-width: 1520px;
@@ -227,7 +233,7 @@
     }
 
     /* ==========================================================================
-       TOP GAME MENU HEADER (LEVEL / STREET CRED / RADIO FM / SANDEVISTAN / TABS)
+       TOP GAME MENU HEADER
        ========================================================================== */
     header.cp-top-hud {
       position: sticky;
@@ -259,6 +265,15 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 3px 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .cp-stat-badge:hover {
+      border-color: var(--menu-primary);
+      background: rgba(252, 238, 9, 0.08);
     }
     .cp-stat-num {
       font-family: var(--font-display);
@@ -276,6 +291,7 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+      text-align: left;
     }
     .cp-stat-meta span {
       font-family: var(--font-mono);
@@ -391,9 +407,6 @@
       box-shadow: 0 0 18px var(--cp-green);
     }
 
-    /* ==========================================================================
-       MAIN STAGE & SUB-BANNERS
-       ========================================================================== */
     main.cp-game-stage {
       position: relative;
       z-index: 3;
@@ -443,7 +456,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 1: RIPPERDOC CLINIC (VIKTOR VEKTOR) // CYBERWARE, CODE & OVERCLOCK
+       SCREEN 1: RIPPERDOC CLINIC
        ========================================================================== */
     .cyberware-layout {
       display: grid;
@@ -532,7 +545,6 @@
       color: var(--menu-primary);
     }
 
-    /* Center Character Stage */
     .cw-body-stage {
       background: var(--menu-surface);
       border: 1px solid var(--menu-border);
@@ -613,19 +625,21 @@
     }
     .cw-hotspot {
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--menu-primary);
       border: 2px solid #080204;
       box-shadow: 0 0 12px var(--menu-primary);
       z-index: 3;
       cursor: pointer;
-      transition: transform 0.16s ease;
+      transition: transform 0.16s ease, background 0.16s ease;
     }
-    .cw-hotspot:hover {
-      transform: scale(1.45);
-      background: var(--menu-secondary);
+    .cw-hotspot:hover,
+    .cw-hotspot.active {
+      transform: scale(1.5);
+      background: var(--cp-green);
+      box-shadow: 0 0 18px var(--cp-green);
     }
 
     .cw-char-footer {
@@ -653,7 +667,6 @@
       margin-top: 10px;
     }
 
-    /* Right RPG Item Tooltip + Live Code Box */
     .cw-inspector-card {
       background: var(--menu-surface);
       border: 2px solid var(--cp-iconic);
@@ -765,14 +778,21 @@
     .cw-mod-pills span {
       font-family: var(--font-mono);
       font-size: 10.5px;
-      padding: 2px 8px;
+      padding: 3px 9px;
       background: rgba(8, 2, 4, 0.9);
       border: 1px solid var(--menu-secondary);
       color: var(--menu-secondary);
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .cw-mod-pills span:hover {
+      background: var(--menu-primary);
+      color: #080204;
+      border-color: var(--menu-primary);
     }
 
     /* ==========================================================================
-       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA + GPS ROUTE & TERMINAL
+       SCREEN 2: MAPA TÁTICO DE NIGHT CITY / GOIÂNIA
        ========================================================================== */
     .map-layout {
       display: grid;
@@ -1029,8 +1049,8 @@
     .perk-node {
       position: absolute;
       transform: translate(-50%, -50%);
-      width: 70px;
-      height: 70px;
+      width: 76px;
+      height: 76px;
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       background: #090205;
       border: 2px solid var(--menu-secondary);
@@ -1047,6 +1067,11 @@
       padding: 4px;
       transition: all 0.18s ease;
       z-index: 3;
+      gap: 2px;
+    }
+    .perk-node small {
+      font-size: 8.5px;
+      color: var(--cp-green);
     }
     .perk-node.unlocked {
       background: rgba(252, 238, 9, 0.18);
@@ -1055,8 +1080,8 @@
       box-shadow: 0 0 18px rgba(252, 238, 9, 0.35);
     }
     .perk-node.master-node {
-      width: 84px;
-      height: 84px;
+      width: 88px;
+      height: 88px;
       border-color: var(--cp-iconic);
       background: rgba(255, 158, 0, 0.22);
       color: var(--cp-iconic);
@@ -1067,6 +1092,10 @@
       background: var(--menu-primary);
       color: #080204;
       box-shadow: 0 0 26px var(--menu-primary);
+    }
+    .perk-node.active small,
+    .perk-node:hover small {
+      color: #080204;
     }
 
     /* ==========================================================================
@@ -1097,6 +1126,14 @@
       padding: 8px 6px;
       text-align: center;
       clip-path: var(--clip-btn);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .trpg-stat-cell:hover {
+      background: rgba(252, 238, 9, 0.16);
+      border-color: var(--menu-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 0 14px rgba(252, 238, 9, 0.35);
     }
     .trpg-stat-cell b {
       display: block;
@@ -1141,7 +1178,6 @@
       color: var(--menu-text);
     }
 
-    /* Cyberpunk RED NET Architecture Elevator */
     .net-arch-box {
       background: #050103;
       border: 1px solid var(--menu-secondary);
@@ -1154,13 +1190,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 10px;
+      padding: 7px 10px;
       background: rgba(0, 240, 255, 0.06);
       border: 1px solid rgba(0, 240, 255, 0.25);
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--menu-text-sub);
+      cursor: pointer;
       transition: all 0.2s ease;
+    }
+    .net-floor-row:hover {
+      border-color: var(--menu-primary);
     }
     .net-floor-row.cleared {
       background: rgba(0, 255, 102, 0.18);
@@ -1175,7 +1215,6 @@
       box-shadow: 0 0 14px rgba(252, 238, 9, 0.35);
     }
 
-    /* 1d10 Dice Roller Console */
     .dice-roller-card {
       background: var(--menu-surface);
       border: 2px solid var(--menu-primary);
@@ -1192,6 +1231,11 @@
       padding: 14px;
       text-align: center;
       position: relative;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+    .dice-display-stage:hover {
+      border-color: var(--menu-primary);
     }
     .d10-big-number {
       font-family: var(--font-display);
@@ -1221,7 +1265,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 5: DIÁRIO, TARÔ DA MISTY & EDITOR DE BRAINDANCE (BD 3 CAMADAS)
+       SCREEN 5: DIÁRIO, TARÔ DA MISTY & EDITOR DE BRAINDANCE
        ========================================================================== */
     .journal-layout {
       display: grid;
@@ -1315,7 +1359,6 @@
       flex-shrink: 0;
     }
 
-    /* Braindance (BD) 3-Layer Editor Box */
     .bd-editor-box {
       background: #060205;
       border: 1px solid var(--menu-secondary);
@@ -1323,6 +1366,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      transition: border-color 0.2s ease;
     }
     .bd-layer-tabs {
       display: flex;
@@ -1346,7 +1390,6 @@
       border-color: var(--menu-secondary);
     }
 
-    /* Tarot Cards Strip */
     .tarot-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1387,7 +1430,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 6: HOLOCALL, BREACH PROTOCOL & PROPOSTA RÁPIDA
+       SCREEN 6: HOLOCALL & BREACH PROTOCOL
        ========================================================================== */
     .holocall-layout {
       display: grid;
@@ -1514,6 +1557,11 @@
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid rgba(0, 255, 102, 0.3);
       color: var(--menu-text-sub);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .daemon-row:hover {
+      border-color: var(--menu-primary);
     }
     .daemon-row.unlocked {
       background: rgba(0, 255, 102, 0.22);
@@ -1618,17 +1666,17 @@
       <span id="cursorTelemetry">RETÍCULA X:0420 Y:0210</span>
     </div>
 
-    <div class="ram-slots-wrap" title="Unidades de RAM do Cyberdeck (Recarregam automaticamente)">
+    <button type="button" class="ram-slots-wrap" onclick="rechargeAllRam()" title="Clique para recarregar todas as Unidades de RAM imediatamente">
       <span style="color: var(--menu-primary); font-weight: 800;">CYBERDECK RAM:</span>
       <span id="ramPipsContainer">
         <i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i>
         <i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i><i class="ram-pip"></i>
       </span>
-      <strong id="ramCountText" style="color: var(--cp-green);">8/8 UNIDADES</strong>
-    </div>
+      <strong id="ramCountText" style="color: var(--cp-green);">8/8 UNIDADES [RECARREGAR]</strong>
+    </button>
 
     <div>
-      <span style="color: var(--menu-primary);">ATALHOS: [I] [M] [P] [R] [J] [H] · [E] SANDEVISTAN · [G] JOHNNY ENGRAM</span>
+      <span style="color: var(--menu-primary);">ATALHOS: [I] [M] [P] [R] [J] [H] · [E] SANDEVISTAN · [G] JOHNNY · [O] OVERCLOCK</span>
     </div>
   </div>
 </div>
@@ -1639,20 +1687,20 @@
 <header class="cp-top-hud" role="banner">
   <div class="cp-top-row">
     <div class="cp-player-stats">
-      <div class="cp-stat-badge" title="Nível do Mercenário Backend">
+      <button type="button" class="cp-stat-badge" onclick="openGameScreen('perks')" title="Abrir Árvore de Habilidades 2.0">
         <span class="cp-stat-num" id="hudLevelNum">50</span>
         <div class="cp-stat-meta">
           <span>NÍVEL // BACKEND</span>
           <div class="cp-xp-bar"><i></i></div>
         </div>
-      </div>
-      <div class="cp-stat-badge" title="Street Cred em Produção Real (Zetti + GitHub)">
+      </button>
+      <button type="button" class="cp-stat-badge" onclick="openGameScreen('mapa')" title="Abrir Mapa de Gigs e Contratos">
         <span class="cp-stat-num cred">50</span>
         <div class="cp-stat-meta">
           <span>STREET CRED</span>
           <div class="cp-xp-bar cred"><i></i></div>
         </div>
-      </div>
+      </button>
     </div>
 
     <nav class="cp-menu-nav" role="tablist" aria-label="Menu de Sistema Cyberpunk 2077">
@@ -1677,7 +1725,7 @@
     </nav>
 
     <div class="cp-hud-right">
-      <button type="button" id="sandevistanBtn" class="cp-top-btn sandevistan-btn" onclick="toggleSandevistan()" title="Ativar Militech 'Apogee' Sandevistan (Edgerunners)">
+      <button type="button" id="sandevistanBtn" class="cp-top-btn sandevistan-btn" onclick="toggleSandevistan()" title="Ativar Militech Apogee Sandevistan (Edgerunners)">
         ⚡ SANDEVISTAN [E]
       </button>
       <button type="button" id="radioBtn" class="cp-top-btn" onclick="cycleNightCityRadio()" title="Alternar Estações: 98.7 Body Heat / 107.3 Morro Rock / 89.3 Pacific Dreams">
@@ -1699,7 +1747,10 @@
     <strong style="color: var(--menu-primary);">[RELIC BIOCHIP ENGRAM // JOHNNY SILVERHAND]:</strong>
     <span id="johnnyQuoteText">"Acorda, Samurai! Esse garoto mantém sistemas farmacêuticos em produção na Zetti e constrói APIs limpas em C#/.NET e SQL Server. Contrata logo antes que a Arasaka leve!"</span>
   </div>
-  <button type="button" class="cp-top-btn" onclick="document.getElementById('johnnyBanner').classList.remove('active')">FECHAR [X]</button>
+  <div style="display:flex; gap:6px;">
+    <button type="button" class="cp-top-btn" onclick="summonJohnnyEngram()">PRÓXIMA FALA ↻</button>
+    <button type="button" class="cp-top-btn" onclick="closeJohnnyEngram()">FECHAR [X]</button>
+  </div>
 </div>
 
 <main class="cp-game-stage">
@@ -1713,7 +1764,7 @@
         <p>CLÍNICA DO VIKTOR VEKTOR (LITTLE CHINA) // EDGERUNNERS &amp; PATCH 2.1 CYBERWARE</p>
         <h1>RIPPERDOC &amp; CYBERWARE — MIQUEIAS CARVALHO</h1>
       </div>
-      <p>IMPLANTES COM PREVIEW DE CÓDIGO REAL, UPGRADE TIER 5++ &amp; OVERCLOCK DE EMPATIA</p>
+      <p>CLIQUE NOS IMPLANTES OU PONTOS DO CORPO PARA ESCANEAR O CÓDIGO E APRIMORAR</p>
     </div>
 
     <div class="cyberware-layout">
@@ -1721,7 +1772,7 @@
       <div class="cw-slots-col">
         <span class="cw-col-label">CÓRTEX, SISTEMA OPERACIONAL &amp; CHASSI</span>
 
-        <button type="button" class="cw-slot-card active" onclick="selectCyberware('sql_cortex', this)">
+        <button type="button" class="cw-slot-card active" data-cw="sql_cortex" onclick="selectCyberware('sql_cortex', this)">
           <div class="cw-slot-icon">SQL</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>CÓRTEX FRONTAL</span><b id="lvl-sql_cortex">TIER 5++</b></span>
@@ -1730,7 +1781,7 @@
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('dotnet_deck', this)">
+        <button type="button" class="cw-slot-card tier-edgerunner" data-cw="dotnet_deck" onclick="selectCyberware('dotnet_deck', this)">
           <div class="cw-slot-icon">.NET</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>SISTEMA OPERACIONAL</span><b id="lvl-dotnet_deck">TIER 5++</b></span>
@@ -1739,7 +1790,7 @@
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card" onclick="selectCyberware('vb6_chassis', this)">
+        <button type="button" class="cw-slot-card" data-cw="vb6_chassis" onclick="selectCyberware('vb6_chassis', this)">
           <div class="cw-slot-icon">VB6</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>ESQUELETO // PRODUÇÃO</span><b id="lvl-vb6_chassis">TIER 5+</b></span>
@@ -1750,7 +1801,7 @@
 
         <span class="cw-col-label" style="margin-top: 4px;">SISTEMA NERVOSO, MONOFIO &amp; ÓPTICA KIROSHI</span>
 
-        <button type="button" class="cw-slot-card" onclick="selectCyberware('java_reflex', this)">
+        <button type="button" class="cw-slot-card" data-cw="java_reflex" onclick="selectCyberware('java_reflex', this)">
           <div class="cw-slot-icon">JAVA</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>KERENZIKOV NEURAL</span><b id="lvl-java_reflex">TIER 5+</b></span>
@@ -1759,7 +1810,7 @@
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card tier-edgerunner" onclick="selectCyberware('node_ts', this)">
+        <button type="button" class="cw-slot-card tier-edgerunner" data-cw="node_ts" onclick="selectCyberware('node_ts', this)">
           <div class="cw-slot-icon">TS</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>MONOFIO DA LUCY</span><b id="lvl-node_ts">TIER 5++</b></span>
@@ -1768,7 +1819,7 @@
           </div>
         </button>
 
-        <button type="button" class="cw-slot-card" onclick="selectCyberware('git_optics', this)">
+        <button type="button" class="cw-slot-card" data-cw="git_optics" onclick="selectCyberware('git_optics', this)">
           <div class="cw-slot-icon">OPT</div>
           <div class="cw-slot-info">
             <span class="cw-slot-part"><span>ÓPTICA KIROSHI MK.5</span><b id="lvl-git_optics">TIER 5+</b></span>
@@ -1796,17 +1847,17 @@
           <svg class="cw-silhouette-svg" viewBox="0 0 240 270" fill="none" aria-hidden="true">
             <circle cx="120" cy="112" r="90" stroke="var(--menu-accent)" stroke-opacity="0.34" stroke-width="1.2" stroke-dasharray="10 6"/>
             <circle cx="120" cy="112" r="104" stroke="var(--menu-secondary)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 10"/>
-            <!-- Edgerunners David Martinez Spine / Sandevistan Neural Vertebrae -->
             <line x1="120" y1="15" x2="120" y2="255" stroke="var(--cp-green)" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="6 4"/>
             <path d="M12 42 L72 70 M12 112 L58 112 M12 182 L76 162 M228 62 L168 82 M228 148 L172 132" stroke="var(--menu-primary)" stroke-opacity="0.6" stroke-width="1.5"/>
             <polygon points="75,200 165,200 188,264 52,264" fill="rgba(255,0,60,0.08)" stroke="var(--menu-accent)" stroke-width="1.5"/>
           </svg>
 
-          <button type="button" class="cw-hotspot" style="top: 16px; left: 120px;" onclick="selectCyberware('sql_cortex')" title="Córtex Frontal: SQL Server"></button>
-          <button type="button" class="cw-hotspot" style="top: 82px; left: 26px;" onclick="selectCyberware('dotnet_deck')" title="Sandevistan Deck: C# / .NET"></button>
-          <button type="button" class="cw-hotspot" style="top: 162px; left: 32px;" onclick="selectCyberware('vb6_chassis')" title="Esqueleto: VB6 Produção"></button>
-          <button type="button" class="cw-hotspot" style="top: 82px; left: 210px;" onclick="selectCyberware('java_reflex')" title="Kerenzikov: Java & Spring"></button>
-          <button type="button" class="cw-hotspot" style="top: 162px; left: 206px;" onclick="selectCyberware('git_optics')" title="Kiroshi Oracle: Git, Jira & Docker"></button>
+          <button type="button" class="cw-hotspot active" data-cw="sql_cortex" style="top: 16px; left: 120px;" onclick="selectCyberware('sql_cortex')" title="Córtex Frontal: SQL Server"></button>
+          <button type="button" class="cw-hotspot" data-cw="dotnet_deck" style="top: 82px; left: 26px;" onclick="selectCyberware('dotnet_deck')" title="Sandevistan Deck: C# / .NET"></button>
+          <button type="button" class="cw-hotspot" data-cw="vb6_chassis" style="top: 162px; left: 32px;" onclick="selectCyberware('vb6_chassis')" title="Esqueleto: VB6 Produção"></button>
+          <button type="button" class="cw-hotspot" data-cw="java_reflex" style="top: 82px; left: 210px;" onclick="selectCyberware('java_reflex')" title="Kerenzikov: Java & Spring"></button>
+          <button type="button" class="cw-hotspot" data-cw="node_ts" style="top: 125px; left: 218px;" onclick="selectCyberware('node_ts')" title="Monofio da Lucy: Node.js & TypeScript"></button>
+          <button type="button" class="cw-hotspot" data-cw="git_optics" style="top: 168px; left: 206px;" onclick="selectCyberware('git_optics')" title="Kiroshi Oracle: Git, Jira & Docker"></button>
 
           <div class="cw-portrait-hex" onclick="cycleCharacterPhoto()" title="Clique para alternar entre as 4 fotos reais">
             <img id="charPortraitImg" src="data:image/jpeg;base64,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" alt="Miqueias Carvalho">
@@ -1816,11 +1867,14 @@
         <div class="cw-char-footer">
           <h2>Miqueias Carvalho</h2>
           <p>NETRUNNER &amp; TECH // BACKEND C#/.NET &amp; SQL SERVER</p>
+          <div style="margin-top:4px;">
+            <button type="button" class="cp-top-btn" onclick="cycleCharacterPhoto()">📷 Trocar Foto Kiroshi (1/4)</button>
+          </div>
           <div class="cw-quick-ctas">
             <a href="Curriculo_Miqueias_Carvalho.pdf" download="Curriculo_Miqueias_Carvalho.pdf" class="cp-action-btn">
               ⬇ Dossiê PDF
             </a>
-            <button type="button" class="cp-action-btn outline" onclick="toggleCyberpsychosisOverclock()">
+            <button type="button" id="overclockBtn" class="cp-action-btn outline" onclick="toggleCyberpsychosisOverclock()">
               🔥 Overclock [O]
             </button>
           </div>
@@ -1828,7 +1882,7 @@
       </div>
 
       <!-- Right Column: RPG Item Tooltip with Viktor Vektor Quote & Live Code -->
-      <div class="cw-inspector-card">
+      <div class="cw-inspector-card" id="cwInspectorCard">
         <div>
           <div class="cw-rarity-banner">
             <span id="cwTierText">TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO</span>
@@ -1866,7 +1920,10 @@
           </ul>
 
           <div style="margin-top: 10px;">
-            <span class="cw-col-label" style="display:block; margin-bottom:4px;">BLUEPRINT DE CÓDIGO DO IMPLANTE (KIROSHI CODE SCAN)</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span class="cw-col-label">BLUEPRINT DE CÓDIGO DO IMPLANTE (KIROSHI CODE SCAN)</span>
+              <button type="button" class="cp-top-btn" onclick="copyCurrentCwCode()">📋 Copiar Snippet</button>
+            </div>
             <pre class="cw-code-preview" id="cwCodePreview">-- SQL Server Procedure @ Zetti (CNPJ Alfanumérico & Impostos)
 CREATE OR ALTER PROCEDURE dbo.sp_ValidarAtualizarCNPJ_Alfa
   @FarmaciaID INT, @NovoCNPJ CHAR(14)
@@ -1881,19 +1938,22 @@ END;</pre>
 
         <div>
           <div class="cw-mod-pills" id="cwMods">
-            <span>SQL Server</span>
-            <span>MySQL</span>
-            <span>PostgreSQL</span>
-            <span>Queries &amp; Views</span>
-            <span>Stored Procedures</span>
+            <span onclick="toast('Módulo Ativo: SQL Server')">SQL Server</span>
+            <span onclick="toast('Módulo Ativo: MySQL')">MySQL</span>
+            <span onclick="toast('Módulo Ativo: PostgreSQL')">PostgreSQL</span>
+            <span onclick="toast('Módulo Ativo: Queries & Views')">Queries &amp; Views</span>
+            <span onclick="toast('Módulo Ativo: Stored Procedures')">Stored Procedures</span>
           </div>
 
           <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
             <button type="button" class="cp-action-btn" onclick="upgradeSelectedCyberware()">
-              🔧 Aprimorar Implante (+1 Tier // 2 RAM)
+              🔧 Aprimorar Implante (+1 Tier)
             </button>
             <button type="button" class="cp-action-btn outline" onclick="toggleSandevistan()">
               ⚡ Sandevistan [E]
+            </button>
+            <button type="button" class="cp-action-btn outline" onclick="openGameScreen('trpg')">
+              🎲 Testar no RPG [1d10]
             </button>
           </div>
         </div>
@@ -1946,25 +2006,24 @@ END;</pre>
 
             <path d="M180 110 L460 115 L640 140 L540 310 L220 300 Z" stroke="#00F0FF" stroke-opacity="0.35" stroke-width="1.8" fill="none" stroke-dasharray="8 6"/>
 
-            <!-- Dynamic GPS Route Line from HQ (Zetti 176,108) to Selected Target -->
             <line id="gpsRouteLine" x1="176" y1="108" x2="456" y2="99" stroke="#FCEE09" stroke-width="3.5" stroke-dasharray="10 6"/>
-            <circle id="gpsTargetPulse" cx="176" cy="108" r="14" fill="none" stroke="#00FF66" stroke-width="2"/>
+            <circle id="gpsTargetPulse" cx="176" cy="108" r="14" fill="none" stroke="#00FF66" stroke-width="2.5"/>
           </svg>
 
-          <button type="button" class="map-pin pin-job active" data-pin-cat="job" data-x="176" data-y="108" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">★ ZETTI [ATUAL]</button>
-          <button type="button" class="map-pin pin-job" data-pin-cat="job" data-x="264" data-y="162" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">★ CARVALHO [2021–25]</button>
+          <button type="button" class="map-pin pin-job active" data-pin-key="zetti_job" data-pin-cat="job" data-x="176" data-y="108" style="top: 24%; left: 22%;" onclick="selectMapPin('zetti_job', this)">★ ZETTI [ATUAL]</button>
+          <button type="button" class="map-pin pin-job" data-pin-key="carvalho_job" data-pin-cat="job" data-x="264" data-y="162" style="top: 36%; left: 33%;" onclick="selectMapPin('carvalho_job', this)">★ CARVALHO [2021–25]</button>
 
-          <button type="button" class="map-pin" data-pin-cat="api" data-x="456" data-y="99" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">! TOP 1: api-gestao-produtos</button>
-          <button type="button" class="map-pin" data-pin-cat="api" data-x="552" data-y="171" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">! vosso-cinema-api</button>
-          <button type="button" class="map-pin" data-pin-cat="api java" data-x="656" data-y="135" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">! vital-conscious-api</button>
+          <button type="button" class="map-pin" data-pin-key="api-gestao-produtos" data-pin-cat="api" data-x="456" data-y="99" style="top: 22%; left: 57%;" onclick="selectMapPin('api-gestao-produtos', this)">! TOP 1: api-gestao-produtos</button>
+          <button type="button" class="map-pin" data-pin-key="vosso-cinema-api" data-pin-cat="api" data-x="552" data-y="171" style="top: 38%; left: 69%;" onclick="selectMapPin('vosso-cinema-api', this)">! vosso-cinema-api</button>
+          <button type="button" class="map-pin" data-pin-key="vital-conscious-api" data-pin-cat="api java" data-x="656" data-y="135" style="top: 30%; left: 82%;" onclick="selectMapPin('vital-conscious-api', this)">! vital-conscious-api</button>
 
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="152" data-y="279" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">! controle-estoque-javafx</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="256" data-y="333" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">! catalogo-livros-avl-bst</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="328" data-y="261" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">! tabela-hash-cpf-java</button>
-          <button type="button" class="map-pin pin-algo" data-pin-cat="java" data-x="128" data-y="360" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">! quiz-cli-java</button>
+          <button type="button" class="map-pin pin-algo" data-pin-key="controle-estoque-javafx" data-pin-cat="java" data-x="152" data-y="279" style="top: 62%; left: 19%;" onclick="selectMapPin('controle-estoque-javafx', this)">! controle-estoque-javafx</button>
+          <button type="button" class="map-pin pin-algo" data-pin-key="catalogo-livros-avl-bst" data-pin-cat="java" data-x="256" data-y="333" style="top: 74%; left: 32%;" onclick="selectMapPin('catalogo-livros-avl-bst', this)">! catalogo-livros-avl-bst</button>
+          <button type="button" class="map-pin pin-algo" data-pin-key="tabela-hash-cpf-java" data-pin-cat="java" data-x="328" data-y="261" style="top: 58%; left: 41%;" onclick="selectMapPin('tabela-hash-cpf-java', this)">! tabela-hash-cpf-java</button>
+          <button type="button" class="map-pin pin-algo" data-pin-key="quiz-cli-java" data-pin-cat="java" data-x="128" data-y="360" style="top: 80%; left: 16%;" onclick="selectMapPin('quiz-cli-java', this)">! quiz-cli-java</button>
 
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" data-x="512" data-y="288" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">! vosso-cinema-web</button>
-          <button type="button" class="map-pin pin-edu" data-pin-cat="web" data-x="632" data-y="342" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">◆ UNIFAN ENG. SOFTWARE</button>
+          <button type="button" class="map-pin pin-edu" data-pin-key="vosso-cinema-web" data-pin-cat="web" data-x="512" data-y="288" style="top: 64%; left: 64%;" onclick="selectMapPin('vosso-cinema-web', this)">! vosso-cinema-web</button>
+          <button type="button" class="map-pin pin-edu" data-pin-key="unifan_edu" data-pin-cat="web" data-x="632" data-y="342" style="top: 76%; left: 79%;" onclick="selectMapPin('unifan_edu', this)">◆ UNIFAN ENG. SOFTWARE</button>
         </div>
 
         <div class="map-coords-footer">
@@ -1974,7 +2033,7 @@ END;</pre>
       </div>
 
       <!-- Right Fixer Briefing Card + Live Cyberdeck Terminal -->
-      <div class="map-briefing-card">
+      <div class="map-briefing-card" id="mapBriefingCard">
         <div>
           <div class="gig-threat-bar">
             <span id="gigTypeBadge">MISSÃO PRINCIPAL // EM OPERAÇÃO</span>
@@ -2004,7 +2063,7 @@ END;</pre>
           <div style="margin-top: 10px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
               <span class="cw-col-label">TERMINAL DE SIMULAÇÃO DO PROJETO (LIVE RUNNER)</span>
-              <button type="button" class="cp-top-btn" onclick="simulateCurrentGigTerminal()">▶ Simular Execução (1 RAM)</button>
+              <button type="button" class="cp-top-btn" onclick="simulateCurrentGigTerminal()">▶ Simular Execução</button>
             </div>
             <div class="gig-terminal-output" id="gigTerminalOutput">$ zetti-prod-cli --status
 [OK] Conectado ao SQL Server (Multi-Farmácias)
@@ -2027,7 +2086,7 @@ END;</pre>
               Acessar GitHub ↗
             </a>
             <button type="button" class="cp-action-btn outline" onclick="copyMapClone()">
-              Copiar git clone / Info
+              📋 Copiar git clone / Info
             </button>
           </div>
         </div>
@@ -2078,10 +2137,10 @@ END;</pre>
     </div>
 
     <div class="perk-tree-layout">
-      <div class="perk-canvas-box">
+      <div class="perk-canvas-box" id="perkCanvasBox">
         <div class="cw-meter-row" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-primary); border-bottom: 1px solid var(--menu-border-dim); padding-bottom: 8px;">
           <span id="activeTreeTitle">ÁRVORE ATIVA: INTELIGÊNCIA // ENGENHARIA DE DADOS &amp; SQL SERVER</span>
-          <span>PERK SUPREMA: EDGERUNNER</span>
+          <span>CLIQUE EM QUALQUER NÓ PARA EVOLUIR</span>
         </div>
 
         <div class="perk-nodes-stage">
@@ -2094,12 +2153,12 @@ END;</pre>
             <line x1="430" y1="155" x2="480" y2="270" stroke="var(--menu-secondary)" stroke-width="2" stroke-dasharray="6 4"/>
           </svg>
 
-          <button type="button" class="perk-node master-node unlocked active" style="top: 15%; left: 50%;" id="pnode-0" onclick="inspectPerkNode(0)"><span id="pnode-label-0">MESTRE SQL</span></button>
-          <button type="button" class="perk-node unlocked" style="top: 47%; left: 28%;" id="pnode-1" onclick="inspectPerkNode(1)"><span id="pnode-label-1">PROCEDURES</span></button>
-          <button type="button" class="perk-node unlocked" style="top: 47%; left: 72%;" id="pnode-2" onclick="inspectPerkNode(2)"><span id="pnode-label-2">VIEWS &amp; JOIN</span></button>
-          <button type="button" class="perk-node unlocked" style="top: 81%; left: 20%;" id="pnode-3" onclick="inspectPerkNode(3)"><span id="pnode-label-3">MYSQL ORM</span></button>
-          <button type="button" class="perk-node unlocked" style="top: 81%; left: 50%;" id="pnode-4" onclick="inspectPerkNode(4)"><span id="pnode-label-4">POSTGRES</span></button>
-          <button type="button" class="perk-node" style="top: 81%; left: 80%;" id="pnode-5" onclick="inspectPerkNode(5)"><span id="pnode-label-5">MASS UPDATE</span></button>
+          <button type="button" class="perk-node master-node unlocked active" style="top: 15%; left: 50%;" id="pnode-0" onclick="inspectPerkNode(0)"><span id="pnode-label-0">MESTRE SQL</span><small id="prank-0">NV 3/3</small></button>
+          <button type="button" class="perk-node unlocked" style="top: 47%; left: 28%;" id="pnode-1" onclick="inspectPerkNode(1)"><span id="pnode-label-1">PROCEDURES</span><small id="prank-1">NV 3/3</small></button>
+          <button type="button" class="perk-node unlocked" style="top: 47%; left: 72%;" id="pnode-2" onclick="inspectPerkNode(2)"><span id="pnode-label-2">VIEWS &amp; JOIN</span><small id="prank-2">NV 2/3</small></button>
+          <button type="button" class="perk-node unlocked" style="top: 81%; left: 20%;" id="pnode-3" onclick="inspectPerkNode(3)"><span id="pnode-label-3">MYSQL ORM</span><small id="prank-3">NV 2/3</small></button>
+          <button type="button" class="perk-node unlocked" style="top: 81%; left: 50%;" id="pnode-4" onclick="inspectPerkNode(4)"><span id="pnode-label-4">POSTGRES</span><small id="prank-4">NV 2/3</small></button>
+          <button type="button" class="perk-node" style="top: 81%; left: 80%;" id="pnode-5" onclick="inspectPerkNode(5)"><span id="pnode-label-5">MASS UPDATE</span><small id="prank-5">NV 1/3</small></button>
         </div>
 
         <div class="cw-meter-row" style="font-family: var(--font-mono); font-size: 11px; color: var(--menu-secondary); border-top: 1px solid var(--menu-border-dim); padding-top: 8px;">
@@ -2108,11 +2167,11 @@ END;</pre>
         </div>
       </div>
 
-      <div class="cw-inspector-card">
+      <div class="cw-inspector-card" id="perkInspectorCard">
         <div>
           <div class="cw-rarity-banner">
             <span id="perkTierBadge">VANTAGEM SUPREMA // NÍVEL 20</span>
-            <span id="perkStatusBadge">STATUS: EQUIPADA</span>
+            <span id="perkStatusBadge">STATUS: EQUIPADA (NV 3/3)</span>
           </div>
           <h3 class="cw-item-title" id="perkTitle" style="margin-top: 12px;">Arquiteto de Queries, Views &amp; Procedures</h3>
           <p class="cw-item-category" id="perkSub">ATRIBUTO: INTELIGÊNCIA (BANCO DE DADOS &amp; PRODUÇÃO)</p>
@@ -2150,44 +2209,44 @@ END;</pre>
       <div class="trpg-sheet-card">
         <div class="cw-rarity-banner">
           <span>HANDLE: MIQUEIAS "SQL_RUNNER" CARVALHO</span>
-          <span>ROLE ABILITY: INTERFACE NV. 8 // MAKER NV. 8</span>
+          <span>CLIQUE EM QUALQUER ATRIBUTO ABAIXO PARA ROLAR 1d10!</span>
         </div>
 
         <div class="trpg-stats-grid" aria-label="10 Atributos do RPG de Mesa Cyberpunk RED">
-          <div class="trpg-stat-cell"><b>INT</b><strong>10</strong><span>SQL &amp; Dados</span></div>
-          <div class="trpg-stat-cell"><b>TECH</b><strong>10</strong><span>C#/.NET &amp; VB6</span></div>
-          <div class="trpg-stat-cell"><b>REF</b><strong>8</strong><span>Java &amp; Hotfix</span></div>
-          <div class="trpg-stat-cell"><b>DEX</b><strong>8</strong><span>Git &amp; CLI</span></div>
-          <div class="trpg-stat-cell"><b>COOL</b><strong>9</strong><span>Produção Real</span></div>
-          <div class="trpg-stat-cell"><b>WILL</b><strong>9</strong><span>Regras Fiscais</span></div>
-          <div class="trpg-stat-cell"><b>LUCK</b><strong id="luckPoolNum">8/8</strong><span>Dados Sorte</span></div>
-          <div class="trpg-stat-cell"><b>MOVE</b><strong>8</strong><span>Sprints Jira</span></div>
-          <div class="trpg-stat-cell"><b>BODY</b><strong>8</strong><span>Sistemas Legados</span></div>
-          <div class="trpg-stat-cell"><b>EMP</b><strong>9</strong><span>Equipe (78 HC)</span></div>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo INT (SQL & Dados)', 'INT', 10, 8, 17)"><b>INT</b><strong>10</strong><span>SQL &amp; Dados</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo TECH (C#/.NET & VB6)', 'TECH', 10, 8, 17)"><b>TECH</b><strong>10</strong><span>C#/.NET &amp; VB6</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo REF (Java & Hotfix)', 'REF', 8, 8, 15)"><b>REF</b><strong>8</strong><span>Java &amp; Hotfix</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo DEX (Git & CLI)', 'DEX', 8, 8, 15)"><b>DEX</b><strong>8</strong><span>Git &amp; CLI</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo COOL (Produção Real)', 'COOL', 9, 8, 15)"><b>COOL</b><strong>9</strong><span>Produção Real</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Atributo WILL (Regras Fiscais)', 'WILL', 9, 8, 16)"><b>WILL</b><strong>9</strong><span>Regras Fiscais</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Sorte Crítica (Luck Pool)', 'LUCK', 8, 8, 14)"><b>LUCK</b><strong id="luckPoolNum">8/8</strong><span>Dados Sorte</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Agilidade Sprints Jira', 'MOVE', 8, 8, 15)"><b>MOVE</b><strong>8</strong><span>Sprints Jira</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Resiliência Sistemas Legados', 'BODY', 8, 8, 15)"><b>BODY</b><strong>8</strong><span>Sistemas Legados</span></button>
+          <button type="button" class="trpg-stat-cell" onclick="rollCyberpunkD10('Empatia & Trabalho em Equipe', 'EMP', 9, 8, 15)"><b>EMP</b><strong>9</strong><span>Equipe (78 HC)</span></button>
         </div>
 
         <div>
-          <span class="cw-col-label" style="display:block; margin-bottom: 6px;">ELEVADOR DE ARQUITETURA NET // INVASÃO DE MAINFRAME (CYBERPUNK RED NETRUNNING)</span>
+          <span class="cw-col-label" style="display:block; margin-bottom: 6px;">ELEVADOR DE ARQUITETURA NET // INVASÃO DE MAINFRAME (CLIQUE PARA INFILTRAR)</span>
           <div class="net-arch-box" id="netArchFloors">
-            <div class="net-floor-row current" id="net-floor-0">
+            <div class="net-floor-row current" id="net-floor-0" onclick="hackSpecificNetFloor(0)">
               <span>ANDAR 01 // FIREWALL CORPORATIVO (PASSWORD)</span>
-              <span>DV 12 · [AGUARDANDO HACK]</span>
+              <span id="net-status-0">DV 12 · [CLIQUE P/ HACKEAR]</span>
             </div>
-            <div class="net-floor-row" id="net-floor-1">
+            <div class="net-floor-row" id="net-floor-1" onclick="hackSpecificNetFloor(1)">
               <span>ANDAR 02 // GELO NEGRO: HELLHOUND (BLACK ICE)</span>
-              <span>DV 15 · [PROGRAMA: ZAP / SLIDE]</span>
+              <span id="net-status-1">DV 15 · [PROGRAMA: ZAP / SLIDE]</span>
             </div>
-            <div class="net-floor-row" id="net-floor-2">
+            <div class="net-floor-row" id="net-floor-2" onclick="hackSpecificNetFloor(2)">
               <span>ANDAR 03 // NODO DE DADOS: SQL SERVER CLUSTER</span>
-              <span>DV 17 · [EYE-DEE / PROCEDURES]</span>
+              <span id="net-status-2">DV 17 · [EYE-DEE / PROCEDURES]</span>
             </div>
-            <div class="net-floor-row" id="net-floor-3">
+            <div class="net-floor-row" id="net-floor-3" onclick="hackSpecificNetFloor(3)">
               <span>ANDAR 04 // GELO NEGRO: KRAKEN (APIs &amp; DOCKER)</span>
-              <span>DV 18 · [OVERCLOCK C#/.NET]</span>
+              <span id="net-status-3">DV 18 · [OVERCLOCK C#/.NET]</span>
             </div>
-            <div class="net-floor-row" id="net-floor-4">
+            <div class="net-floor-row" id="net-floor-4" onclick="hackSpecificNetFloor(4)">
               <span>ANDAR 05 (ROOT) // PLANTAR VÍRUS: CONTRATAR_MIQUEIAS.DAEMON</span>
-              <span>DV 20 · [ACESSO TOTAL]</span>
+              <span id="net-status-4">DV 20 · [ACESSO TOTAL]</span>
             </div>
           </div>
           <div style="display:flex; gap:8px; margin-top:8px;">
@@ -2224,14 +2283,14 @@ END;</pre>
       </div>
 
       <!-- Right: Interactive 1d10 Skill Check Roller -->
-      <div class="dice-roller-card">
+      <div class="dice-roller-card" id="diceRollerCard">
         <div>
           <div class="gig-threat-bar">
             <span>ROLADOR DE DADOS OFICIAL // CYBERPUNK RED (1d10)</span>
             <span>CRÍTICO NO 10 (EXPLOSÃO +1d10!)</span>
           </div>
 
-          <div class="dice-display-stage" style="margin-top: 12px;">
+          <div class="dice-display-stage" style="margin-top: 12px;" onclick="rollCyberpunkD10('Rolagem Rápida de Netrunner', 'INT', 10, 8, 16)" title="Clique aqui ou nos botões abaixo para rolar 1d10!">
             <div class="d10-big-number" id="d10ResultNumber">26</div>
             <div class="d10-formula" id="d10FormulaText">1d10 [8] + INT [10] + Banco de Dados [8] = 26 vs DV 17</div>
             <div class="d10-outcome" id="d10OutcomeText">✓ SUCESSO LENDÁRIO // QUERY OTIMIZADA EM PRODUÇÃO!</div>
@@ -2258,7 +2317,7 @@ END;</pre>
         </div>
 
         <div class="cw-lore-quote">
-          "O céu sobre o porto tinha a cor de uma TV sintonizada em um canal fora do ar." — William Gibson, Neuromancer (1984) // Clique nas perícias acima ou infiltre a Arquitetura NET ao lado!
+          "O céu sobre o porto tinha a cor de uma TV sintonizada em um canal fora do ar." — William Gibson, Neuromancer (1984) // Clique em qualquer atributo, andar da NET ou perícia acima para rolar os dados!
         </div>
       </div>
     </div>
@@ -2313,7 +2372,7 @@ END;</pre>
         </button>
       </div>
 
-      <div class="quest-detail-col">
+      <div class="quest-detail-col" id="questDetailCard">
         <div>
           <div class="gig-threat-bar">
             <span id="jqStatus">STATUS: MISSÃO PRINCIPAL EM RASTREAMENTO</span>
@@ -2340,7 +2399,7 @@ END;</pre>
           </div>
 
           <!-- BRAINDANCE (BD) 3-LAYER SCANNER -->
-          <div class="bd-editor-box" style="margin-top: 12px;">
+          <div class="bd-editor-box" id="bdEditorBox" style="margin-top: 12px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
               <span class="cw-col-label">ANÁLISE DE BRAINDANCE (BD 3 CAMADAS // JUDY ALVAREZ MODE)</span>
               <div class="bd-layer-tabs">
@@ -2357,8 +2416,8 @@ END;</pre>
           <!-- 4 Collectible Cyberpunk 2077 Tarot Cards -->
           <div style="margin-top: 12px;">
             <span class="cw-col-label" style="display:block;">LEITURA ESOTÉRICA DA MISTY // COLEÇÃO DE TARÔ (4/4 ARCANOS)</span>
-            <div id="tarotReadingBox" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--menu-secondary); margin-top: 4px;">
-              Clique em uma carta de Tarô abaixo para ouvir a leitura de Misty Olszewski sobre a jornada de Miqueias.
+            <div id="tarotReadingBox" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--menu-secondary); margin-top: 4px; padding: 6px 10px; background: rgba(0,240,255,0.06); border-left: 3px solid var(--menu-secondary);">
+              MISTY OLSZEWSKI — ARCANO 0 (O LOUCO): "O início da jornada. Representa a coragem de Miqueias ao evoluir de Jovem Aprendiz e Auxiliar Administrativo (2021–2025) para mergulhar de cabeça na Engenharia de Software."
             </div>
             <div class="tarot-grid">
               <div class="tarot-card active" onclick="inspectTarotCard(0, this)">
@@ -2478,17 +2537,17 @@ END;</pre>
           </div>
 
           <div class="daemon-list" style="margin-top: 14px;">
-            <div class="daemon-row" id="daemon1">
+            <div class="daemon-row" id="daemon1" onclick="unlockSingleDaemon(1)">
               <span>1C 55 BD — DAEMON: EXTRATO_CURRICULO.PDF</span>
-              <span>TIER 5</span>
+              <span>TIER 5 [CLIQUE]</span>
             </div>
-            <div class="daemon-row" id="daemon2">
+            <div class="daemon-row" id="daemon2" onclick="unlockSingleDaemon(2)">
               <span>55 BD E9 — DAEMON: OVERCLOCK_SQL_SERVER</span>
-              <span>+100% XP</span>
+              <span>+100% XP [CLIQUE]</span>
             </div>
-            <div class="daemon-row" id="daemon3">
+            <div class="daemon-row" id="daemon3" onclick="unlockSingleDaemon(3)">
               <span>BD E9 7A — DAEMON: DEEP_DIVE_LUCY (SANDEVISTAN)</span>
-              <span>EDGERUNNERS</span>
+              <span>EDGERUNNERS [CLIQUE]</span>
             </div>
           </div>
         </div>
@@ -2522,6 +2581,14 @@ END;</pre>
   let ramUnits = 8;
   const maxRamUnits = 8;
 
+  function flashPanel(panelId) {
+    const el = document.getElementById(panelId);
+    if (!el) return;
+    el.classList.remove('panel-flash');
+    void el.offsetWidth;
+    el.classList.add('panel-flash');
+  }
+
   /* Cyberdeck RAM Regeneration & Telemetry */
   function renderRamBar() {
     const pips = document.querySelectorAll('#ramPipsContainer .ram-pip');
@@ -2529,15 +2596,21 @@ END;</pre>
       pip.classList.toggle('spent', idx >= ramUnits);
     });
     const txt = document.getElementById('ramCountText');
-    if (txt) txt.textContent = `${ramUnits}/${maxRamUnits} UNIDADES`;
+    if (txt) txt.textContent = `${ramUnits}/${maxRamUnits} UNIDADES [RECARREGAR]`;
+  }
+
+  function rechargeAllRam() {
+    playUiSound(520, 1480, 0.12, 'triangle');
+    ramUnits = maxRamUnits;
+    renderRamBar();
+    toast('⚡ Cyberdeck RAM 100% recarregada (8/8 Unidades)!');
   }
 
   function spendRam(cost) {
     if (ramUnits < cost) {
-      toast(`RAM Insuficiente no Cyberdeck! Aguarde recarga (${ramUnits}/${maxRamUnits})`);
-      return false;
+      ramUnits = maxRamUnits;
     }
-    ramUnits -= cost;
+    ramUnits = Math.max(0, ramUnits - cost);
     renderRamBar();
     return true;
   }
@@ -2547,7 +2620,7 @@ END;</pre>
       ramUnits++;
       renderRamBar();
     }
-  }, 2200);
+  }, 2000);
 
   window.addEventListener('mousemove', (e) => {
     const tel = document.getElementById('cursorTelemetry');
@@ -2586,9 +2659,6 @@ END;</pre>
 
   /* ==========================================================================
      MULTI-STATION NIGHT CITY FM SYNTHESIZER
-     1. 98.7 BODY HEAT RADIO (Edgerunners Arpeggio)
-     2. 107.3 MORRO ROCK RADIO (Samurai Industrial Bass)
-     3. 89.3 PACIFIC DREAMS (Deep Netrunner Ambient)
      ========================================================================== */
   const radioStations = [
     { name: 'OFF', notes: [], tempo: 0, wave: 'triangle' },
@@ -2614,6 +2684,7 @@ END;</pre>
       btn.classList.add('active');
       toast('SINTONIZADO: ' + st.name);
       noteStep = 0;
+      playUiSound(st.notes[0], st.notes[1] || 440, 0.15, st.wave);
       radioInterval = setInterval(() => {
         if (!audioOn || stationIdx === 0) return;
         const f = st.notes[noteStep % st.notes.length];
@@ -2640,10 +2711,15 @@ END;</pre>
     setTimeout(() => document.body.classList.remove('relic-malfunction'), 450);
     const banner = document.getElementById('johnnyBanner');
     const txt = document.getElementById('johnnyQuoteText');
-    txt.textContent = johnnyLines[johnnyIdx % johnnyLines.length];
+    if (txt) txt.textContent = johnnyLines[johnnyIdx % johnnyLines.length];
     johnnyIdx++;
-    banner.classList.add('active');
+    if (banner) banner.classList.add('active');
     toast('🎸 ENGRAMA RELIC ATIVADO: JOHNNY SILVERHAND');
+  }
+
+  function closeJohnnyEngram() {
+    const banner = document.getElementById('johnnyBanner');
+    if (banner) banner.classList.remove('active');
   }
 
   /* ==========================================================================
@@ -2666,11 +2742,13 @@ END;</pre>
   function toggleCyberpsychosisOverclock() {
     overclockOn = !overclockOn;
     document.body.classList.toggle('cyberpsychosis-overclock', overclockOn);
+    const btn = document.getElementById('overclockBtn');
+    if (btn) btn.classList.toggle('outline', !overclockOn);
     playUiSound(overclockOn ? 140 : 620, overclockOn ? 1680 : 300, 0.25, 'sawtooth');
     cwCapacity = overclockOn ? 298 : 248;
     updateBiomonitorReadouts();
     toast(overclockOn
-      ? '🔥 OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 ("I'm built different!")'
+      ? '🔥 OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 (Modo David Martinez!)'
       : 'Overclock desativado — Capacidade estabilizada em 248/300');
   }
 
@@ -2696,12 +2774,12 @@ END;</pre>
   /* Sandevistan Afterimage Trail Canvas */
   (function initSandevistanCanvas() {
     const canvas = document.getElementById('sandevistanCanvas');
-    if (!canvas) return;
+    if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
     let w = 0, h = 0;
     function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
+      w = canvas.width = window.innerWidth || 1280;
+      h = canvas.height = window.innerHeight || 720;
     }
     window.addEventListener('resize', resize);
     resize();
@@ -2804,6 +2882,9 @@ END;</pre>
      SCREEN 1 DATA: CYBERWARE SLOTS + LORE QUOTES + REAL CODE SNIPPETS
      ========================================================================== */
   let currentCwKey = 'sql_cortex';
+  const cwUpgradeLevels = {
+    sql_cortex: 0, dotnet_deck: 0, vb6_chassis: 0, java_reflex: 0, node_ts: 0, git_optics: 0
+  };
   const cyberwareData = {
     sql_cortex: {
       tier: 'TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO',
@@ -2891,7 +2972,7 @@ public RegistroCPF buscarO1(String cpf) {
     long t0 = System.nanoTime();
     int bucket = Math.abs(cpf.hashCode()) % capacidade;
     RegistroCPF res = tabela[bucket].buscarPorChave(cpf);
-    this.ultimoTempoNs = System.nanoTime() - t0; // ~140ns
+    this.ultimoTempoNs = System.nanoTime() - t0; // ~138ns
     return res;
 }`,
       mods: ['Java 17 / 21', 'Spring Boot 3', 'Spring Data JPA', 'JavaFX DAO', 'Árvore AVL & BST', 'Hash Table O(1)', 'JUnit 5']
@@ -2947,7 +3028,13 @@ $ npm run typeorm migration:run && npm test
     currentCwKey = key;
     const d = cyberwareData[key];
     if (!d) return;
-    document.querySelectorAll('.cw-slot-card').forEach(b => b.classList.remove('active'));
+
+    document.querySelectorAll('.cw-slot-card').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-cw') === key);
+    });
+    document.querySelectorAll('.cw-hotspot').forEach(h => {
+      h.classList.toggle('active', h.getAttribute('data-cw') === key);
+    });
     if (btnEl) btnEl.classList.add('active');
 
     document.getElementById('cwTierText').textContent = d.tier;
@@ -2960,18 +3047,29 @@ $ npm run typeorm migration:run && npm test
     document.getElementById('cwStat3').textContent = d.s3;
     document.getElementById('cwBullets').innerHTML = d.bullets.map(b => `<li>${b}</li>`).join('');
     document.getElementById('cwCodePreview').textContent = d.code;
-    document.getElementById('cwMods').innerHTML = d.mods.map(m => `<span>${m}</span>`).join('');
+    document.getElementById('cwMods').innerHTML = d.mods.map(m => `<span onclick="toast('Módulo Ativo: ${m}')">${m}</span>`).join('');
+    flashPanel('cwInspectorCard');
+    toast('Implante inspecionado: ' + d.title);
+  }
+
+  function copyCurrentCwCode() {
+    const d = cyberwareData[currentCwKey];
+    if (d) copyClip(d.code, 'Snippet de código copiado: ' + d.title);
   }
 
   function upgradeSelectedCyberware() {
-    if (!spendRam(2)) return;
+    spendRam(2);
     playUiSound(320, 1640, 0.18, 'sawtooth');
+    cwUpgradeLevels[currentCwKey] = (cwUpgradeLevels[currentCwKey] || 0) + 1;
+    const lvl = cwUpgradeLevels[currentCwKey];
     const badge = document.getElementById('lvl-' + currentCwKey);
-    if (badge) badge.textContent = 'TIER 5++ MAX';
-    document.getElementById('cwTierText').textContent = 'TIER 5++ ICÔNICO OVERCLOCKADO // VIKTOR VEKTOR TUNED';
+    if (badge) badge.textContent = `TIER 5++ [MK.${5 + lvl}]`;
+    document.getElementById('cwTierText').textContent = `TIER 5++ ICÔNICO OVERCLOCKADO [MK.${5 + lvl}] // VIKTOR VEKTOR TUNED`;
+    document.getElementById('cwStat1').textContent = '100% MAX';
     cwCapacity = Math.min(300, cwCapacity + 8);
     updateBiomonitorReadouts();
-    toast('🔧 Implante aprimorado para TIER 5++ MAX! Capacidade: ' + cwCapacity + '/300');
+    flashPanel('cwInspectorCard');
+    toast(`🔧 Implante aprimorado para MK.${5 + lvl}! Capacidade: ${cwCapacity}/300`);
   }
 
   /* ==========================================================================
@@ -2982,6 +3080,7 @@ $ npm run typeorm migration:run && npm test
 
   const mapPinsData = {
     zetti_job: {
+      x: 176, y: 108,
       coord: "COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI",
       dist: '0.0 KM (QG OPERACIONAL ATUAL)',
       type: 'MISSÃO PRINCIPAL // EM OPERAÇÃO',
@@ -3000,6 +3099,7 @@ $ npm run typeorm migration:run && npm test
       clone: 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)'
     },
     carvalho_job: {
+      x: 264, y: 162,
       coord: "COORD: 16°41'S 49°16'W // CORP PLAZA: CARVALHO",
       dist: '1.8 KM DO QG CENTRAL',
       type: 'MISSÃO CONCLUÍDA // HISTÓRICO',
@@ -3018,6 +3118,7 @@ $ npm run typeorm migration:run && npm test
       clone: 'Experiência: Carvalho Forros e Divisórias (2021 - 2025)'
     },
     'api-gestao-produtos': {
+      x: 456, y: 99,
       coord: "COORD: 16°39'S 49°14'W // AFTERLIFE: CONTRATO DA ROGUE #01",
       dist: '3.4 KM // ROTA RÁPIDA VIA AFTERLIFE',
       type: '★ CONTRATO TOP 1 // RECOMENDADO P/ AVALIAÇÃO',
@@ -3035,6 +3136,7 @@ HTTP/1.1 200 OK (Content-Type: application/json)
       clone: 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git'
     },
     'vosso-cinema-api': {
+      x: 552, y: 171,
       coord: "COORD: 16°38'S 49°13'W // AFTERLIFE: CONTRATO DA ROGUE #02",
       dist: '4.2 KM // SETOR NESTJS',
       type: 'CONTRATO DE FIXER // ARQUITETURA MODULAR',
@@ -3053,6 +3155,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-api.git'
     },
     'vital-conscious-api': {
+      x: 656, y: 135,
       coord: "COORD: 16°39'S 49°12'W // AFTERLIFE: CONTRATO DA ROGUE #03",
       dist: '5.1 KM // ARCOLOGIA SPRING BOOT',
       type: 'CONTRATO DE FIXER // 4 CAMADAS JAVA',
@@ -3070,6 +3173,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/vital-conscious-api.git'
     },
     'controle-estoque-javafx': {
+      x: 152, y: 279,
       coord: "COORD: 16°42'S 49°17'W // JAPACTOWN: CONTRATO WAKAKO #04",
       dist: '2.7 KM // DISTRITO JAVAFX',
       type: 'BICO TÉCNICO // PADRÃO DAO & SQL',
@@ -3087,6 +3191,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/controle-estoque-javafx.git'
     },
     'catalogo-livros-avl-bst': {
+      x: 256, y: 333,
       coord: "COORD: 16°43'S 49°16'W // JAPACTOWN: LAB DE ESTRUTURAS O(log n)",
       dist: '3.1 KM // LAB ALGORITMOS',
       type: 'BICO TÉCNICO // ÁRVORES BINÁRIAS',
@@ -3104,6 +3209,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst.git'
     },
     'tabela-hash-cpf-java': {
+      x: 328, y: 261,
       coord: "COORD: 16°42'S 49°15'W // JAPACTOWN: NÚCLEO DE INDEXAÇÃO O(1)",
       dist: '2.9 KM // NÚCLEO HASH O(1)',
       type: 'BICO TÉCNICO // BENCHMARK EM NANOSSEGUNDOS',
@@ -3121,6 +3227,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/tabela-hash-cpf-java.git'
     },
     'quiz-cli-java': {
+      x: 128, y: 360,
       coord: "COORD: 16°44'S 49°18'W // JAPACTOWN: TERMINAL JUNIT 5",
       dist: '3.8 KM // TERMINAL MAVEN',
       type: 'BICO TÉCNICO // TESTES AUTOMATIZADOS',
@@ -3138,6 +3245,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/quiz-cli-java.git'
     },
     'vosso-cinema-web': {
+      x: 512, y: 288,
       coord: "COORD: 16°42'S 49°13'W // SANTO DOMINGO: DISTRITO WEB UI",
       dist: '3.5 KM // DISTRITO WEB',
       type: 'CONTRATO FRONTEND // INTERFACE RESPONSIVA',
@@ -3155,6 +3263,7 @@ PASS src/sessions/sessions.controller.spec.ts
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-web.git'
     },
     unifan_edu: {
+      x: 632, y: 342,
       coord: "COORD: 16°43'S 49°12'W // SANTO DOMINGO: ACADEMIA UNIFAN",
       dist: '4.0 KM // CAMPUS UNIFAN',
       type: 'FORMAÇÃO SUPERIOR // EM ANDAMENTO',
@@ -3178,21 +3287,22 @@ PASS src/sessions/sessions.controller.spec.ts
     currentMapKey = pinKey;
     const d = mapPinsData[pinKey];
     if (!d) return;
-    document.querySelectorAll('.map-pin').forEach(p => p.classList.remove('active'));
-    if (btnEl) {
-      btnEl.classList.add('active');
-      const tx = btnEl.getAttribute('data-x') || '456';
-      const ty = btnEl.getAttribute('data-y') || '99';
-      const gpsLine = document.getElementById('gpsRouteLine');
-      const gpsPulse = document.getElementById('gpsTargetPulse');
-      if (gpsLine) {
-        gpsLine.setAttribute('x2', tx);
-        gpsLine.setAttribute('y2', ty);
-      }
-      if (gpsPulse) {
-        gpsPulse.setAttribute('cx', tx);
-        gpsPulse.setAttribute('cy', ty);
-      }
+    document.querySelectorAll('.map-pin').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-pin-key') === pinKey);
+    });
+    if (btnEl) btnEl.classList.add('active');
+
+    const tx = String(d.x || 456);
+    const ty = String(d.y || 99);
+    const gpsLine = document.getElementById('gpsRouteLine');
+    const gpsPulse = document.getElementById('gpsTargetPulse');
+    if (gpsLine) {
+      gpsLine.setAttribute('x2', tx);
+      gpsLine.setAttribute('y2', ty);
+    }
+    if (gpsPulse) {
+      gpsPulse.setAttribute('cx', tx);
+      gpsPulse.setAttribute('cy', ty);
     }
 
     document.getElementById('mapCoordReadout').textContent = d.coord;
@@ -3204,21 +3314,24 @@ PASS src/sessions/sessions.controller.spec.ts
     document.getElementById('gigDesc').textContent = d.desc;
     document.getElementById('gigBlueprint').innerHTML = d.blueprint;
     document.getElementById('gigTerminalOutput').textContent = d.terminal;
-    document.getElementById('gigStackPills').innerHTML = d.stack.map(s => `<span>${s}</span>`).join('');
+    document.getElementById('gigStackPills').innerHTML = d.stack.map(s => `<span onclick="toast('Tecnologia: ${s}')">${s}</span>`).join('');
     const linkEl = document.getElementById('gigPrimaryLink');
     linkEl.href = d.link;
     linkEl.textContent = d.linkText;
     currentMapCloneCmd = d.clone;
+    flashPanel('mapBriefingCard');
+    toast('Rota GPS traçada: ' + d.title);
   }
 
   function simulateCurrentGigTerminal() {
-    if (!spendRam(1)) return;
+    spendRam(1);
     playUiSound(420, 1560, 0.14, 'sawtooth');
     const d = mapPinsData[currentMapKey];
     const out = document.getElementById('gigTerminalOutput');
     if (out && d) {
       out.textContent = `[EXECUTANDO SIMULAÇÃO KIROSHI — ${new Date().toLocaleTimeString()}]\n` + d.terminal + `\n[✓] STATUS HTTP 200 // TESTES VALIDADOS COM SUCESSO!`;
     }
+    flashPanel('mapBriefingCard');
     toast('▶ Simulação concluída para: ' + (d ? d.title : currentMapKey));
   }
 
@@ -3230,11 +3343,23 @@ PASS src/sessions/sessions.controller.spec.ts
     playUiSound(500, 960, 0.07);
     document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
+    let firstVisibleKey = null;
+    let firstVisibleBtn = null;
     document.querySelectorAll('.map-pin').forEach(pin => {
       const cats = (pin.getAttribute('data-pin-cat') || '').split(/\s+/);
-      if (cat === 'all' || cats.includes(cat)) pin.classList.remove('hidden-pin');
-      else pin.classList.add('hidden-pin');
+      if (cat === 'all' || cats.includes(cat)) {
+        pin.classList.remove('hidden-pin');
+        if (!firstVisibleKey) {
+          firstVisibleKey = pin.getAttribute('data-pin-key');
+          firstVisibleBtn = pin;
+        }
+      } else {
+        pin.classList.add('hidden-pin');
+      }
     });
+    if (firstVisibleKey) {
+      selectMapPin(firstVisibleKey, firstVisibleBtn);
+    }
   }
 
   /* ==========================================================================
@@ -3313,6 +3438,7 @@ PASS src/sessions/sessions.controller.spec.ts
       const lbl = document.getElementById('pnode-label-' + idx);
       if (lbl) lbl.textContent = n.label;
     });
+    flashPanel('perkCanvasBox');
     inspectPerkNode(0);
   }
 
@@ -3323,31 +3449,43 @@ PASS src/sessions/sessions.controller.spec.ts
     const n = tree.nodes[idx];
     if (!n) return;
     document.querySelectorAll('.perk-node').forEach((el, i) => el.classList.toggle('active', i === idx));
+    const nodeEl = document.getElementById('pnode-' + idx);
+    if (nodeEl) nodeEl.classList.add('unlocked');
+    const rnk = document.getElementById('prank-' + idx);
+    if (rnk) rnk.textContent = 'NV 3/3 MAX';
+
     document.getElementById('perkTitle').textContent = n.title;
     document.getElementById('perkSub').textContent = n.sub;
     document.getElementById('perkDesc').textContent = n.desc;
     document.getElementById('perkProof').innerHTML = n.proof;
+    document.getElementById('perkStatusBadge').textContent = 'STATUS: EQUIPADA (NV 3/3)';
+    flashPanel('perkInspectorCard');
+    toast('Vantagem selecionada: ' + n.title);
   }
 
   function overclockCurrentPerk() {
     const nodeEl = document.getElementById('pnode-' + currentNodeIdx);
-    if (perkPoints <= 0 && !nodeEl.classList.contains('unlocked')) {
-      toast('Todos os Pontos de Vantagem já foram distribuídos!');
-      return;
-    }
     playUiSound(360, 1520, 0.16);
-    nodeEl.classList.add('unlocked');
+    if (nodeEl) nodeEl.classList.add('unlocked');
+    const rnk = document.getElementById('prank-' + currentNodeIdx);
+    if (rnk) rnk.textContent = 'OVERCLOCK ★';
     if (perkPoints > 0) perkPoints--;
     document.getElementById('perkPointsCount').textContent = perkPoints + ' PONTOS DE VANTAGEM DISPONÍVEIS';
     document.getElementById('perkStatusBadge').textContent = 'STATUS: OVERCLOCK MÁXIMO ✓';
-    toast('Vantagem Overclockada: ' + document.getElementById('perkTitle').textContent);
+    flashPanel('perkInspectorCard');
+    toast('⚡ Vantagem Overclockada: ' + document.getElementById('perkTitle').textContent);
   }
 
   function unlockAllPerksInTree() {
     playUiSound(280, 1720, 0.22, 'sawtooth');
-    document.querySelectorAll('.perk-node').forEach(el => el.classList.add('unlocked'));
+    document.querySelectorAll('.perk-node').forEach((el, idx) => {
+      el.classList.add('unlocked');
+      const rnk = document.getElementById('prank-' + idx);
+      if (rnk) rnk.textContent = 'NV 3/3 MAX';
+    });
     perkPoints = 0;
     document.getElementById('perkPointsCount').textContent = 'ÁRVORE MAXIMIZADA // NÍVEL 50 EDGERUNNER';
+    flashPanel('perkCanvasBox');
     toast('⚡ Todas as Vantagens da Árvore foram maximizadas!');
   }
 
@@ -3368,14 +3506,17 @@ PASS src/sessions/sessions.controller.spec.ts
     const formEl = document.getElementById('d10FormulaText');
     const outEl = document.getElementById('d10OutcomeText');
 
-    numEl.textContent = total;
-    formEl.textContent = `1d10 [${d10}${critLabel}] + ${statName} [${statVal}] + Perícia [${skillVal}] = ${total} vs DV ${dv}`;
-    if (d10 === 10) {
-      outEl.textContent = `★ SUCESSO CRÍTICO EXPLOSIVO // ${taskName.toUpperCase()}!`;
-    } else {
-      outEl.textContent = `✓ SUCESSO LENDÁRIO (+${total - dv} ACIMA DA DV) // ${taskName.toUpperCase()}`;
+    if (numEl) numEl.textContent = total;
+    if (formEl) formEl.textContent = `1d10 [${d10}${critLabel}] + ${statName} [${statVal}] + Perícia [${skillVal}] = ${total} vs DV ${dv}`;
+    if (outEl) {
+      if (d10 === 10) {
+        outEl.textContent = `★ SUCESSO CRÍTICO EXPLOSIVO // ${taskName.toUpperCase()}!`;
+      } else {
+        outEl.textContent = `✓ SUCESSO LENDÁRIO (+${total - dv} ACIMA DA DV) // ${taskName.toUpperCase()}`;
+      }
     }
-    toast(`Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
+    flashPanel('diceRollerCard');
+    toast(`🎲 Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
   }
 
   let currentNetFloor = 0;
@@ -3388,9 +3529,14 @@ PASS src/sessions/sessions.controller.spec.ts
     'ANDAR 05 (ROOT) // CONTRATAR_MIQUEIAS.DAEMON'
   ];
 
+  function hackSpecificNetFloor(floorIdx) {
+    currentNetFloor = floorIdx;
+    advanceNetArchitecture();
+  }
+
   function advanceNetArchitecture() {
     if (currentNetFloor >= 5) {
-      toast('★ Arquitetura NET já foi 100% dominada (ROOT ACCESS)!');
+      resetNetArchitecture();
       return;
     }
     const dv = netFloorDVs[currentNetFloor];
@@ -3398,10 +3544,13 @@ PASS src/sessions/sessions.controller.spec.ts
     rollCyberpunkD10(fname, 'INTERFACE+INT', 10, 8, dv);
 
     const row = document.getElementById('net-floor-' + currentNetFloor);
+    const st = document.getElementById('net-status-' + currentNetFloor);
     if (row) {
       row.classList.remove('current');
       row.classList.add('cleared');
     }
+    if (st) st.textContent = `DV ${dv} · [HACKEADO ✓]`;
+
     currentNetFloor++;
     const nextRow = document.getElementById('net-floor-' + currentNetFloor);
     if (nextRow) {
@@ -3414,48 +3563,59 @@ PASS src/sessions/sessions.controller.spec.ts
   function resetNetArchitecture() {
     playUiSound(400, 820, 0.1);
     currentNetFloor = 0;
+    const labels = [
+      'DV 12 · [CLIQUE P/ HACKEAR]',
+      'DV 15 · [PROGRAMA: ZAP / SLIDE]',
+      'DV 17 · [EYE-DEE / PROCEDURES]',
+      'DV 18 · [OVERCLOCK C#/.NET]',
+      'DV 20 · [ACESSO TOTAL]'
+    ];
     for (let i = 0; i < 5; i++) {
       const r = document.getElementById('net-floor-' + i);
+      const st = document.getElementById('net-status-' + i);
       if (r) {
         r.classList.remove('cleared', 'current');
         if (i === 0) r.classList.add('current');
       }
+      if (st) st.textContent = labels[i];
     }
     toast('Arquitetura NET reiniciada para o Andar 01');
   }
 
   function exportCyberpunkRedSheet() {
     playUiSound(520, 1280, 0.12);
-    const sheetText = `====================================================================
-CYBERPUNK RED // FICHA DE PERSONAGEM (R. TALSORIAN GAMES)
-====================================================================
-HANDLE: Miqueias "SQL_Runner" Carvalho
-ROLES: Netrunner Rank 8 (Interface) / Tech Rank 8 (Maker)
-LOCALIZAÇÃO: Goiânia, GO | CONTATO: (62) 99842-1308 | miqueiash989@gmail.com
-LINKEDIN: https://www.linkedin.com/in/miqueias-henrique-88503b218/
-GITHUB: https://github.com/Miqueias-Henrique
-
-[STATS CLÁSSICOS]
-INT: 10 | TECH: 10 | REF: 8 | DEX: 8 | COOL: 9
-WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
-
-[EXPERIÊNCIA EM PRODUÇÃO (GIGS REAIS)]
-1. Estagiário de Desenvolvimento — Zetti (08/12/2025 – Atual)
-   - Manutenção e evolução de sistema legado em VB6 (múltiplas farmácias)
-   - Queries, Views e Stored Procedures em SQL Server
-   - Adequação ao CNPJ Alfanumérico, novos impostos e atualizações em massa
-2. Auxiliar Administrativo — Carvalho Forros e Divisórias (2021 – 2025)
-
-[8 PROJETOS AUDITÁVEIS NO GITHUB]
-- api-gestao-produtos (Node.js, TS, Express, TypeORM, MySQL, Swagger, Docker)
-- vosso-cinema-api (NestJS, TS, Prisma ORM, PostgreSQL, Swagger, Jest)
-- vital-conscious-api (Java 17, Spring Boot 3, JPA, PostgreSQL, 4 Camadas)
-- controle-estoque-javafx (Java 21, JavaFX, JDBC, PostgreSQL, DAO)
-- catalogo-livros-avl-bst (Java 17, Árvores AVL & BST O(log n), CSV)
-- tabela-hash-cpf-java (Java 17, Tabela Hash O(1) em nanossegundos)
-- quiz-cli-java (Java 17, Maven, JUnit 5)
-- vosso-cinema-web (JS, HTML5, CSS3, Bootstrap 5)
-====================================================================`;
+    const sheetText = [
+      "====================================================================",
+      "CYBERPUNK RED // FICHA DE PERSONAGEM (R. TALSORIAN GAMES)",
+      "====================================================================",
+      "HANDLE: Miqueias 'SQL_Runner' Carvalho",
+      "ROLES: Netrunner Rank 8 (Interface) / Tech Rank 8 (Maker)",
+      "LOCALIZAÇÃO: Goiânia, GO | CONTATO: (62) 99842-1308 | miqueiash989@gmail.com",
+      "LINKEDIN: https://www.linkedin.com/in/miqueias-henrique-88503b218/",
+      "GITHUB: https://github.com/Miqueias-Henrique",
+      "",
+      "[STATS CLÁSSICOS]",
+      "INT: 10 | TECH: 10 | REF: 8 | DEX: 8 | COOL: 9",
+      "WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)",
+      "",
+      "[EXPERIÊNCIA EM PRODUÇÃO (GIGS REAIS)]",
+      "1. Estagiário de Desenvolvimento — Zetti (08/12/2025 – Atual)",
+      "   - Manutenção e evolução de sistema legado em VB6 (múltiplas farmácias)",
+      "   - Queries, Views e Stored Procedures em SQL Server",
+      "   - Adequação ao CNPJ Alfanumérico, novos impostos e atualizações em massa",
+      "2. Auxiliar Administrativo — Carvalho Forros e Divisórias (2021 – 2025)",
+      "",
+      "[8 PROJETOS AUDITÁVEIS NO GITHUB]",
+      "- api-gestao-produtos (Node.js, TS, Express, TypeORM, MySQL, Swagger, Docker)",
+      "- vosso-cinema-api (NestJS, TS, Prisma ORM, PostgreSQL, Swagger, Jest)",
+      "- vital-conscious-api (Java 17, Spring Boot 3, JPA, PostgreSQL, 4 Camadas)",
+      "- controle-estoque-javafx (Java 21, JavaFX, JDBC, PostgreSQL, DAO)",
+      "- catalogo-livros-avl-bst (Java 17, Árvores AVL & BST O(log n), CSV)",
+      "- tabela-hash-cpf-java (Java 17, Tabela Hash O(1) em nanossegundos)",
+      "- quiz-cli-java (Java 17, Maven, JUnit 5)",
+      "- vosso-cinema-web (JS, HTML5, CSS3, Bootstrap 5)",
+      "===================================================================="
+    ].join("\n");
     const blob = new Blob([sheetText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -3578,12 +3738,23 @@ WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
         <span>${o}</span>
       </div>
     `).join('');
+    flashPanel('questDetailCard');
+    toast('Missão carregada: ' + q.title);
   }
 
   const bdLayers = {
-    visual: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
-    audio: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
-    thermal: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos!'
+    visual: {
+      text: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
+      color: '#FCEE09'
+    },
+    audio: {
+      text: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
+      color: '#00F0FF'
+    },
+    thermal: {
+      text: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos!',
+      color: '#FF003C'
+    }
   };
 
   function selectBdLayer(layerKey, btnEl) {
@@ -3591,7 +3762,16 @@ WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
     document.querySelectorAll('.bd-layer-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
     const el = document.getElementById('bdLayerReadout');
-    if (el) el.textContent = bdLayers[layerKey] || '';
+    const box = document.getElementById('bdEditorBox');
+    const layer = bdLayers[layerKey];
+    if (el && layer) {
+      el.textContent = layer.text;
+      el.style.color = layer.color;
+    }
+    if (box && layer) {
+      box.style.borderColor = layer.color;
+    }
+    toast('Braindance Scanner: Camada ' + layerKey.toUpperCase());
   }
 
   const tarotReadings = [
@@ -3620,26 +3800,33 @@ WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
 
   let bpBuffer = [];
   function pickHex(btnEl, code) {
-    if (btnEl.classList.contains('used') || bpBuffer.length >= 5) return;
+    if (bpBuffer.length >= 5) {
+      resetBreachMatrix();
+    }
     playUiSound(780, 1480, 0.07);
-    btnEl.classList.add('used');
+    if (btnEl) btnEl.classList.add('used');
     bpBuffer.push(code);
     document.getElementById('bpBufferText').textContent = 'BUFFER: [ ' + bpBuffer.join(' ') + ' ]';
 
     const seq = bpBuffer.join(' ');
-    if (seq.includes('1C 55 BD')) {
+    if (seq.includes('1C 55 BD') || code === '1C') {
       document.getElementById('daemon1').classList.add('unlocked');
-      toast('DAEMON DESBLOQUEADO: EXTRATO_CURRICULO.PDF!');
     }
-    if (seq.includes('55 BD E9')) {
+    if (seq.includes('55 BD E9') || bpBuffer.length >= 3) {
       document.getElementById('daemon2').classList.add('unlocked');
-      toast('DAEMON DESBLOQUEADO: OVERCLOCK_SQL_SERVER (+100% XP)!');
     }
-    if (seq.includes('BD E9 7A')) {
+    if (seq.includes('BD E9 7A') || bpBuffer.length >= 4) {
       document.getElementById('daemon3').classList.add('unlocked');
-      if (!sandevistanOn) toggleSandevistan();
-      toast('DAEMON DESBLOQUEADO: DEEP_DIVE_LUCY (SANDEVISTAN ATIVO)!');
     }
+    toast('Hex injetado no Buffer: ' + code);
+  }
+
+  function unlockSingleDaemon(num) {
+    playUiSound(520, 1480, 0.12);
+    const el = document.getElementById('daemon' + num);
+    if (el) el.classList.add('unlocked');
+    if (num === 3 && !sandevistanOn) toggleSandevistan();
+    toast('⚡ Daemon #' + num + ' executado diretamente!');
   }
 
   function autoSolveBreachProtocol() {
@@ -3650,8 +3837,9 @@ WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
     targetSeq.forEach((code, i) => {
       setTimeout(() => {
         if (btns[i]) pickHex(btns[i], code);
-      }, i * 160);
+      }, i * 120);
     });
+    toast('⚡ Auto-Hack Kiroshi: 3 Daemons Desbloqueados!');
   }
 
   function resetBreachMatrix() {
@@ -3659,7 +3847,10 @@ WILL: 9 | LUCK: 8/8 | MOVE: 8 | BODY: 8 | EMP: 9 (78 Humanity)
     bpBuffer = [];
     document.getElementById('bpBufferText').textContent = 'BUFFER: [ _ _ _ _ _ ]';
     document.querySelectorAll('#bpMatrixGrid .hex-btn').forEach(b => b.classList.remove('used'));
-    ['daemon1', 'daemon2', 'daemon3'].forEach(id => document.getElementById(id).classList.remove('unlocked'));
+    ['daemon1', 'daemon2', 'daemon3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('unlocked');
+    });
   }
 
   /* Hotkeys I, M, P, R, J, H, E, G, O */
