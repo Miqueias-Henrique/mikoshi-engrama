@@ -5,6 +5,7 @@
      STATE & SINGLE-PASS DOM CACHE
      ========================================================================== */
   const MAX_RAM_UNITS = 8;
+  const VALID_SCREENS = new Set(['cyberware', 'mapa', 'perks', 'trpg', 'diario', 'holocall']);
   const reducedMotionQuery = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let audioOn = true;
@@ -24,7 +25,11 @@
   const dom = {
     cursorTelemetry: $id('cursorTelemetry'),
     ramCountText: $id('ramCountText'),
+    audioToggleBtn: $id('audioToggleBtn'),
+    audioToggleIcon: $id('audioToggleIcon'),
+    audioToggleLabel: $id('audioToggleLabel'),
     radioBtn: $id('radioBtn'),
+    radioBtnLabel: $id('radioBtnLabel'),
     johnnyBanner: $id('johnnyBanner'),
     johnnyQuoteText: $id('johnnyQuoteText'),
     sandevistanBtn: $id('sandevistanBtn'),
@@ -35,6 +40,14 @@
     sandevistanCanvas: $id('sandevistanCanvas'),
     osModeLabel: $id('osModeLabel'),
     hudToast: $id('hudToast'),
+
+    tabList: document.querySelector('.cp-menu-nav'),
+    cmdDialogBackdrop: $id('cmdDialogBackdrop'),
+    cmdTriggerBtn: $id('cmdTriggerBtn'),
+    cmdSearchInput: $id('cmdSearchInput'),
+    cmdResultsList: $id('cmdResultsList'),
+    cmdCountLabel: $id('cmdCountLabel'),
+    cmdCloseBtn: $id('cmdCloseBtn'),
 
     cwInspectorCard: $id('cwInspectorCard'),
     cwTierText: $id('cwTierText'),
@@ -63,6 +76,8 @@
     gigTerminalOutput: $id('gigTerminalOutput'),
     gigStackPills: $id('gigStackPills'),
     gigPrimaryLink: $id('gigPrimaryLink'),
+    gigPrimaryLinkLabel: $id('gigPrimaryLinkLabel'),
+    gigPrimaryLinkIcon: $id('gigPrimaryLinkIcon'),
 
     perkCanvasBox: $id('perkCanvasBox'),
     perkInspectorCard: $id('perkInspectorCard'),
@@ -204,7 +219,7 @@
     ramUnits = MAX_RAM_UNITS;
     stopRamRegen();
     renderRamBar();
-    toast('⚡ Cyberdeck RAM 100% recarregada (8/8 Unidades)!');
+    toast('Cyberdeck RAM 100% recarregada (8/8 Unidades)');
   }
 
   function spendRam(cost) {
@@ -258,6 +273,38 @@
   let noteStep = 0;
   let radioInterval = null;
 
+  function syncAudioToggleUi() {
+    if (dom.audioToggleBtn) {
+      dom.audioToggleBtn.setAttribute('aria-pressed', audioOn ? 'true' : 'false');
+      dom.audioToggleBtn.classList.toggle('muted-state', !audioOn);
+    }
+    if (dom.audioToggleIcon) {
+      dom.audioToggleIcon.setAttribute('href', audioOn ? '#ui-volume-2' : '#ui-volume-x');
+    }
+    if (dom.audioToggleLabel) {
+      dom.audioToggleLabel.textContent = audioOn ? 'SOM: ON' : 'SOM: OFF';
+    }
+  }
+
+  function toggleHudAudio() {
+    audioOn = !audioOn;
+    syncAudioToggleUi();
+    if (!audioOn) {
+      stationIdx = 0;
+      clearInterval(radioInterval);
+      radioInterval = null;
+      if (dom.radioBtn) {
+        dom.radioBtn.classList.remove('active');
+        dom.radioBtn.setAttribute('aria-pressed', 'false');
+      }
+      if (dom.radioBtnLabel) dom.radioBtnLabel.textContent = 'RÁDIO FM: OFF';
+      toast('Áudio HUD silenciado');
+    } else {
+      playUiSound(520, 1040, 0.08, 'triangle');
+      toast('Áudio HUD ativado');
+    }
+  }
+
   function startRadioLoop() {
     clearInterval(radioInterval);
     radioInterval = null;
@@ -277,18 +324,25 @@
     radioInterval = null;
     const st = radioStations[stationIdx];
     const btn = dom.radioBtn;
+    const lbl = dom.radioBtnLabel;
     if (stationIdx === 0) {
+      if (lbl) lbl.textContent = 'RÁDIO FM: OFF';
       if (btn) {
-        btn.textContent = '📻 RÁDIO FM: OFF';
         btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
       }
       toast('Rádio Night City FM desligada');
     } else {
-      if (btn) {
-        btn.textContent = '📻 ' + st.name;
-        btn.classList.add('active');
+      if (!audioOn) {
+        audioOn = true;
+        syncAudioToggleUi();
       }
-      toast('SINTONIZADO: ' + st.name);
+      if (lbl) lbl.textContent = st.name;
+      if (btn) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      toast('Sintonizado: ' + st.name);
       noteStep = 0;
       playUiSound(st.notes[0], st.notes[1] || 440, 0.15, st.wave);
       startRadioLoop();
@@ -299,7 +353,7 @@
      JOHNNY SILVERHAND ENGRAM SUMMON [G]
      ========================================================================== */
   const johnnyLines = [
-    '"Acorda, Samurai! Esse garoto mantém sistemas farmacêuticos em produção na Zetti e constrói APIs limpas em C#/.NET e SQL Server. Contrata logo antes que a Arasaka leve!"',
+    '"Acorda, Samurai. Esse garoto mantém sistemas farmacêuticos em produção na Zetti e constrói APIs limpas em C#/.NET e SQL Server. Contrata antes que a Arasaka leve."',
     '"Sabe o que é mais difícil que invadir a Torre Arasaka? Refatorar sistema legado em VB6 para CNPJ Alfanumérico sem derrubar uma única farmácia. O Miqueias faz isso todo dia."',
     '"Olha essa ficha: 8 repositórios auditáveis no GitHub, Árvore AVL em O(log n), Tabela Hash em nanossegundos e APIs com Docker e Swagger. Isso é código de Edgerunner raiz."',
     '"Se você precisa de um Dev Júnior Backend que não treme na frente de Stored Procedures em SQL Server nem de código em produção, achou o mercenário certo."'
@@ -320,7 +374,7 @@
     }
     johnnyIdx++;
     if (dom.johnnyBanner) dom.johnnyBanner.classList.add('active');
-    toast('🎸 ENGRAMA RELIC ATIVADO: JOHNNY SILVERHAND');
+    toast('ENGRAMA RELIC ATIVADO: JOHNNY SILVERHAND');
   }
 
   function closeJohnnyEngram() {
@@ -453,17 +507,18 @@
     const hum = dom.humanityReadout;
     const bar = dom.humanityBarFill;
     const cap = dom.cwCapacityReadout;
+    if (bar) {
+      bar.classList.toggle('state-overclock', overclockOn);
+      bar.classList.toggle('state-sandevistan', !overclockOn && sandevistanOn);
+    }
     if (overclockOn) {
       if (hum) hum.textContent = '52 / 90 [OVERCLOCK LIMITE — MODO DAVID MARTINEZ]';
-      if (bar) bar.style.width = '58%';
-      if (cap) cap.textContent = `${cwCapacity} / 300 [OVERCLOCK MÁXIMO!]`;
+      if (cap) cap.textContent = `${cwCapacity} / 300 [OVERCLOCK MÁXIMO]`;
     } else if (sandevistanOn) {
       if (hum) hum.textContent = '64 / 90 [SANDEVISTAN APOGEE — DILATAÇÃO 85%]';
-      if (bar) bar.style.width = '72%';
       if (cap) cap.textContent = `${cwCapacity} / 300 [APOGEE ATIVO]`;
     } else {
       if (hum) hum.textContent = '78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]';
-      if (bar) bar.style.width = '88%';
       if (cap) cap.textContent = `${cwCapacity} / 300 [EDGERUNNER]`;
     }
   }
@@ -471,7 +526,10 @@
   function toggleSandevistan() {
     sandevistanOn = !sandevistanOn;
     document.body.classList.toggle('sandevistan-active', sandevistanOn);
-    if (dom.sandevistanBtn) dom.sandevistanBtn.classList.toggle('active', sandevistanOn);
+    if (dom.sandevistanBtn) {
+      dom.sandevistanBtn.classList.toggle('active', sandevistanOn);
+      dom.sandevistanBtn.setAttribute('aria-pressed', sandevistanOn ? 'true' : 'false');
+    }
     playUiSound(sandevistanOn ? 180 : 980, sandevistanOn ? 1480 : 220, 0.22, 'sawtooth');
     updateBiomonitorReadouts();
     if (!sandevistanOn && !overclockOn) {
@@ -479,14 +537,17 @@
       stopSandevistanCanvas();
     }
     toast(sandevistanOn
-      ? '⚡ MILITECH "APOGEE" SANDEVISTAN ATIVADO (David Martinez Mode)!'
+      ? 'MILITECH "APOGEE" SANDEVISTAN ATIVADO (David Martinez Mode)'
       : 'Sandevistan desativado — Sinapses estabilizadas');
   }
 
   function toggleCyberpsychosisOverclock() {
     overclockOn = !overclockOn;
     document.body.classList.toggle('cyberpsychosis-overclock', overclockOn);
-    if (dom.overclockBtn) dom.overclockBtn.classList.toggle('outline', !overclockOn);
+    if (dom.overclockBtn) {
+      dom.overclockBtn.classList.toggle('outline', !overclockOn);
+      dom.overclockBtn.setAttribute('aria-pressed', overclockOn ? 'true' : 'false');
+    }
     playUiSound(overclockOn ? 140 : 620, overclockOn ? 1680 : 300, 0.25, 'sawtooth');
     cwCapacity = overclockOn ? 298 : 248;
     updateBiomonitorReadouts();
@@ -495,7 +556,7 @@
       stopSandevistanCanvas();
     }
     toast(overclockOn
-      ? '🔥 OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 (Modo David Martinez!)'
+      ? 'OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 (Modo David Martinez)'
       : 'Overclock desativado — Capacidade estabilizada em 248/300');
   }
 
@@ -532,8 +593,21 @@
     }
   }
 
-  function openGameScreen(screenId, btnEl) {
-    playUiSound(440, 980, 0.10);
+  function syncUrlState(tab, gig) {
+    try {
+      const url = new URL(window.location.href);
+      if (tab && tab !== 'cyberware') url.searchParams.set('tab', tab);
+      else url.searchParams.delete('tab');
+      if (tab === 'mapa' && gig) url.searchParams.set('gig', gig);
+      else url.searchParams.delete('gig');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (_) {}
+  }
+
+  function openGameScreen(screenId, btnEl, opts) {
+    if (!VALID_SCREENS.has(screenId)) return;
+    const silent = !!(opts && opts.silent);
+    if (!silent) playUiSound(440, 980, 0.10);
     for (let i = 0; i < lists.screens.length; i++) {
       const s = lists.screens[i];
       s.classList.toggle('active', s.id === 'screen-' + screenId);
@@ -544,6 +618,10 @@
       const isAct = b === activeBtn;
       b.classList.toggle('active', isAct);
       b.setAttribute('aria-selected', isAct ? 'true' : 'false');
+      b.setAttribute('tabindex', isAct ? '0' : '-1');
+    }
+    if (!opts || opts.syncUrl !== false) {
+      syncUrlState(screenId, screenId === 'mapa' ? currentMapKey : null);
     }
   }
 
@@ -741,7 +819,7 @@ $ npm run typeorm migration:run && npm test
     cwCapacity = Math.min(300, cwCapacity + 8);
     updateBiomonitorReadouts();
     flashPanel('cwInspectorCard');
-    toast(`🔧 Implante aprimorado para MK.${5 + lvl}! Capacidade: ${cwCapacity}/300`);
+    toast(`Implante aprimorado para MK.${5 + lvl} · Capacidade: ${cwCapacity}/300`);
   }
 
   /* ==========================================================================
@@ -757,17 +835,17 @@ $ npm run typeorm migration:run && npm test
       dist: '0.0 KM (QG OPERACIONAL ATUAL)',
       type: 'MISSÃO PRINCIPAL // EM OPERAÇÃO',
       reward: 'FIXER: ZETTI TECH',
-      kicker: 'GOIÂNIA, GO · 08/12/2025 — ATUAL',
-      title: 'Estagiário de Desenvolvimento — Zetti',
+      kicker: 'GOIÂNIA, GO · 08/12/2025 – ATUAL',
+      title: 'Estagiário de Desenvolvimento · Zetti',
       desc: 'Manutenção, correção e evolução de sistema em produção utilizado diariamente por múltiplas farmácias, apoiando diretamente a operação dos clientes.',
       blueprint: '▸ Manutenção e evolução de sistema legado em VB6.<br>▸ Desenvolvimento e otimização de queries, views e procedures em SQL Server.<br>▸ Adequação ao CNPJ alfanumérico, novos impostos e atualizações em massa.<br>▸ Validação de chamados com Jira, GitHub, GitLab, GitKraken e Visual Studio.',
       terminal: `$ zetti-prod-cli --exec-ticket JIRA-2077
-[SQL SERVER] Executando sp_AtualizarImpostosFarmacia...
+[SQL SERVER] Executando sp_AtualizarImpostosFarmacia…
 [VB6 RUNTIME] Módulo de CNPJ Alfanumérico compilado sem regressão.
 [QA CHECK] 100% validado em homologação antes da entrega.`,
       stack: ['VB6', 'SQL Server', 'Queries, Views & Procedures', 'Regras de Negócio', 'Jira', 'GitKraken'],
       link: 'https://www.linkedin.com/in/miqueias-henrique-88503b218/',
-      linkText: 'Ver Perfil no LinkedIn ↗',
+      linkText: 'Ver Perfil no LinkedIn',
       clone: 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)'
     },
     carvalho_job: {
@@ -786,7 +864,7 @@ $ npm run typeorm migration:run && npm test
 [STATUS] Base sólida de processos, organização e atendimento.`,
       stack: ['Organização', 'Processos Administrativos', 'Atendimento', 'Trabalho em Equipe'],
       link: 'Curriculo_Miqueias_Carvalho.pdf',
-      linkText: 'Baixar Currículo PDF ⬇',
+      linkText: 'Baixar Currículo PDF',
       clone: 'Experiência: Carvalho Forros e Divisórias (2021 - 2025)'
     },
     'api-gestao-produtos': {
@@ -804,7 +882,7 @@ HTTP/1.1 200 OK (Content-Type: application/json)
 { "total": 48, "page": 1, "swagger": "/api-docs", "orm": "TypeORM + MySQL" }`,
       stack: ['Node.js', 'TypeScript', 'Express', 'TypeORM', 'MySQL', 'Yup', 'Swagger', 'Docker'],
       link: 'https://github.com/Miqueias-Henrique/api-gestao-produtos',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git'
     },
     'vosso-cinema-api': {
@@ -823,7 +901,7 @@ PASS src/sessions/sessions.controller.spec.ts
 [NESTJS] 5 Entidades PostgreSQL + Swagger ativo em /api.`,
       stack: ['NestJS', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'Swagger', 'Jest'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-api',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-api.git'
     },
     'vital-conscious-api': {
@@ -838,10 +916,10 @@ PASS src/sessions/sessions.controller.spec.ts
       blueprint: '▸ Arquitetura Spring Boot 3 + Spring Data JPA + Hibernate.<br>▸ Banco de dados PostgreSQL e redução de boilerplate com Lombok.<br>▸ Acompanhada de diagramas UML e documentação PDS.',
       terminal: `$ ./mvnw spring-boot:run
 [Spring Boot 3.2] HikariPool-1 - Conectado ao PostgreSQL
-[JPA] Camadas Controller -> Service -> Repository -> Entity ativas!`,
+[JPA] Camadas Controller -> Service -> Repository -> Entity ativas.`,
       stack: ['Java 17', 'Spring Boot 3', 'Spring Data JPA', 'PostgreSQL', 'Lombok'],
       link: 'https://github.com/Miqueias-Henrique/vital-conscious-api',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vital-conscious-api.git'
     },
     'controle-estoque-javafx': {
@@ -859,7 +937,7 @@ PASS src/sessions/sessions.controller.spec.ts
 [JAVAFX] Tela de Controle de Estoque renderizada.`,
       stack: ['Java 21', 'JavaFX', 'JDBC', 'PostgreSQL', 'Padrão DAO'],
       link: 'https://github.com/Miqueias-Henrique/controle-estoque-javafx',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/controle-estoque-javafx.git'
     },
     'catalogo-livros-avl-bst': {
@@ -874,10 +952,10 @@ PASS src/sessions/sessions.controller.spec.ts
       blueprint: '▸ Rotações simples e duplas garantindo balanceamento AVL.<br>▸ Percursos In-Ordem, Pré-Ordem, Pós-Ordem e Busca em Largura (BFS).<br>▸ Persistência em CSV e telemetria de rotações e comparações.',
       terminal: `$ java -cp bin CatalogoLivrosAVL --benchmark
 [BST] Altura: 14 | Comparações: 12
-[AVL] Altura: 4 (Balanceada O(log n)) | Rotações Duplas: 3 | CSV salvo!`,
+[AVL] Altura: 4 (Balanceada O(log n)) | Rotações Duplas: 3 | CSV salvo.`,
       stack: ['Java 17', 'Árvore AVL', 'Árvore BST', 'BFS / DFS', 'CSV'],
       link: 'https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst.git'
     },
     'tabela-hash-cpf-java': {
@@ -892,10 +970,10 @@ PASS src/sessions/sessions.controller.spec.ts
       blueprint: '▸ Tratamento de colisões via listas encadeadas independentes.<br>▸ Validador matemático de CPF integrado.<br>▸ Medição de desempenho real (colisões, comparações e tempo em ns).',
       terminal: `$ java TabelaHashCPF --lookup 123.456.789-00
 [CPF VÁLIDO] Bucket #42 localizado via LinkedList
-[BENCHMARK] Tempo de busca O(1): 138 nanossegundos (ns)!`,
+[BENCHMARK] Tempo de busca O(1): 138 nanossegundos (ns).`,
       stack: ['Java 17', 'Hash Table', 'LinkedList', 'Validação CPF', 'Benchmark (ns)'],
       link: 'https://github.com/Miqueias-Henrique/tabela-hash-cpf-java',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/tabela-hash-cpf-java.git'
     },
     'quiz-cli-java': {
@@ -910,10 +988,10 @@ PASS src/sessions/sessions.controller.spec.ts
       blueprint: '▸ Validação segura de entradas no console.<br>▸ Cálculo de pontuação e percentual de aproveitamento.<br>▸ Cobertura de testes unitários com JUnit 5 Jupiter.',
       terminal: `$ mvn clean test
 [INFO] Running com.miqueias.quiz.QuizServiceTest
-[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS!`,
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS.`,
       stack: ['Java 17', 'Maven', 'JUnit 5', 'POO', 'CLI'],
       link: 'https://github.com/Miqueias-Henrique/quiz-cli-java',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/quiz-cli-java.git'
     },
     'vosso-cinema-web': {
@@ -931,7 +1009,7 @@ PASS src/sessions/sessions.controller.spec.ts
 [BOOTSTRAP 5] Grid responsivo sincronizado.`,
       stack: ['JavaScript', 'HTML5', 'CSS3', 'Bootstrap 5', 'LocalStorage'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-web',
-      linkText: 'Abrir Repositório no GitHub ↗',
+      linkText: 'Abrir Repositório no GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-web.git'
     },
     unifan_edu: {
@@ -949,13 +1027,14 @@ PASS src/sessions/sessions.controller.spec.ts
 [CERTIFICADOS] Banco de Dados (2026), C#, GitHub, Java, Algoritmo, Kotlin.`,
       stack: ['Engenharia de Software', 'UNIFAN 2027', 'Banco de Dados (2026)', 'C#', 'Inglês & Espanhol'],
       link: 'Curriculo_Miqueias_Carvalho.pdf',
-      linkText: 'Baixar Currículo PDF ⬇',
+      linkText: 'Baixar Currículo PDF',
       clone: 'UNIFAN — Engenharia de Software (Conclusão prevista: 2027)'
     }
   };
 
-  function selectMapPin(pinKey, btnEl) {
-    playUiSound(660, 1320, 0.09);
+  function selectMapPin(pinKey, btnEl, opts) {
+    const silent = !!(opts && opts.silent);
+    if (!silent) playUiSound(660, 1320, 0.09);
     currentMapKey = pinKey;
     const d = mapPinsData[pinKey];
     if (!d) return;
@@ -988,13 +1067,27 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.gigStackPills) {
       dom.gigStackPills.innerHTML = d.stack.map(s => `<button type="button" onclick="toast('Tecnologia: ${s}')">${s}</button>`).join('');
     }
+    const isPdf = d.link.endsWith('.pdf');
     if (dom.gigPrimaryLink) {
       dom.gigPrimaryLink.href = d.link;
-      dom.gigPrimaryLink.textContent = d.linkText;
+      if (isPdf) {
+        dom.gigPrimaryLink.setAttribute('download', d.link);
+        dom.gigPrimaryLink.removeAttribute('target');
+        dom.gigPrimaryLink.removeAttribute('rel');
+      } else {
+        dom.gigPrimaryLink.removeAttribute('download');
+        dom.gigPrimaryLink.setAttribute('target', '_blank');
+        dom.gigPrimaryLink.setAttribute('rel', 'noopener noreferrer');
+      }
     }
+    if (dom.gigPrimaryLinkLabel) dom.gigPrimaryLinkLabel.textContent = d.linkText;
+    if (dom.gigPrimaryLinkIcon) dom.gigPrimaryLinkIcon.setAttribute('href', isPdf ? '#ui-download' : '#ui-external-link');
     currentMapCloneCmd = d.clone;
-    flashPanel('mapBriefingCard');
-    toast('Rota GPS traçada: ' + d.title);
+    if (!opts || opts.syncUrl !== false) syncUrlState('mapa', pinKey);
+    if (!silent) {
+      flashPanel('mapBriefingCard');
+      toast('Rota GPS traçada: ' + d.title);
+    }
   }
 
   function simulateCurrentGigTerminal() {
@@ -1002,13 +1095,18 @@ PASS src/sessions/sessions.controller.spec.ts
     playUiSound(420, 1560, 0.14, 'sawtooth');
     const d = mapPinsData[currentMapKey];
     if (dom.gigTerminalOutput && d) {
+      const ts = new Intl.DateTimeFormat('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(new Date());
       dom.gigTerminalOutput.textContent =
-        `[EXECUTANDO SIMULAÇÃO KIROSHI — ${new Date().toLocaleTimeString()}]\n` +
+        `[EXECUTANDO SIMULAÇÃO KIROSHI — ${ts}]\n` +
         d.terminal +
-        `\n[✓] STATUS HTTP 200 // TESTES VALIDADOS COM SUCESSO!`;
+        `\n[✓] STATUS HTTP 200 // TESTES VALIDADOS COM SUCESSO`;
     }
     flashPanel('mapBriefingCard');
-    toast('▶ Simulação concluída para: ' + (d ? d.title : currentMapKey));
+    toast('Simulação concluída para: ' + (d ? d.title : currentMapKey));
   }
 
   function copyMapClone() {
@@ -1148,7 +1246,7 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.perkPointsCount) dom.perkPointsCount.textContent = perkPoints + ' PONTOS DE VANTAGEM DISPONÍVEIS';
     if (dom.perkStatusBadge) dom.perkStatusBadge.textContent = 'STATUS: OVERCLOCK MÁXIMO ✓';
     flashPanel('perkInspectorCard');
-    toast('⚡ Vantagem Overclockada: ' + (dom.perkTitle ? dom.perkTitle.textContent : ''));
+    toast('Vantagem Overclockada: ' + (dom.perkTitle ? dom.perkTitle.textContent : ''));
   }
 
   function unlockAllPerksInTree() {
@@ -1160,7 +1258,7 @@ PASS src/sessions/sessions.controller.spec.ts
     perkPoints = 0;
     if (dom.perkPointsCount) dom.perkPointsCount.textContent = 'ÁRVORE MAXIMIZADA // NÍVEL 50 EDGERUNNER';
     flashPanel('perkCanvasBox');
-    toast('⚡ Todas as Vantagens da Árvore foram maximizadas!');
+    toast('Todas as vantagens da árvore foram maximizadas');
   }
 
   /* ==========================================================================
@@ -1173,18 +1271,18 @@ PASS src/sessions/sessions.controller.spec.ts
     let critLabel = '';
     if (d10 === 10) {
       bonusCrit = Math.floor(Math.random() * 10) + 1;
-      critLabel = ` [CRÍTICO 10! +${bonusCrit}]`;
+      critLabel = ` [CRÍTICO 10 +${bonusCrit}]`;
     }
     const total = d10 + bonusCrit + statVal + skillVal;
     if (dom.d10ResultNumber) dom.d10ResultNumber.textContent = total;
     if (dom.d10FormulaText) dom.d10FormulaText.textContent = `1d10 [${d10}${critLabel}] + ${statName} [${statVal}] + Perícia [${skillVal}] = ${total} vs DV ${dv}`;
     if (dom.d10OutcomeText) {
       dom.d10OutcomeText.textContent = d10 === 10
-        ? `★ SUCESSO CRÍTICO EXPLOSIVO // ${taskName.toUpperCase()}!`
+        ? `★ SUCESSO CRÍTICO EXPLOSIVO // ${taskName.toUpperCase()}`
         : `✓ SUCESSO LENDÁRIO (+${total - dv} ACIMA DA DV) // ${taskName.toUpperCase()}`;
     }
     flashPanel('diceRollerCard');
-    toast(`🎲 Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
+    toast(`Rolagem Cyberpunk RED: ${total} vs DV ${dv} (${taskName})`);
   }
 
   let currentNetFloor = 0;
@@ -1224,7 +1322,7 @@ PASS src/sessions/sessions.controller.spec.ts
     if (nextRow) {
       nextRow.classList.add('current');
     } else {
-      toast('🏆 ROOT ACCESS CONQUISTADO: Vírus CONTRATAR_MIQUEIAS.daemon instalado!');
+      toast('ROOT ACCESS CONQUISTADO: Daemon CONTRATAR_MIQUEIAS instalado');
     }
   }
 
@@ -1293,7 +1391,7 @@ PASS src/sessions/sessions.controller.spec.ts
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast('⬇ Ficha Cyberpunk RED (.TXT) exportada com sucesso!');
+    toast('Ficha Cyberpunk RED (.TXT) exportada com sucesso.');
   }
 
   /* ==========================================================================
@@ -1303,12 +1401,12 @@ PASS src/sessions/sessions.controller.spec.ts
     q_zetti: {
       status: 'STATUS: MISSÃO PRINCIPAL EM RASTREAMENTO',
       loc: 'LOCAL: GOIÂNIA, GO (08/12/2025 – ATUAL)',
-      title: 'Estagiário de Desenvolvimento — Zetti',
-      quote: '"Acorda, Samurai! Manter sistema em produção rodando em dezenas de farmácias todo santo dia é o que separa os mercenários de verdade dos turistas de Night City." — Johnny Silverhand',
+      title: 'Estagiário de Desenvolvimento · Zetti',
+      quote: '"Acorda, Samurai. Manter sistema em produção rodando em dezenas de farmácias todo santo dia é o que separa os mercenários de verdade dos turistas de Night City." (Johnny Silverhand)',
       narrative: 'Atuação profissional diária mantendo, corrigindo e evoluindo sistema utilizado em ambiente real por múltiplas farmácias, com forte atuação em banco de dados SQL Server e regras de negócio.',
       objs: [
         'Manutenção, correção e evolução de sistema legado em VB6 utilizado diariamente por múltiplas farmácias.',
-        'Desenvolvimento e otimizar queries, views e procedures em SQL Server.',
+        'Desenvolvimento e otimização de queries, views e stored procedures em SQL Server.',
         'Atuação em demandas como adequação ao novo formato alfanumérico do CNPJ, atualização de relatórios para novos impostos e atualizações em massa em bases de clientes.',
         'Validação de correções antes da conclusão dos chamados e uso de Jira, GitHub, GitLab, GitKraken e Visual Studio.'
       ]
@@ -1414,18 +1512,9 @@ PASS src/sessions/sessions.controller.spec.ts
   }
 
   const bdLayers = {
-    visual: {
-      text: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
-      color: '#FCEE09'
-    },
-    audio: {
-      text: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
-      color: '#00F0FF'
-    },
-    thermal: {
-      text: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos!',
-      color: '#FF003C'
-    }
+    visual: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
+    audio: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
+    thermal: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos.'
   };
 
   function selectBdLayer(layerKey, btnEl) {
@@ -1433,22 +1522,21 @@ PASS src/sessions/sessions.controller.spec.ts
     for (let i = 0; i < lists.bdBtns.length; i++) {
       lists.bdBtns[i].classList.toggle('active', lists.bdBtns[i] === btnEl);
     }
-    const layer = bdLayers[layerKey];
-    if (dom.bdLayerReadout && layer) {
-      dom.bdLayerReadout.textContent = layer.text;
-      dom.bdLayerReadout.style.color = layer.color;
+    const text = bdLayers[layerKey];
+    if (dom.bdLayerReadout && text) {
+      dom.bdLayerReadout.textContent = text;
     }
-    if (dom.bdEditorBox && layer) {
-      dom.bdEditorBox.style.borderColor = layer.color;
+    if (dom.bdEditorBox && text) {
+      dom.bdEditorBox.setAttribute('data-layer', layerKey);
     }
     toast('Braindance Scanner: Camada ' + layerKey.toUpperCase());
   }
 
   const tarotReadings = [
-    'MISTY OLSZEWSKI — ARCANO 0 (O LOUCO): "O início da jornada. Representa a coragem de Miqueias ao evoluir de Jovem Aprendiz e Auxiliar Administrativo (2021–2025) para mergulhar de cabeça na Engenharia de Software."',
-    'MISTY OLSZEWSKI — ARCANO I (O MAGO): "O domínio das ferramentas. C#/.NET, SQL Server, Java 17/21, Node.js/NestJS e Docker canalizados em 8 projetos reais e documentados no GitHub."',
-    'MISTY OLSZEWSKI — ARCANO IX (O EREMITA): "A sabedoria de quem decifra códigos ancestrais. Na Zetti, Miqueias domina sistemas legados em VB6 e procedures complexas que mantêm dezenas de farmácias operando."',
-    'MISTY OLSZEWSKI — ARCANO XXI (O MUNDO): "A realização. Com experiência real em produção e graduação na UNIFAN (2027), ele está pronto para assumir missões como Desenvolvedor Backend Júnior."'
+    'MISTY OLSZEWSKI · ARCANO 0 (O LOUCO): "O início da jornada. Representa a coragem de Miqueias ao evoluir de Jovem Aprendiz e Auxiliar Administrativo (2021–2025) para mergulhar de cabeça na Engenharia de Software."',
+    'MISTY OLSZEWSKI · ARCANO I (O MAGO): "O domínio das ferramentas. C#/.NET, SQL Server, Java 17/21, Node.js/NestJS e Docker canalizados em 8 projetos reais e documentados no GitHub."',
+    'MISTY OLSZEWSKI · ARCANO IX (O EREMITA): "A sabedoria de quem decifra códigos ancestrais. Na Zetti, Miqueias domina sistemas legados em VB6 e procedures complexas que mantêm dezenas de farmácias operando."',
+    'MISTY OLSZEWSKI · ARCANO XXI (O MUNDO): "A realização. Com experiência real em produção e graduação na UNIFAN (2027), ele está pronto para assumir missões como Desenvolvedor Backend Júnior."'
   ];
 
   function inspectTarotCard(idx, cardEl) {
@@ -1498,7 +1586,7 @@ PASS src/sessions/sessions.controller.spec.ts
     const el = dom['daemon' + num];
     if (el) el.classList.add('unlocked');
     if (num === 3 && !sandevistanOn) toggleSandevistan();
-    toast('⚡ Daemon #' + num + ' executado diretamente!');
+    toast('Daemon #' + num + ' executado diretamente');
   }
 
   function autoSolveBreachProtocol() {
@@ -1512,7 +1600,7 @@ PASS src/sessions/sessions.controller.spec.ts
         if (lists.hexBtns[idx]) pickHex(lists.hexBtns[idx], code);
       }, idx * 120);
     }
-    toast('⚡ Auto-Hack Kiroshi: 3 Daemons Desbloqueados!');
+    toast('Auto-Hack Kiroshi: 3 Daemons desbloqueados');
   }
 
   function resetBreachMatrix() {
@@ -1528,12 +1616,272 @@ PASS src/sessions/sessions.controller.spec.ts
   }
 
   /* ==========================================================================
-     HOTKEYS I, M, P, R, J, H, E, G, O
+     WAI-ARIA TABS ARROW NAVIGATION
+     ========================================================================== */
+  if (dom.tabList) {
+    dom.tabList.addEventListener('keydown', (e) => {
+      const targetTab = e.target.closest('[role="tab"]');
+      if (!targetTab) return;
+      const idx = lists.menuTabs.indexOf(targetTab);
+      if (idx === -1) return;
+      let nextIdx = -1;
+      if (e.key === 'ArrowRight') nextIdx = (idx + 1) % lists.menuTabs.length;
+      else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + lists.menuTabs.length) % lists.menuTabs.length;
+      else if (e.key === 'Home') nextIdx = 0;
+      else if (e.key === 'End') nextIdx = lists.menuTabs.length - 1;
+      if (nextIdx === -1) return;
+      e.preventDefault();
+      const nextBtn = lists.menuTabs[nextIdx];
+      nextBtn.focus();
+      openGameScreen(nextBtn.getAttribute('data-screen'), nextBtn);
+    });
+  }
+
+  /* ==========================================================================
+     QUICKHACK COMMAND PALETTE (RAYCAST / SHADCN COMMANDDIALOG)
+     ========================================================================== */
+  let cmdOpen = false;
+  let cmdSelectedIdx = 0;
+  let lastFocusBeforeCmd = null;
+  let filteredCmds = [];
+
+  const foldText = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const screenCmds = [
+    { group: 'Telas HUD', title: 'Ripperdoc & Cyberware', sub: '[I] Stack, Código & Biomonitor', kw: 'cyberware c# dotnet sql vb6 java node stack', run: () => openGameScreen('cyberware') },
+    { group: 'Telas HUD', title: 'Mapa Tático de Gigs [11]', sub: '[M] Carreira Real, GPS & Repositórios', kw: 'mapa gps gigs carreira github repositorios', run: () => openGameScreen('mapa') },
+    { group: 'Telas HUD', title: 'Árvore de Habilidades 2.0', sub: '[P] Atributos & Vantagens', kw: 'perks habilidades arvore atributos pontos', run: () => openGameScreen('perks') },
+    { group: 'Telas HUD', title: 'Ficha RPG Cyberpunk RED [1d10]', sub: '[R] Lifepath, NET Architecture & Dados', kw: 'rpg mesa d10 ficha cyberpunk red net', run: () => openGameScreen('trpg') },
+    { group: 'Telas HUD', title: 'Diário, Braindance & Tarô', sub: '[J] Missões, 3 Camadas BD & Currículo PDF', kw: 'diario braindance taro misty missao curriculo', run: () => openGameScreen('diario') },
+    { group: 'Telas HUD', title: 'Holocall & Breach Protocol', sub: '[H] WhatsApp, E-mail, LinkedIn & Matriz Hex', kw: 'holocall contato whatsapp email linkedin breach', run: () => openGameScreen('holocall') }
+  ];
+
+  const cwCmds = Object.keys(cyberwareData).map((k) => {
+    const c = cyberwareData[k];
+    return {
+      group: 'Cyberware & Stack',
+      title: c.title,
+      sub: c.cat,
+      kw: `${c.title} ${c.cat} ${c.mods.join(' ')}`,
+      run: () => {
+        openGameScreen('cyberware');
+        selectCyberware(k);
+      }
+    };
+  });
+
+  const pinCmds = Object.keys(mapPinsData).map((k) => {
+    const p = mapPinsData[k];
+    return {
+      group: 'Mapa: Projetos & Carreira',
+      title: p.title,
+      sub: p.kicker,
+      kw: `${p.title} ${p.kicker} ${p.stack.join(' ')} ${p.coord}`,
+      run: () => {
+        openGameScreen('mapa');
+        filterMapPins('all', lists.mapFilterBtns[0]);
+        selectMapPin(k);
+      }
+    };
+  });
+
+  const actionCmds = [
+    { group: 'Sistema & Ações', title: 'Ativar / Desativar Sandevistan [E]', sub: 'Edgerunners Dilatação Temporal', kw: 'sandevistan david martinez edgerunners efeito', run: () => toggleSandevistan() },
+    { group: 'Sistema & Ações', title: 'Alternar Overclock Edgerunner [O]', sub: 'Capacidade 298/300', kw: 'overclock cyberpsicose capacidade', run: () => toggleCyberpsychosisOverclock() },
+    { group: 'Sistema & Ações', title: 'Invocar Engrama Johnny Silverhand [G]', sub: 'Relic Biochip Overlay', kw: 'johnny silverhand relic fala', run: () => summonJohnnyEngram() },
+    { group: 'Sistema & Ações', title: 'Ativar / Silenciar Som HUD', sub: 'Alternar WebAudio & Rádio FM', kw: 'som audio volume mute silenciar web audio', run: () => toggleHudAudio() },
+    { group: 'Sistema & Ações', title: 'Sintonizar Rádio Night City FM', sub: 'Body Heat · Morro Rock · Pacific Dreams', kw: 'radio musica estacao night city', run: () => cycleNightCityRadio() },
+    { group: 'Sistema & Ações', title: 'Alternar Tema OS (Mikoshi / Edgerunners / Blackwall)', sub: 'Pulso Biochip Relic', kw: 'tema cores os blackwall edgerunners mikoshi', run: () => triggerRelicGlitch() },
+    { group: 'Sistema & Ações', title: 'Rolar Teste Crítico 1d10 Cyberpunk RED', sub: 'INT 10 + Perícia Banco de Dados', kw: 'rolar dado d10 teste sql pericia', run: () => { openGameScreen('trpg'); rollCyberpunkD10('Teste Rápido via Quickhack', 'INT', 10, 8, 17); } },
+    { group: 'Sistema & Ações', title: 'Auto-Hack Breach Protocol (3 Daemons)', sub: 'Resolver Matriz Hex 5x3', kw: 'auto hack breach daemon matriz hex', run: () => { openGameScreen('holocall'); autoSolveBreachProtocol(); } },
+    { group: 'Sistema & Ações', title: 'Baixar Currículo Original (.PDF)', sub: 'Curriculo_Miqueias_Carvalho.pdf', kw: 'baixar curriculo pdf download shard', run: () => { const a = document.createElement('a'); a.href = 'Curriculo_Miqueias_Carvalho.pdf'; a.download = 'Curriculo_Miqueias_Carvalho.pdf'; a.click(); toast('Download iniciado: Curriculo_Miqueias_Carvalho.pdf'); } },
+    { group: 'Sistema & Ações', title: 'Exportar Ficha Cyberpunk RED (.TXT)', sub: 'Download completo da ficha', kw: 'exportar txt ficha rpg', run: () => exportCyberpunkRedSheet() },
+    { group: 'Sistema & Ações', title: 'Copiar WhatsApp (62) 99842-1308', sub: 'Área de transferência', kw: 'copiar telefone whatsapp numero', run: () => copyClip('(62) 99842-1308', 'Telefone copiado: (62) 99842-1308') },
+    { group: 'Sistema & Ações', title: 'Copiar E-mail miqueiash989@gmail.com', sub: 'Área de transferência', kw: 'copiar email netmail contato', run: () => copyClip('miqueiash989@gmail.com', 'E-mail copiado: miqueiash989@gmail.com') }
+  ];
+
+  const allCmds = [...screenCmds, ...cwCmds, ...pinCmds, ...actionCmds];
+
+  function updateCmdSelectionVisual() {
+    if (!dom.cmdResultsList) return;
+    const rows = dom.cmdResultsList.querySelectorAll('.cmd-item');
+    let activeId = '';
+    for (let i = 0; i < rows.length; i++) {
+      const sel = i === cmdSelectedIdx;
+      rows[i].classList.toggle('selected', sel);
+      rows[i].setAttribute('aria-selected', sel ? 'true' : 'false');
+      if (sel) {
+        activeId = rows[i].id;
+        rows[i].scrollIntoView({ block: 'nearest' });
+      }
+    }
+    if (dom.cmdSearchInput) {
+      if (activeId) dom.cmdSearchInput.setAttribute('aria-activedescendant', activeId);
+      else dom.cmdSearchInput.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  function moveCmdSelection(delta) {
+    if (filteredCmds.length === 0) return;
+    cmdSelectedIdx = (cmdSelectedIdx + delta + filteredCmds.length) % filteredCmds.length;
+    updateCmdSelectionVisual();
+  }
+
+  function executeCmdIndex(idx) {
+    const item = filteredCmds[idx];
+    if (!item) return;
+    closeQuickhackPalette(true);
+    item.run();
+  }
+
+  function renderQuickhackList(rawQuery) {
+    if (!dom.cmdResultsList) return;
+    const terms = foldText(rawQuery).split(/\s+/).filter(Boolean);
+    filteredCmds = terms.length === 0
+      ? allCmds
+      : allCmds.filter((item) => {
+          const hay = foldText(`${item.group} ${item.title} ${item.sub} ${item.kw}`);
+          return terms.every((t) => hay.includes(t));
+        });
+
+    if (cmdSelectedIdx >= filteredCmds.length) cmdSelectedIdx = 0;
+    dom.cmdResultsList.textContent = '';
+
+    if (filteredCmds.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'cmd-group-label';
+      empty.textContent = 'NENHUM COMANDO ENCONTRADO — TENTE "SQL", "DOTNET", "DOCKER" OU "D10"';
+      dom.cmdResultsList.appendChild(empty);
+    } else {
+      let lastGroup = '';
+      for (let i = 0; i < filteredCmds.length; i++) {
+        const item = filteredCmds[i];
+        if (item.group !== lastGroup) {
+          lastGroup = item.group;
+          const gl = document.createElement('div');
+          gl.className = 'cmd-group-label';
+          gl.textContent = item.group;
+          dom.cmdResultsList.appendChild(gl);
+        }
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'cmd-opt-' + i;
+        btn.className = 'cmd-item' + (i === cmdSelectedIdx ? ' selected' : '');
+        btn.setAttribute('role', 'option');
+        btn.setAttribute('aria-selected', i === cmdSelectedIdx ? 'true' : 'false');
+
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = item.title;
+        const subSpan = document.createElement('span');
+        subSpan.className = 'cmd-item-sub';
+        subSpan.textContent = item.sub;
+
+        btn.appendChild(titleSpan);
+        btn.appendChild(subSpan);
+        btn.addEventListener('mouseenter', () => {
+          cmdSelectedIdx = i;
+          updateCmdSelectionVisual();
+        });
+        btn.addEventListener('click', () => executeCmdIndex(i));
+        dom.cmdResultsList.appendChild(btn);
+      }
+    }
+
+    if (dom.cmdCountLabel) {
+      dom.cmdCountLabel.textContent = `${filteredCmds.length} comando${filteredCmds.length === 1 ? '' : 's'}`;
+    }
+    updateCmdSelectionVisual();
+  }
+
+  function openQuickhackPalette() {
+    if (!dom.cmdDialogBackdrop) return;
+    lastFocusBeforeCmd = document.activeElement;
+    cmdOpen = true;
+    cmdSelectedIdx = 0;
+    dom.cmdDialogBackdrop.hidden = false;
+    dom.cmdDialogBackdrop.classList.add('open');
+    if (dom.cmdSearchInput) {
+      dom.cmdSearchInput.value = '';
+      renderQuickhackList('');
+      dom.cmdSearchInput.focus();
+    } else {
+      renderQuickhackList('');
+    }
+    playUiSound(520, 1280, 0.08, 'triangle');
+  }
+
+  function closeQuickhackPalette(skipFocusRestore) {
+    if (!dom.cmdDialogBackdrop || !cmdOpen) return;
+    cmdOpen = false;
+    dom.cmdDialogBackdrop.classList.remove('open');
+    dom.cmdDialogBackdrop.hidden = true;
+    if (!skipFocusRestore) {
+      if (lastFocusBeforeCmd && typeof lastFocusBeforeCmd.focus === 'function') lastFocusBeforeCmd.focus();
+      else if (dom.cmdTriggerBtn) dom.cmdTriggerBtn.focus();
+    }
+  }
+
+  if (dom.cmdSearchInput) {
+    dom.cmdSearchInput.addEventListener('input', (e) => {
+      cmdSelectedIdx = 0;
+      renderQuickhackList(e.target.value);
+    });
+  }
+
+  if (dom.cmdDialogBackdrop) {
+    dom.cmdDialogBackdrop.addEventListener('click', (e) => {
+      if (e.target === dom.cmdDialogBackdrop) closeQuickhackPalette();
+    });
+  }
+
+  /* ==========================================================================
+     HOTKEYS I, M, P, R, J, H, E, G, O + QUICKHACK CTRL+K / /
      ========================================================================== */
   window.addEventListener('keydown', (e) => {
-    const tag = document.activeElement && document.activeElement.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
     const k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && k === 'k') {
+      e.preventDefault();
+      if (cmdOpen) closeQuickhackPalette();
+      else openQuickhackPalette();
+      return;
+    }
+
+    if (cmdOpen) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeQuickhackPalette();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        moveCmdSelection(1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        moveCmdSelection(-1);
+      } else if (e.key === 'Enter' && document.activeElement !== dom.cmdCloseBtn) {
+        e.preventDefault();
+        executeCmdIndex(cmdSelectedIdx);
+      } else if (e.key === 'Tab') {
+        if (document.activeElement === dom.cmdSearchInput && !e.shiftKey && dom.cmdCloseBtn) {
+          e.preventDefault();
+          dom.cmdCloseBtn.focus();
+        } else if (document.activeElement === dom.cmdCloseBtn && dom.cmdSearchInput) {
+          e.preventDefault();
+          dom.cmdSearchInput.focus();
+        }
+      }
+      return;
+    }
+
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const activeEl = document.activeElement;
+    const tag = activeEl && activeEl.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (activeEl && activeEl.isContentEditable)) return;
+
+    if (e.key === '/') {
+      e.preventDefault();
+      openQuickhackPalette();
+      return;
+    }
+
     if (k === 'i' || k === '1') openGameScreen('cyberware');
     else if (k === 'm' || k === '2') openGameScreen('mapa');
     else if (k === 'p' || k === '3') openGameScreen('perks');
@@ -1544,6 +1892,21 @@ PASS src/sessions/sessions.controller.spec.ts
     else if (k === 'g') summonJohnnyEngram();
     else if (k === 'o') toggleCyberpsychosisOverclock();
   });
+
+  /* Hydrate URL search params (?tab=...&gig=...) silently on startup */
+  (function hydrateFromUrl() {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const initialTab = sp.get('tab');
+      const initialGig = sp.get('gig');
+      if (initialTab && VALID_SCREENS.has(initialTab)) {
+        openGameScreen(initialTab, null, { silent: true, syncUrl: false });
+        if (initialTab === 'mapa' && initialGig && mapPinsData[initialGig]) {
+          selectMapPin(initialGig, null, { silent: true, syncUrl: false });
+        }
+      }
+    } catch (_) {}
+  })();
 
   Object.assign(window, {
     openGameScreen,
@@ -1572,12 +1935,15 @@ PASS src/sessions/sessions.controller.spec.ts
     autoSolveBreachProtocol,
     resetBreachMatrix,
     rechargeAllRam,
+    toggleHudAudio,
     cycleNightCityRadio,
     summonJohnnyEngram,
     closeJohnnyEngram,
     toggleSandevistan,
     toggleCyberpsychosisOverclock,
     triggerRelicGlitch,
+    openQuickhackPalette,
+    closeQuickhackPalette,
     toast,
     copyClip
   });

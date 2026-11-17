@@ -50,3 +50,20 @@ Dossiê neural e portfólio gamificado de **Miqueias Carvalho** (Desenvolvedor d
 | **Recálculos de Estilo sob stress interativo** | `65` | `42` | **-35,4%** |
 | **Overflow horizontal mobile (`390×844`, 6 telas)** | — | `0 px` | **100% responsivo** |
 
+---
+
+## 🛠️ Auditoria & Elevação v2.3 (`design-marcas` · `taste-skill` · `shadcn-tailwind` · `audit-ui`)
+
+- **Sistema de Tokens & Superfícies (`assets/design-tokens.json` / `assets/design-tokens.css`):**
+  - Hierarquia estrita de profundidade Mikoshi (`#060204 → #0D0609 → #140A0E → #1D0E15`), bordas *hairline* de precisão e eliminação completa de tokens roxos/lavanda.
+  - Tokens semânticos compatíveis com `shadcn/ui` e Tailwind v4 (`--background`, `--foreground`, `--card`, `--primary`, `--secondary`, `--border`, `--ring`) com alternância reativa para `Mikoshi OS`, `Edgerunners` e `Blackwall`.
+- **Sprite Vetorial Consolidado & Marca Real:**
+  - Logos técnicos oficiais (`.NET`, SQL Server, Java, Spring Boot, TypeScript, Node.js/NestJS, Docker, Git, GitHub, Jira) e ícones de HUD Lucide consolidados em um sprite SVG inline único (`16` marcas renderizadas sem chamadas externas nem fallback emoji).
+- **Quickhack CommandDialog (`Ctrl+K` / `⌘K` / `/`) & Acessibilidade WAI-ARIA:**
+  - Paleta pesquisável de 35 comandos com filtro em tempo real, navegação por setas, restauração automática de foco no fechamento (`Esc`) e contraste alto.
+  - Semântica completa: link `Pular para conteúdo principal`, navegação `role="tablist"` / `role="tab"` com setas esquerda/direita, `aria-pressed` sincronizado nos modos *Sandevistan* / *Overclock* / *Som*, formatação localizada (`Intl.DateTimeFormat('pt-BR')`) e sincronização silenciosa de URL (`?tab=...&gig=...`).
+- **Higiene Visual, Zero Inline Styles & Telemetria Verificada (Chromium CDP):**
+  - `0` elementos com `style="..."` inline no DOM (inclusive durante *Sandevistan* e *Overclock*), `0 px` de overflow horizontal em mobile (`390×844`) nas 6 telas, `0` chamadas ociosas de canvas em `500 ms`, `FCP ≈ 400 ms`, `0,96 MB` de heap JS e `copy-lint` sem falhas (`0 FAIL`).
+  - Transferência total do build `v2.3` com sprite SVG e CommandDialog integrados: `108.195 B` (`105,7 KB` gzip) na carga inicial (`index.html` + `app.min.js` + `portrait-2.webp`).
+
+
