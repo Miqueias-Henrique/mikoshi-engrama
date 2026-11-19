@@ -6,9 +6,10 @@
      ========================================================================== */
   const MAX_RAM_UNITS = 8;
   const VALID_SCREENS = new Set(['cyberware', 'mapa', 'perks', 'trpg', 'diario', 'holocall']);
+  const VALID_LIFEPATHS = new Set(['corpo', 'netrunner', 'nomade']);
   const reducedMotionQuery = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  let audioOn = true;
+  let audioOn = false;
   let audioCtx = null;
   let perkPoints = 5;
   let sandevistanOn = false;
@@ -18,6 +19,15 @@
   let ramRegenTimer = null;
   let toastTimer = null;
   let glitchTimer = null;
+
+  let currentLifepath = 'netrunner';
+  let implantsOff = false;
+  let metaScannerOn = false;
+  let dossierPct = 25;
+  const achievements = new Set(['scan_init']);
+  const exploredItems = new Set(['cyberware', 'sql_cortex']);
+  let currentEndingKey = 'temperanca';
+  let bootTimers = [];
 
   const $id = (id) => document.getElementById(id);
   const $all = (sel) => Array.from(document.querySelectorAll(sel));
@@ -40,6 +50,28 @@
     sandevistanCanvas: $id('sandevistanCanvas'),
     osModeLabel: $id('osModeLabel'),
     hudToast: $id('hudToast'),
+
+    kiroshiBootLog: $id('kiroshiBootLog'),
+    skipBootBtn: $id('skipBootBtn'),
+    hudDistrictBadge: $id('hudDistrictBadge'),
+    dossierProgressFill: $id('dossierProgressFill'),
+    dossierPctText: $id('dossierPctText'),
+    achCountBadge: $id('achCountBadge'),
+    hudLifepathLabel: $id('hudLifepathLabel'),
+    implantsToggleBtn: $id('implantsToggleBtn'),
+    implantsToggleLabel: $id('implantsToggleLabel'),
+    metaScanBtn: $id('metaScanBtn'),
+    corpoCleanDossier: $id('corpoCleanDossier'),
+    corpoBriefingBox: $id('corpoBriefingBox'),
+    heroTargetScan: $id('heroTargetScan'),
+    cwProofLink: $id('cwProofLink'),
+    cwProofLabel: $id('cwProofLabel'),
+    ncpdTickerText: $id('ncpdTickerText'),
+    endingTarotArcana: $id('endingTarotArcana'),
+    endingTarotMessage: $id('endingTarotMessage'),
+    endingTarotHint: $id('endingTarotHint'),
+    incomingHolocallPopup: $id('incomingHolocallPopup'),
+    creditsDialogBackdrop: $id('creditsDialogBackdrop'),
 
     tabList: document.querySelector('.cp-menu-nav'),
     cmdDialogBackdrop: $id('cmdDialogBackdrop'),
@@ -120,6 +152,10 @@
     cwHotspots: $all('.cw-hotspot'),
     mapPins: $all('.map-pin'),
     mapFilterBtns: $all('.map-filter-btn'),
+    starContractPills: $all('.star-contract-pill'),
+    lpCards: $all('.lp-route-card'),
+    wheelBtns: $all('.wheel-option-btn'),
+    mobNavBtns: $all('.mob-nav-btn'),
     attrBtns: $all('.attr-pillar-btn'),
     perkNodes: $all('.perk-node'),
     questBtns: $all('.quest-row-btn'),
@@ -282,8 +318,23 @@
       dom.audioToggleIcon.setAttribute('href', audioOn ? '#ui-volume-2' : '#ui-volume-x');
     }
     if (dom.audioToggleLabel) {
-      dom.audioToggleLabel.textContent = audioOn ? 'SOM: ON' : 'SOM: OFF';
+      dom.audioToggleLabel.textContent = audioOn ? '🔊 Áudio: ON' : '🔊 Áudio: OFF';
     }
+  }
+
+  function bumpDossierSync(key, amount, achKey, achMsg) {
+    if (key && !exploredItems.has(key)) {
+      exploredItems.add(key);
+      dossierPct = Math.min(100, dossierPct + (amount || 8));
+    }
+    if (achKey && !achievements.has(achKey)) {
+      achievements.add(achKey);
+      dossierPct = Math.min(100, dossierPct + 5);
+      if (achMsg) toast('★ CONQUISTA DESBLOQUEADA: ' + achMsg);
+    }
+    if (dom.dossierProgressFill) dom.dossierProgressFill.style.width = dossierPct + '%';
+    if (dom.dossierPctText) dom.dossierPctText.textContent = dossierPct + '%';
+    if (dom.achCountBadge) dom.achCountBadge.textContent = `★ ${Math.min(6, achievements.size)}/6`;
   }
 
   function toggleHudAudio() {
@@ -297,11 +348,12 @@
         dom.radioBtn.classList.remove('active');
         dom.radioBtn.setAttribute('aria-pressed', 'false');
       }
-      if (dom.radioBtnLabel) dom.radioBtnLabel.textContent = 'RÁDIO FM: OFF';
-      toast('Áudio HUD silenciado');
+      if (dom.radioBtnLabel) dom.radioBtnLabel.textContent = 'Rádio FM: OFF';
+      toast('Áudio diegético HUD silenciado');
     } else {
       playUiSound(520, 1040, 0.08, 'triangle');
-      toast('Áudio HUD ativado');
+      bumpDossierSync('audio_on', 5, 'ach_audio', 'Ativou o Áudio Diegético');
+      toast('Áudio diegético HUD ativado');
     }
   }
 
@@ -326,7 +378,7 @@
     const btn = dom.radioBtn;
     const lbl = dom.radioBtnLabel;
     if (stationIdx === 0) {
-      if (lbl) lbl.textContent = 'RÁDIO FM: OFF';
+      if (lbl) lbl.textContent = 'Rádio FM: OFF';
       if (btn) {
         btn.classList.remove('active');
         btn.setAttribute('aria-pressed', 'false');
@@ -342,6 +394,7 @@
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
       }
+      bumpDossierSync('radio_fm', 6, 'ach_radio', 'Ouviu a Rádio de Night City');
       toast('Sintonizado: ' + st.name);
       noteStep = 0;
       playUiSound(st.notes[0], st.notes[1] || 440, 0.15, st.wave);
@@ -374,6 +427,7 @@
     }
     johnnyIdx++;
     if (dom.johnnyBanner) dom.johnnyBanner.classList.add('active');
+    bumpDossierSync('johnny', 5, 'ach_johnny', 'Encontrou o Engrama do Johnny Silverhand');
     toast('ENGRAMA RELIC ATIVADO: JOHNNY SILVERHAND');
   }
 
@@ -420,11 +474,11 @@
     canvasCtx.clearRect(0, 0, canvasW, canvasH);
     canvasCtx.lineWidth = 2;
     const isOver = overclockOn;
-    canvasCtx.fillStyle = isOver ? 'rgba(255, 0, 60, 0.09)' : 'rgba(0, 255, 102, 0.09)';
+    canvasCtx.fillStyle = isOver ? 'rgba(255, 90, 80, 0.09)' : 'rgba(0, 255, 133, 0.09)';
 
     for (let i = sandyParticles.length - 1; i >= 0; i--) {
       const p = sandyParticles[i];
-      canvasCtx.strokeStyle = isOver ? '#FF003C' : (i % 2 === 0 ? '#00FF66' : '#00F0FF');
+      canvasCtx.strokeStyle = isOver ? '#FF5A50' : (i % 2 === 0 ? '#00FF85' : '#5EF6FF');
       canvasCtx.globalAlpha = p.alpha;
       canvasCtx.beginPath();
       canvasCtx.arc(p.x, p.y, p.r, 0, 6.283185307179586);
@@ -512,14 +566,14 @@
       bar.classList.toggle('state-sandevistan', !overclockOn && sandevistanOn);
     }
     if (overclockOn) {
-      if (hum) hum.textContent = '52 / 90 [OVERCLOCK LIMITE — MODO DAVID MARTINEZ]';
-      if (cap) cap.textContent = `${cwCapacity} / 300 [OVERCLOCK MÁXIMO]`;
+      if (hum) hum.textContent = 'ZETTI · PRODUÇÃO DIÁRIA [MODO OVERCLOCK]';
+      if (cap) cap.textContent = '8 REPOS GITHUB · UNIFAN 2027 [MÁX]';
     } else if (sandevistanOn) {
-      if (hum) hum.textContent = '64 / 90 [SANDEVISTAN APOGEE — DILATAÇÃO 85%]';
-      if (cap) cap.textContent = `${cwCapacity} / 300 [APOGEE ATIVO]`;
+      if (hum) hum.textContent = 'ZETTI · PRODUÇÃO DIÁRIA [SANDEVISTAN ATIVO]';
+      if (cap) cap.textContent = '8 REPOS GITHUB · UNIFAN 2027 [APOGEE]';
     } else {
-      if (hum) hum.textContent = '78 / 90 [ESTÁVEL — SEM CYBERPSICOSE]';
-      if (cap) cap.textContent = `${cwCapacity} / 300 [EDGERUNNER]`;
+      if (hum) hum.textContent = 'ZETTI · DEZ/2025 – ATUAL';
+      if (cap) cap.textContent = '8 REPOS GITHUB · UNIFAN 2027';
     }
   }
 
@@ -536,6 +590,7 @@
       sandyParticles.length = 0;
       stopSandevistanCanvas();
     }
+    bumpDossierSync('sandevistan', 4);
     toast(sandevistanOn
       ? 'MILITECH "APOGEE" SANDEVISTAN ATIVADO (David Martinez Mode)'
       : 'Sandevistan desativado — Sinapses estabilizadas');
@@ -555,9 +610,10 @@
       sandyParticles.length = 0;
       stopSandevistanCanvas();
     }
+    bumpDossierSync('overclock', 4);
     toast(overclockOn
-      ? 'OVERCLOCK EDGERUNNER ATIVO: CAPACIDADE 298/300 (Modo David Martinez)'
-      : 'Overclock desativado — Capacidade estabilizada em 248/300');
+      ? 'OVERCLOCK EDGERUNNER ATIVO (Modo David Martinez)'
+      : 'Overclock desativado — Telemetria estabilizada');
   }
 
   const osModes = ['default', 'edgerunners', 'blackwall'];
@@ -586,6 +642,7 @@
 
   function copyClip(txt, msg) {
     playUiSound(880, 1420, 0.08);
+    bumpDossierSync('copy_code', 5, 'ach_code', 'Inspecionou e Copiou Código-Fonte');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(txt).then(() => toast(msg)).catch(() => toast(msg));
     } else {
@@ -593,9 +650,20 @@
     }
   }
 
-  function syncUrlState(tab, gig) {
+  const screenDistricts = {
+    cyberware: { attr: 'watson', label: 'DISTRITO: WATSON // RIPPERDOC' },
+    mapa: { attr: 'city-center', label: 'DISTRITO: CITY CENTER // GIGS' },
+    diario: { attr: 'pacifica', label: 'DISTRITO: PACIFICA // BRAINDANCE' },
+    holocall: { attr: 'afterlife', label: 'DISTRITO: AFTERLIFE // HOLOCALL' },
+    trpg: { attr: 'watson', label: 'DISTRITO: WATSON // FICHA RED' },
+    perks: { attr: 'city-center', label: 'DISTRITO: CITY CENTER // ATRIBUTOS' }
+  };
+
+  function syncUrlState(tab, gig, pathOverride) {
     try {
       const url = new URL(window.location.href);
+      const lp = pathOverride || currentLifepath;
+      if (lp && VALID_LIFEPATHS.has(lp)) url.searchParams.set('path', lp);
       if (tab && tab !== 'cyberware') url.searchParams.set('tab', tab);
       else url.searchParams.delete('tab');
       if (tab === 'mapa' && gig) url.searchParams.set('gig', gig);
@@ -620,13 +688,19 @@
       b.setAttribute('aria-selected', isAct ? 'true' : 'false');
       b.setAttribute('tabindex', isAct ? '0' : '-1');
     }
+    const dist = screenDistricts[screenId] || screenDistricts.cyberware;
+    document.body.setAttribute('data-district', dist.attr);
+    if (dom.hudDistrictBadge) dom.hudDistrictBadge.textContent = dist.label;
+
+    bumpDossierSync('screen_' + screenId, 10);
+
     if (!opts || opts.syncUrl !== false) {
       syncUrlState(screenId, screenId === 'mapa' ? currentMapKey : null);
     }
   }
 
   /* ==========================================================================
-     SCREEN 1 DATA: CYBERWARE SLOTS + LORE QUOTES + REAL CODE SNIPPETS
+     SCREEN 1 DATA: EVIDENCE-FOCUSED SKILLS + HONEST METRICS + PROVA LINKS
      ========================================================================== */
   let currentCwKey = 'sql_cortex';
   const cwUpgradeLevels = {
@@ -634,12 +708,14 @@
   };
   const cyberwareData = {
     sql_cortex: {
-      tier: 'TIER 5++ // IMPLANTE ICÔNICO DE PRODUÇÃO',
-      ram: 'CUSTO HUMANIDADE: 14 HC (4d6)',
-      title: 'SQL Server Engine MK.5++',
-      cat: 'CÓRTEX FRONTAL // BANCO DE DADOS RELACIONAL EM PRODUÇÃO',
-      quote: '"Garoto, esse co-processador SQL aguenta a pressão de dezenas de farmácias rodando ao mesmo tempo sem fritar uma única sinapse." — Viktor Vektor, Ripperdoc',
-      s1: '92% PROD', s2: 'ZETTI REAL', s3: 'INT 10 + 8',
+      tier: 'NÍVEL: USO DIÁRIO EM PRODUÇÃO',
+      ram: 'TEMPO DE USO: DEZ/2025 – ATUAL (ZETTI)',
+      title: 'SQL Server, MySQL & PostgreSQL',
+      cat: 'BANCO DE DADOS RELACIONAL // PRODUÇÃO REAL & APIs REST',
+      quote: '"Queries, views e stored procedures rodando todo dia em produção na Zetti para dezenas de farmácias, sem fritar uma única sinapse." — Viktor Vektor, Ripperdoc',
+      s1: 'USO DIÁRIO EM PRODUÇÃO', s2: 'ZETTI (FARMÁCIAS)', s3: 'PROCEDURES & ORMs',
+      proofUrl: 'https://github.com/Miqueias-Henrique/api-gestao-produtos',
+      proofLabel: 'Prova → api-gestao-produtos',
       bullets: [
         'Desenvolvimento e otimização diária de <strong>queries, views e stored procedures</strong> em SQL Server na Zetti.',
         'Apoio direto a regras de negócio, correções críticas e atualizações em massa em bases de dados de múltiplas farmácias.',
@@ -654,15 +730,17 @@ AS BEGIN
   SET CNPJ_Alfa = UPPER(@NovoCNPJ), AtualizadoEm = SYSDATETIME()
   WHERE FarmaciaID = @FarmaciaID AND Ativo = 1;
 END;`,
-      mods: ['SQL Server', 'MySQL', 'PostgreSQL', 'Queries & Views', 'Procedures', 'Modelagem Relacional']
+      mods: ['SQL Server', 'MySQL', 'PostgreSQL', 'Queries & Views', 'Stored Procedures', 'Modelagem Relacional']
     },
     dotnet_deck: {
-      tier: 'TIER 5++ // MILITECH "APOGEE" SANDEVISTAN DECK',
-      ram: 'CUSTO HUMANIDADE: 16 HC (4d6+2)',
-      title: 'C# / .NET Sandevistan Runtime',
-      cat: 'SISTEMA OPERACIONAL // BACKEND, POO & APIs REST',
-      quote: '"Esse é o implante que o David Martinez usava para enxergar o código em câmera lenta. C# e .NET puro, direto na espinha dorsal." — Lucy Kushinada',
-      s1: 'FOCO #1', s2: 'APIs REST', s3: 'TECH 10 + 8',
+      tier: 'NÍVEL: PROJETOS COMPLETOS & FOCO #1',
+      ram: 'CONTEXTO: ARQUITETURA EM CAMADAS, POO & APIs REST',
+      title: 'C# / .NET & APIs RESTful',
+      cat: 'BACKEND PRINCIPAL // POO, CAMADAS, SWAGGER & REGRAS DE NEGÓCIO',
+      quote: '"C# e .NET com separação limpa entre Controller, Service e Repository, traduzindo regras fiscais complexas em endpoints seguros." — Lucy Kushinada',
+      s1: 'PROJETOS COMPLETOS', s2: 'FOCO PRINCIPAL', s3: 'APIs REST & POO',
+      proofUrl: 'https://github.com/Miqueias-Henrique',
+      proofLabel: 'Prova → GitHub @Miqueias-Henrique',
       bullets: [
         'Conhecimentos sólidos em <strong>C# e ecossistema .NET</strong> aplicados na construção de projetos estruturados.',
         'Implementação de APIs REST com documentação interativa via <strong>Swagger</strong>, validação de dados e separação em camadas.',
@@ -682,12 +760,14 @@ public class ProdutosFarmaciaController : ControllerBase {
       mods: ['C#', '.NET', 'APIs REST', 'Swagger', 'POO', 'Arquitetura em Camadas']
     },
     vb6_chassis: {
-      tier: 'TIER 5+ // BLINDAGEM SUBDÉRMICA DE PRODUÇÃO',
-      ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
-      title: 'VB6 Legacy Reactor @ Zetti',
-      cat: 'ESQUELETO // SUSTENTAÇÃO DE SISTEMAS CRÍTICOS EM AMBIENTE REAL',
-      quote: '"Tecnologia pré-DataKrash de Rache Bartmoss que ainda move o mundo real. Quem domina esse reator mantém a cidade inteira de pé." — Johnny Silverhand',
-      s1: '100% DIÁRIO', s2: 'FARMÁCIAS', s3: 'COOL 9 + 8',
+      tier: 'NÍVEL: USO DIÁRIO EM PRODUÇÃO',
+      ram: 'TEMPO DE USO: DEZ/2025 – ATUAL (ZETTI · MÚLTIPLAS FARMÁCIAS)',
+      title: 'VB6 em Produção @ Zetti',
+      cat: 'SUSTENTAÇÃO DE SISTEMAS CRÍTICOS // REGRAS FISCAIS & CNPJ ALFANUMÉRICO',
+      quote: '"Manter sistema crítico de dezenas de farmácias rodando sem regressão enquanto atualiza CNPJ Alfanumérico e impostos exige disciplina cirúrgica." — Johnny Silverhand',
+      s1: 'USO DIÁRIO EM PRODUÇÃO', s2: 'ZETTI (ERP REAL)', s3: 'CNPJ ALFA & IMPOSTOS',
+      proofUrl: 'https://www.linkedin.com/in/miqueias-henrique-88503b218/',
+      proofLabel: 'Prova → Experiência Zetti (LinkedIn)',
       bullets: [
         'Manutenção, correção de bugs e evolução de sistema legado em <strong>VB6</strong> utilizado diariamente por múltiplas farmácias.',
         'Entrega de demandas fiscais e regulatórias críticas como <strong>CNPJ alfanumérico</strong> e novos cálculos de impostos.',
@@ -700,15 +780,17 @@ Public Function ValidarCNPJAlfanumerico(ByVal sCNPJ As String) As Boolean
     If Len(sLimpo) <> 14 Then Exit Function
     ValidarCNPJAlfanumerico = ExecutarRegraFiscalSQL(sLimpo)
 End Function`,
-      mods: ['VB6 Profissional', 'Regras de Negócio', 'Sistemas Legados', 'CNPJ Alfanumérico', 'Sustentação Crítica']
+      mods: ['VB6 em Produção', 'Regras de Negócio', 'Sistemas Legados', 'CNPJ Alfanumérico', 'Sustentação Crítica']
     },
     java_reflex: {
-      tier: 'TIER 5+ // IMPULSOR NEURAL KERENZIKOV',
-      ram: 'CUSTO HUMANIDADE: 14 HC (4d6)',
+      tier: 'NÍVEL: PROJETOS COMPLETOS (5 REPOSITÓRIOS)',
+      ram: 'EVIDÊNCIA: SPRING BOOT 3, JAVAFX DAO, AVL O(log n) & HASH O(1)',
       title: 'Java 17/21, Spring Boot 3 & Algoritmos',
-      cat: 'SISTEMA NERVOSO // API CAMADAS, DESKTOP DAO & ESTRUTURAS DE DADOS',
-      quote: '"Busca em Árvore AVL em O(log n) e Tabela Hash em O(1) medido em nanossegundos. Rápido como um Kerenzikov em combate." — Wakako Okada',
-      s1: '5 PROJETOS', s2: 'O(log n) / O(1)', s3: 'REF 8 + 8',
+      cat: 'ECOSISTEMA JAVA // API 4 CAMADAS, DESKTOP JDBC DAO & ESTRUTURAS DE DADOS',
+      quote: '"Busca em Árvore AVL em O(log n) e Tabela Hash em O(1) medido em ~138 nanossegundos, além de API Spring Boot 3 com PostgreSQL." — Wakako Okada',
+      s1: 'PROJETOS COMPLETOS', s2: '5 REPOSITÓRIOS', s3: 'O(log n) / O(1) & JPA',
+      proofUrl: 'https://github.com/Miqueias-Henrique/vital-conscious-api',
+      proofLabel: 'Prova → vital-conscious-api',
       bullets: [
         'Arquitetura em 4 camadas (Controller, Service, Repository JPA e Entity) com <strong>Spring Boot 3 e PostgreSQL</strong> (vital-conscious-api).',
         'Aplicação desktop gráfica com <strong>Java 21, JavaFX, JDBC e padrão DAO</strong> (controle-estoque-javafx).',
@@ -725,12 +807,14 @@ public RegistroCPF buscarO1(String cpf) {
       mods: ['Java 17 / 21', 'Spring Boot 3', 'Spring Data JPA', 'JavaFX DAO', 'Árvore AVL & BST', 'Hash Table O(1)', 'JUnit 5']
     },
     node_ts: {
-      tier: 'TIER 5++ // MONOFIO TÉRMICO DE NETRUNNER (LUCY)',
-      ram: 'CUSTO HUMANIDADE: 12 HC (3d6)',
+      tier: 'NÍVEL: PROJETOS COMPLETOS (2 APIs REST)',
+      ram: 'EVIDÊNCIA: EXPRESS + TYPEORM + MYSQL & NESTJS + PRISMA + POSTGRESQL',
       title: 'Node.js, TypeScript, Express & NestJS',
-      cat: 'BRAÇOS & INTERFACE // APIs REST PAGINADAS, TYPEORM & PRISMA',
-      quote: '"Fatia qualquer requisição HTTP com precisão cirúrgica: Express, NestJS, TypeORM, Prisma e Docker prontos para deploy." — Rogue Amendiares',
-      s1: 'TOP 1 REPO', s2: 'DOCKER', s3: 'JEST + YUP',
+      cat: 'APIs REST PAGINADAS // TYPEORM, PRISMA ORM, DOCKER & TESTES JEST',
+      quote: '"Duas APIs REST completas com migrations versionadas, seeds, validação de DTOs, Swagger UI e containers Docker prontos para rodar." — Rogue Amendiares',
+      s1: 'PROJETOS COMPLETOS', s2: 'DOCKER & SWAGGER', s3: 'JEST + YUP',
+      proofUrl: 'https://github.com/Miqueias-Henrique/vosso-cinema-api',
+      proofLabel: 'Prova → vosso-cinema-api',
       bullets: [
         'Autor da <strong>api-gestao-produtos</strong> (Express, TypeScript, TypeORM, MySQL, Migrations, Seeds, Yup, Swagger e Docker).',
         'Autor da <strong>vosso-cinema-api</strong> (NestJS, TypeScript, Prisma ORM, PostgreSQL com 5 entidades, Swagger e testes Jest).',
@@ -750,12 +834,14 @@ export class ListProductsService {
       mods: ['Node.js', 'TypeScript', 'Express', 'NestJS', 'TypeORM', 'Prisma ORM', 'Docker', 'Jest']
     },
     git_optics: {
-      tier: 'TIER 5+ // ÓPTICA KIROSHI "THE ORACLE" MK.5',
-      ram: 'CUSTO HUMANIDADE: 10 HC (2d6)',
-      title: 'Git, GitKraken, Jira & Visual Studio',
-      cat: 'SISTEMA ÓPTICO // FLUXO ÁGIL, VERSIONAMENTO & CONTAINERS',
-      quote: '"Enxerga conflitos de merge através das paredes e rastreia cada ticket no Jira até a validação final." — Viktor Vektor',
-      s1: 'FLUXO REAL', s2: 'GITLAB/HUB', s3: 'DOCKER',
+      tier: 'NÍVEL: USO DIÁRIO EM PRODUÇÃO',
+      ram: 'TEMPO DE USO: FLUXO DIÁRIO NA ZETTI + 8 PROJETOS GITHUB',
+      title: 'Git, GitKraken, Jira & Docker',
+      cat: 'FLUXO ÁGIL & DEVOPS // VERSIONAMENTO EM EQUIPE, CHAMADOS & CONTAINERS',
+      quote: '"Rastreia cada chamado no Jira da análise ao deploy, mantendo histórico limpo no Git/GitKraken e ambientes reprodutíveis em Docker." — Viktor Vektor',
+      s1: 'USO DIÁRIO EM PRODUÇÃO', s2: 'JIRA & GITKRAKEN', s3: 'DOCKER & CI',
+      proofUrl: 'https://github.com/Miqueias-Henrique/api-gestao-produtos',
+      proofLabel: 'Prova → Dockerfile & Migrations',
       bullets: [
         'Uso diário de <strong>Jira, Git, GitHub, GitLab e GitKraken</strong> no ciclo de chamados e code review na Zetti.',
         'Desenvolvimento e depuração utilizando <strong>Visual Studio, VS Code e containers Docker</strong>.',
@@ -795,11 +881,14 @@ $ npm run typeorm migration:run && npm test
     if (dom.cwStat3) dom.cwStat3.textContent = d.s3;
     if (dom.cwBullets) dom.cwBullets.innerHTML = d.bullets.map(b => `<li>${b}</li>`).join('');
     if (dom.cwCodePreview) dom.cwCodePreview.textContent = d.code;
+    if (dom.cwProofLink && d.proofUrl) dom.cwProofLink.href = d.proofUrl;
+    if (dom.cwProofLabel && d.proofLabel) dom.cwProofLabel.textContent = d.proofLabel;
     if (dom.cwMods) {
-      dom.cwMods.innerHTML = d.mods.map(m => `<button type="button" onclick="toast('Módulo Ativo: ${m}')">${m}</button>`).join('');
+      dom.cwMods.innerHTML = d.mods.map(m => `<button type="button" onclick="toast('Tecnologia verificada: ${m}')">${m}</button>`).join('');
     }
+    bumpDossierSync('cw_' + key, 6);
     flashPanel('cwInspectorCard');
-    toast('Implante inspecionado: ' + d.title);
+    toast('Competência inspecionada: ' + d.title);
   }
 
   function copyCurrentCwCode() {
@@ -811,53 +900,72 @@ $ npm run typeorm migration:run && npm test
     spendRam(2);
     playUiSound(320, 1640, 0.18, 'sawtooth');
     cwUpgradeLevels[currentCwKey] = (cwUpgradeLevels[currentCwKey] || 0) + 1;
-    const lvl = cwUpgradeLevels[currentCwKey];
-    const badge = cwBadgeEls[currentCwKey];
-    if (badge) badge.textContent = `TIER 5++ [MK.${5 + lvl}]`;
-    if (dom.cwTierText) dom.cwTierText.textContent = `TIER 5++ ICÔNICO OVERCLOCKADO [MK.${5 + lvl}] // VIKTOR VEKTOR TUNED`;
-    if (dom.cwStat1) dom.cwStat1.textContent = '100% MAX';
-    cwCapacity = Math.min(300, cwCapacity + 8);
+    const d = cyberwareData[currentCwKey];
+    if (dom.cwTierText && d) dom.cwTierText.textContent = d.tier + ' // EVIDÊNCIA AUDITADA ✓';
+    bumpDossierSync('audit_' + currentCwKey, 6, 'ach_code', 'Auditou Snippets Reais de Código');
     updateBiomonitorReadouts();
     flashPanel('cwInspectorCard');
-    toast(`Implante aprimorado para MK.${5 + lvl} · Capacidade: ${cwCapacity}/300`);
+    toast('Evidência técnica auditada: ' + (d ? d.title : currentCwKey));
   }
 
   /* ==========================================================================
-     SCREEN 2 DATA: MAP PINS + GPS ROUTE + LIVE TERMINAL SIMULATOR
+     SCREEN 2 (ATO 3) DATA: STAR FIXER CONTRACTS + GPS ROUTE + TERMINAL
      ========================================================================== */
   let currentMapKey = 'zetti_job';
   let currentMapCloneCmd = 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)';
 
+  function buildStarHtml(c1, c2, c3, c4, c5) {
+    return (
+      `<div class="star-row"><b>01 O CONTRATO</b><span>${c1}</span></div>` +
+      `<div class="star-row"><b>02 O ALVO</b><span>${c2}</span></div>` +
+      `<div class="star-row"><b>03 O HACK</b><span>${c3}</span></div>` +
+      `<div class="star-row"><b>04 A RECOMPENSA</b><span>${c4}</span></div>` +
+      `<div class="star-row"><b>05 A PROVA</b><span>${c5}</span></div>`
+    );
+  }
+
   const mapPinsData = {
     zetti_job: {
       x: 176, y: 108,
-      coord: "COORD: 16°40'S 49°15'W // CORP PLAZA: ZETTI",
+      coord: "COORD: 16°40'S 49°15'W // CITY CENTER: ZETTI",
       dist: '0.0 KM (QG OPERACIONAL ATUAL)',
-      type: 'MISSÃO PRINCIPAL // EM OPERAÇÃO',
+      type: '★ MISSÃO PRINCIPAL // PRODUÇÃO REAL',
       reward: 'FIXER: ZETTI TECH',
       kicker: 'GOIÂNIA, GO · 08/12/2025 – ATUAL',
       title: 'Estagiário de Desenvolvimento · Zetti',
-      desc: 'Manutenção, correção e evolução de sistema em produção utilizado diariamente por múltiplas farmácias, apoiando diretamente a operação dos clientes.',
-      blueprint: '▸ Manutenção e evolução de sistema legado em VB6.<br>▸ Desenvolvimento e otimização de queries, views e procedures em SQL Server.<br>▸ Adequação ao CNPJ alfanumérico, novos impostos e atualizações em massa.<br>▸ Validação de chamados com Jira, GitHub, GitLab, GitKraken e Visual Studio.',
+      desc: 'Manutenção, correção e evolução diária de sistema utilizado em produção real por múltiplas farmácias, apoiando diretamente a operação dos clientes.',
+      blueprint: buildStarHtml(
+        'Sustentação e evolução diária de ERP farmacêutico em produção real utilizado por dezenas de farmácias.',
+        'Garantir zero regressão em regras fiscais críticas (CNPJ Alfanumérico e novos impostos) e alta performance em consultas SQL Server.',
+        'Desenvolvimento e otimização de queries, views e stored procedures em SQL Server + manutenção de módulos legados em VB6 com validação pré-release via Jira e GitKraken.',
+        'Atualizações fiscais e scripts em massa entregues com estabilidade operacional para múltiplas unidades farmacêuticas.',
+        'Experiência profissional ativa na Zetti (dez/2025 – atual) · Código T-SQL e VB6 auditável no terminal abaixo.'
+      ),
       terminal: `$ zetti-prod-cli --exec-ticket JIRA-2077
 [SQL SERVER] Executando sp_AtualizarImpostosFarmacia…
 [VB6 RUNTIME] Módulo de CNPJ Alfanumérico compilado sem regressão.
 [QA CHECK] 100% validado em homologação antes da entrega.`,
       stack: ['VB6', 'SQL Server', 'Queries, Views & Procedures', 'Regras de Negócio', 'Jira', 'GitKraken'],
       link: 'https://www.linkedin.com/in/miqueias-henrique-88503b218/',
-      linkText: 'Ver Perfil no LinkedIn',
+      linkText: 'Aceitar Contrato → LinkedIn',
       clone: 'Miqueias Carvalho — Estagiário de Desenvolvimento @ Zetti (VB6 & SQL Server)'
     },
     carvalho_job: {
       x: 264, y: 162,
-      coord: "COORD: 16°41'S 49°16'W // CORP PLAZA: CARVALHO",
+      coord: "COORD: 16°41'S 49°16'W // CITY CENTER: CARVALHO",
       dist: '1.8 KM DO QG CENTRAL',
-      type: 'MISSÃO CONCLUÍDA // HISTÓRICO',
-      reward: '+2500 STREET CRED',
+      type: 'HISTÓRICO PROFISSIONAL // CONCLUÍDA',
+      reward: '2021 – 2025 (4 ANOS)',
       kicker: 'GOIÂNIA, GO · 2021 — 2025',
       title: 'Auxiliar Administrativo — Carvalho Forros e Divisórias',
       desc: 'Início como Jovem Aprendiz e posterior efetivação devido à organização, disciplina e resolução de problemas no atendimento e gestão documental.',
-      blueprint: '▸ Rotinas administrativas e controle de processos internos.<br>▸ Organização de documentos e atendimento direto.<br>▸ Base sólida de responsabilidade profissional e trabalho em equipe.',
+      blueprint: buildStarHtml(
+        'Gestão de rotinas administrativas, atendimento direto a clientes e organização de processos internos.',
+        'Manter precisão documental e agilidade no suporte à operação comercial da empresa.',
+        'Padronização de controles internos e atendimento proativo, evoluindo de Jovem Aprendiz para colaborador efetivado.',
+        '4 anos de trajetória sólida que construíram a base de disciplina, comunicação e foco no cliente aplicada hoje na engenharia de software.',
+        'Histórico profissional completo verificado no Currículo PDF.'
+      ),
       terminal: `$ history-log --company "Carvalho Forros e Divisórias"
 [2021] Ingresso como Jovem Aprendiz
 [2022-2025] Efetivado como Auxiliar Administrativo
@@ -873,143 +981,191 @@ $ npm run typeorm migration:run && npm test
       dist: '3.4 KM // ROTA RÁPIDA VIA AFTERLIFE',
       type: '★ CONTRATO TOP 1 // RECOMENDADO P/ AVALIAÇÃO',
       reward: 'FIXER: ROGUE (AFTERLIFE)',
-      kicker: 'REPOSITÓRIO GITHUB // NODE.JS, TYPESCRIPT & MYSQL',
+      kicker: 'REPOSITÓRIO GITHUB // NODE.JS, TYPESCRIPT, TYPEORM & MYSQL',
       title: 'api-gestao-produtos',
       desc: 'API REST completa em Node.js, TypeScript, Express e TypeORM com MySQL. Possui CRUD paginado para produtos, categorias, situações e usuários.',
-      blueprint: '▸ Camadas: Express REST → Validação Yup → TypeORM → MySQL.<br>▸ Migrations versionadas e Seeds automatizadas para testes rápidos.<br>▸ Documentação interativa no Swagger + Ambiente Docker pronto.',
+      blueprint: buildStarHtml(
+        'Construir uma API REST escalável para catálogo e gestão de estoque de produtos, categorias, situações e usuários.',
+        'Garantir tipagem estática, validação declarativa de entrada, paginação eficiente e ambiente 100% reprodutível.',
+        'Arquitetura em camadas com Express + TypeScript, validação com Yup, persistência MySQL via TypeORM com migrations e seeds versionadas + containerização Docker.',
+        'API documentada no Swagger UI com paginação padronizada e setup instantâneo via docker compose.',
+        'Repositório público com README detalhado, migrations, seeds e Swagger.'
+      ),
       terminal: `$ docker compose up -d && curl -X GET http://localhost:3333/products?page=1
 HTTP/1.1 200 OK (Content-Type: application/json)
 { "total": 48, "page": 1, "swagger": "/api-docs", "orm": "TypeORM + MySQL" }`,
       stack: ['Node.js', 'TypeScript', 'Express', 'TypeORM', 'MySQL', 'Yup', 'Swagger', 'Docker'],
       link: 'https://github.com/Miqueias-Henrique/api-gestao-produtos',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/api-gestao-produtos.git'
     },
     'vosso-cinema-api': {
       x: 552, y: 171,
       coord: "COORD: 16°38'S 49°13'W // AFTERLIFE: CONTRATO DA ROGUE #02",
       dist: '4.2 KM // SETOR NESTJS',
-      type: 'CONTRATO DE FIXER // ARQUITETURA MODULAR',
-      reward: 'FIXER: ROGUE (+4200 CRED)',
-      kicker: 'REPOSITÓRIO GITHUB // NESTJS, PRISMA & POSTGRESQL',
+      type: 'MISSÃO SECUNDÁRIA // ARQUITETURA MODULAR NESTJS',
+      reward: 'FIXER: REGINA JONES',
+      kicker: 'REPOSITÓRIO GITHUB // NESTJS, PRISMA ORM & POSTGRESQL',
       title: 'vosso-cinema-api',
       desc: 'API REST para gerenciamento de cinema (filmes, salas, sessões, ingressos e lanches) com arquitetura modular NestJS e Prisma ORM.',
-      blueprint: '▸ Modelagem relacional de 5 entidades no PostgreSQL via Prisma ORM.<br>▸ Documentação OpenAPI/Swagger completa.<br>▸ Testes automatizados configurados com Jest.',
+      blueprint: buildStarHtml(
+        'Desenvolver o backend modular para operação completa de uma rede de cinemas (filmes, salas, sessões, ingressos e bomboniere).',
+        'Modelar relacionamentos complexos no PostgreSQL mantendo contratos HTTP limpos e testáveis.',
+        'Módulos isolados em NestJS + TypeScript, schema relacional de 5 entidades no Prisma ORM, documentação OpenAPI/Swagger e testes com Jest.',
+        '5 módulos REST integrados ao PostgreSQL com cobertura de testes automatizados e contratos Swagger.',
+        'Repositório público no GitHub + integração com o frontend vosso-cinema-web.'
+      ),
       terminal: `$ npx prisma migrate deploy && npm run test:cov
 PASS src/movies/movies.service.spec.ts
 PASS src/sessions/sessions.controller.spec.ts
 [NESTJS] 5 Entidades PostgreSQL + Swagger ativo em /api.`,
       stack: ['NestJS', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'Swagger', 'Jest'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-api',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-api.git'
     },
     'vital-conscious-api': {
       x: 656, y: 135,
       coord: "COORD: 16°39'S 49°12'W // AFTERLIFE: CONTRATO DA ROGUE #03",
       dist: '5.1 KM // ARCOLOGIA SPRING BOOT',
-      type: 'CONTRATO DE FIXER // 4 CAMADAS JAVA',
-      reward: 'FIXER: WAKAKO (+4500 CRED)',
-      kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & SPRING BOOT 3',
+      type: 'MISSÃO SECUNDÁRIA // 4 CAMADAS JAVA & SPRING BOOT 3',
+      reward: 'FIXER: WAKAKO OKADA',
+      kicker: 'REPOSITÓRIO GITHUB // JAVA 17, SPRING BOOT 3 & POSTGRESQL',
       title: 'vital-conscious-api',
       desc: 'API REST universitária estruturada em 4 camadas (Controller, Service, Repository e Entity) para gestão de alunos e professores.',
-      blueprint: '▸ Arquitetura Spring Boot 3 + Spring Data JPA + Hibernate.<br>▸ Banco de dados PostgreSQL e redução de boilerplate com Lombok.<br>▸ Acompanhada de diagramas UML e documentação PDS.',
+      blueprint: buildStarHtml(
+        'Construir API REST acadêmica em Java seguindo padrões corporativos de separação de responsabilidades e documentação UML.',
+        'Isolar regras de negócio da camada de persistência relacional em PostgreSQL.',
+        'Arquitetura em 4 camadas (Controller, Service, Repository JPA e Entity) com Java 17, Spring Boot 3, Hibernate e Lombok.',
+        'API limpa, manutenível e acompanhada de diagramas de engenharia de software (UML e PDS).',
+        'Repositório público no GitHub com código-fonte Java 17 e documentação técnica.'
+      ),
       terminal: `$ ./mvnw spring-boot:run
 [Spring Boot 3.2] HikariPool-1 - Conectado ao PostgreSQL
 [JPA] Camadas Controller -> Service -> Repository -> Entity ativas.`,
       stack: ['Java 17', 'Spring Boot 3', 'Spring Data JPA', 'PostgreSQL', 'Lombok'],
       link: 'https://github.com/Miqueias-Henrique/vital-conscious-api',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vital-conscious-api.git'
     },
     'controle-estoque-javafx': {
       x: 152, y: 279,
-      coord: "COORD: 16°42'S 49°17'W // JAPACTOWN: CONTRATO WAKAKO #04",
+      coord: "COORD: 16°42'S 49°17'W // JAPANTOWN: CONTRATO WAKAKO #04",
       dist: '2.7 KM // DISTRITO JAVAFX',
-      type: 'BICO TÉCNICO // PADRÃO DAO & SQL',
+      type: 'GIG TÉCNICA // PADRÃO DAO & DESKTOP SQL',
       reward: 'FIXER: WAKAKO OKADA',
-      kicker: 'REPOSITÓRIO GITHUB // JAVA 21, JAVAFX & JDBC',
+      kicker: 'REPOSITÓRIO GITHUB // JAVA 21, JAVAFX & JDBC POSTGRESQL',
       title: 'controle-estoque-javafx',
       desc: 'Aplicação desktop em Java 21 e JavaFX para controle de estoque com interface gráfica e persistência em PostgreSQL via JDBC.',
-      blueprint: '▸ Isolamento da camada de persistência utilizando o Padrão DAO.<br>▸ Conexão JDBC segura com PostgreSQL.<br>▸ Interface JavaFX intuitiva para cadastro e consulta de produtos.',
+      blueprint: buildStarHtml(
+        'Desenvolver sistema desktop gráfico para controle de estoque conectado diretamente a banco relacional PostgreSQL.',
+        'Evitar acoplamento entre código de interface JavaFX e queries SQL puras.',
+        'Implementação do Padrão DAO (Data Access Object) sobre JDBC em Java 21 com prepared statements seguros.',
+        'Operações CRUD completas em interface desktop fluida com persistência transacional no PostgreSQL.',
+        'Repositório público no GitHub com código Java 21 e scripts SQL.'
+      ),
       terminal: `$ java --module-path javafx-sdk-21/lib --add-modules javafx.controls App
 [JDBC DAO] Conexão PostgreSQL estabelecida com sucesso.
 [JAVAFX] Tela de Controle de Estoque renderizada.`,
       stack: ['Java 21', 'JavaFX', 'JDBC', 'PostgreSQL', 'Padrão DAO'],
       link: 'https://github.com/Miqueias-Henrique/controle-estoque-javafx',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/controle-estoque-javafx.git'
     },
     'catalogo-livros-avl-bst': {
       x: 256, y: 333,
-      coord: "COORD: 16°43'S 49°16'W // JAPACTOWN: LAB DE ESTRUTURAS O(log n)",
+      coord: "COORD: 16°43'S 49°16'W // JAPANTOWN: LAB DE ESTRUTURAS O(log n)",
       dist: '3.1 KM // LAB ALGORITMOS',
-      type: 'BICO TÉCNICO // ÁRVORES BINÁRIAS',
+      type: 'GIG TÉCNICA // ÁRVORES BINÁRIAS AVL VS BST',
       reward: 'COMPLEXIDADE: O(log n)',
-      kicker: 'REPOSITÓRIO GITHUB // JAVA 17, AVL & BST',
+      kicker: 'REPOSITÓRIO GITHUB // JAVA 17, ÁRVORE AVL & BST',
       title: 'catalogo-livros-avl-bst',
       desc: 'Sistema de catálogo de livros em Java comparando Árvore Binária de Busca (BST) e Árvore AVL auto-balanceada.',
-      blueprint: '▸ Rotações simples e duplas garantindo balanceamento AVL.<br>▸ Percursos In-Ordem, Pré-Ordem, Pós-Ordem e Busca em Largura (BFS).<br>▸ Persistência em CSV e telemetria de rotações e comparações.',
+      blueprint: buildStarHtml(
+        'Comparar empiricamente a degradação de busca em uma Árvore BST desbalanceada contra uma Árvore AVL auto-balanceada.',
+        'Implementar rotações simples e duplas do zero em Java sem bibliotecas externas.',
+        'Motor AVL com cálculo de fator de balanceamento, rotações LL/RR/LR/RL, travessias DFS/BFS e exportação CSV.',
+        'Redução comprovada da altura da árvore de 14 (BST degenerada) para 4 (AVL O(log n)) com contagem exata de rotações.',
+        'Repositório público no GitHub com código-fonte e telemetria comparativa.'
+      ),
       terminal: `$ java -cp bin CatalogoLivrosAVL --benchmark
 [BST] Altura: 14 | Comparações: 12
 [AVL] Altura: 4 (Balanceada O(log n)) | Rotações Duplas: 3 | CSV salvo.`,
       stack: ['Java 17', 'Árvore AVL', 'Árvore BST', 'BFS / DFS', 'CSV'],
       link: 'https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/catalogo-livros-avl-bst.git'
     },
     'tabela-hash-cpf-java': {
       x: 328, y: 261,
-      coord: "COORD: 16°42'S 49°15'W // JAPACTOWN: NÚCLEO DE INDEXAÇÃO O(1)",
+      coord: "COORD: 16°42'S 49°15'W // JAPANTOWN: NÚCLEO DE INDEXAÇÃO O(1)",
       dist: '2.9 KM // NÚCLEO HASH O(1)',
-      type: 'BICO TÉCNICO // BENCHMARK EM NANOSSEGUNDOS',
-      reward: 'COMPLEXIDADE: O(1)',
+      type: 'GIG TÉCNICA // BENCHMARK EM NANOSSEGUNDOS',
+      reward: 'COMPLEXIDADE: O(1) ~138ns',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17 & HASH TABLE',
       title: 'tabela-hash-cpf-java',
       desc: 'Implementação de Tabela Hash em Java com tratamento de colisões por encadeamento separado (LinkedList) e validação de CPF.',
-      blueprint: '▸ Tratamento de colisões via listas encadeadas independentes.<br>▸ Validador matemático de CPF integrado.<br>▸ Medição de desempenho real (colisões, comparações e tempo em ns).',
+      blueprint: buildStarHtml(
+        'Indexar e recuperar registros por CPF em tempo constante O(1) tratando colisões de hash de forma determinística.',
+        'Validar matematicamente os dígitos verificadores de CPF e medir a latência real em nanossegundos.',
+        'Tabela Hash em Java 17 com encadeamento separado via LinkedList, função de dispersão modular e cronometragem System.nanoTime().',
+        'Buscas O(1) aferidas em ~138 nanossegundos com relatório completo de colisões e ocupação de buckets.',
+        'Repositório público no GitHub com código-fonte Java 17.'
+      ),
       terminal: `$ java TabelaHashCPF --lookup 123.456.789-00
 [CPF VÁLIDO] Bucket #42 localizado via LinkedList
 [BENCHMARK] Tempo de busca O(1): 138 nanossegundos (ns).`,
       stack: ['Java 17', 'Hash Table', 'LinkedList', 'Validação CPF', 'Benchmark (ns)'],
       link: 'https://github.com/Miqueias-Henrique/tabela-hash-cpf-java',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/tabela-hash-cpf-java.git'
     },
     'quiz-cli-java': {
       x: 128, y: 360,
-      coord: "COORD: 16°44'S 49°18'W // JAPACTOWN: TERMINAL JUNIT 5",
+      coord: "COORD: 16°44'S 49°18'W // JAPANTOWN: TERMINAL JUNIT 5",
       dist: '3.8 KM // TERMINAL MAVEN',
-      type: 'BICO TÉCNICO // TESTES AUTOMATIZADOS',
+      type: 'GIG TÉCNICA // TESTES UNITÁRIOS JUNIT 5',
       reward: '100% TEST PASS',
       kicker: 'REPOSITÓRIO GITHUB // JAVA 17, MAVEN & JUNIT 5',
       title: 'quiz-cli-java',
       desc: 'Aplicação interativa de quiz no terminal em Java 17 estruturada com Maven e bateria de testes unitários automatizados com JUnit 5.',
-      blueprint: '▸ Validação segura de entradas no console.<br>▸ Cálculo de pontuação e percentual de aproveitamento.<br>▸ Cobertura de testes unitários com JUnit 5 Jupiter.',
+      blueprint: buildStarHtml(
+        'Desenvolver aplicação CLI em Java 17 com lógica de pontuação desacoplada e 100% testável via Maven.',
+        'Garantir cobertura de casos de borda e entradas inválidas com testes automatizados.',
+        'Separação entre serviço de regras e interface de console, com suíte de testes unitários no JUnit 5 Jupiter.',
+        '12 testes unitários executados com 0 falhas e build Maven automatizado.',
+        'Repositório público no GitHub com pom.xml e suíte JUnit 5.'
+      ),
       terminal: `$ mvn clean test
 [INFO] Running com.miqueias.quiz.QuizServiceTest
 [INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS.`,
       stack: ['Java 17', 'Maven', 'JUnit 5', 'POO', 'CLI'],
       link: 'https://github.com/Miqueias-Henrique/quiz-cli-java',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/quiz-cli-java.git'
     },
     'vosso-cinema-web': {
       x: 512, y: 288,
       coord: "COORD: 16°42'S 49°13'W // SANTO DOMINGO: DISTRITO WEB UI",
       dist: '3.5 KM // DISTRITO WEB',
-      type: 'CONTRATO FRONTEND // INTERFACE RESPONSIVA',
-      reward: 'RECOMPENSA: +3200 CRED',
+      type: 'GIG FRONTEND // INTERFACE INTEGRADA',
+      reward: 'FIXER: LUCY NET',
       kicker: 'REPOSITÓRIO GITHUB // HTML5, CSS3, JS & BOOTSTRAP 5',
       title: 'vosso-cinema-web',
       desc: 'Interface web responsiva para gestão de filmes, salas, sessões e venda de ingressos de cinema com persistência via localStorage.',
-      blueprint: '▸ Manipulação de DOM com JavaScript Vanilla.<br>▸ Layout responsivo construído com Bootstrap 5.<br>▸ Fluxo completo de cadastro e reserva salvo localmente.',
+      blueprint: buildStarHtml(
+        'Criar a interface web para operação de filmes, salas, sessões e venda de ingressos.',
+        'Fornecer fluxo intuitivo de reserva de assentos e cadastro sem dependências pesadas.',
+        'JavaScript Vanilla modularizado com Bootstrap 5 responsivo e sincronização em LocalStorage.',
+        'Interface completa ponta a ponta complementando o domínio do projeto vosso-cinema-api.',
+        'Repositório público no GitHub.'
+      ),
       terminal: `$ open index.html --storage localStorage
 [DOM READY] Módulos de Filmes, Salas, Sessões e Ingressos carregados.
 [BOOTSTRAP 5] Grid responsivo sincronizado.`,
       stack: ['JavaScript', 'HTML5', 'CSS3', 'Bootstrap 5', 'LocalStorage'],
       link: 'https://github.com/Miqueias-Henrique/vosso-cinema-web',
-      linkText: 'Abrir Repositório no GitHub',
+      linkText: 'Aceitar Contrato → GitHub',
       clone: 'git clone https://github.com/Miqueias-Henrique/vosso-cinema-web.git'
     },
     unifan_edu: {
@@ -1017,13 +1173,19 @@ PASS src/sessions/sessions.controller.spec.ts
       coord: "COORD: 16°43'S 49°12'W // SANTO DOMINGO: ACADEMIA UNIFAN",
       dist: '4.0 KM // CAMPUS UNIFAN',
       type: 'FORMAÇÃO SUPERIOR // EM ANDAMENTO',
-      reward: 'PREVISÃO: 2027 (68%)',
-      kicker: 'GRADUAÇÃO // ENGENHARIA DE SOFTWARE',
+      reward: 'CONCLUSÃO PREVISTA: 2027',
+      kicker: 'GRADUAÇÃO // ENGENHARIA DE SOFTWARE (UNIFAN)',
       title: 'UNIFAN — Engenharia de Software',
       desc: 'Bacharelado em Engenharia de Software em andamento (conclusão em 2027), somado a cursos complementares e idiomas.',
-      blueprint: '▸ Cursos: Banco de Dados (2026), C#, GitHub, Java Básico, Algoritmo, HTML, CSS e Kotlin.<br>▸ Inglês: Intermediário para leitura e compreensão, conversação básica.<br>▸ Espanhol: Intermediário.',
+      blueprint: buildStarHtml(
+        'Formação superior em Engenharia de Software focada em arquitetura, banco de dados, POO e estruturas de dados.',
+        'Aliar a fundamentação teórica universitária com a prática diária em produção na Zetti.',
+        'Graduação na UNIFAN (conclusão 2027) + certificações em Banco de Dados (2026), C#, GitHub, Java, Algoritmo e Kotlin.',
+        'Base sólida de engenharia aplicada em 8 projetos públicos e no estágio em produção.',
+        'Currículo PDF completo disponível para download no HUD.'
+      ),
       terminal: `$ unifan-academic-status --student "Miqueias Carvalho"
-[CURSO] Bacharelado em Engenharia de Software (68% concluído — 2027)
+[CURSO] Bacharelado em Engenharia de Software (Conclusão: 2027)
 [CERTIFICADOS] Banco de Dados (2026), C#, GitHub, Java, Algoritmo, Kotlin.`,
       stack: ['Engenharia de Software', 'UNIFAN 2027', 'Banco de Dados (2026)', 'C#', 'Inglês & Espanhol'],
       link: 'Curriculo_Miqueias_Carvalho.pdf',
@@ -1042,6 +1204,10 @@ PASS src/sessions/sessions.controller.spec.ts
     for (let i = 0; i < lists.mapPins.length; i++) {
       const p = lists.mapPins[i];
       p.classList.toggle('active', p.getAttribute('data-pin-key') === pinKey || p === btnEl);
+    }
+    for (let i = 0; i < lists.starContractPills.length; i++) {
+      const pill = lists.starContractPills[i];
+      pill.classList.toggle('active', pill.getAttribute('data-contract-key') === pinKey);
     }
 
     const tx = String(d.x || 456);
@@ -1083,10 +1249,11 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.gigPrimaryLinkLabel) dom.gigPrimaryLinkLabel.textContent = d.linkText;
     if (dom.gigPrimaryLinkIcon) dom.gigPrimaryLinkIcon.setAttribute('href', isPdf ? '#ui-download' : '#ui-external-link');
     currentMapCloneCmd = d.clone;
+    bumpDossierSync('gig_' + pinKey, 6);
     if (!opts || opts.syncUrl !== false) syncUrlState('mapa', pinKey);
     if (!silent) {
       flashPanel('mapBriefingCard');
-      toast('Rota GPS traçada: ' + d.title);
+      toast('Contrato STAR carregado: ' + d.title);
     }
   }
 
@@ -1512,9 +1679,9 @@ PASS src/sessions/sessions.controller.spec.ts
   }
 
   const bdLayers = {
-    visual: '[CAMADA VISUAL ATIVA]: Telas fiscais e operacionais em VB6 rodando em múltiplas farmácias + Interfaces Swagger UI e JavaFX respondendo sem travamentos.',
-    audio: '[CAMADA DE ÁUDIO ATIVA]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab e resolução ágil.',
-    thermal: '[CAMADA TÉRMICA / DADOS ATIVA]: Assinatura de calor concentrada no SQL Server (Stored Procedures, Views, CNPJ Alfanumérico) e buscas Hash O(1) em 138 nanossegundos.'
+    visual: '[CAMADA VISUAL — O QUE FIZ]: Manutenção diária de telas e módulos em VB6 rodando em múltiplas farmácias na Zetti + construção de 8 repositórios backend com APIs REST (Swagger, TypeORM, Prisma, Spring Boot 3) e interfaces JavaFX.',
+    audio: '[CAMADA DE ÁUDIO — O QUE APRENDI]: Comunicação diária com a equipe técnica na Zetti, alinhamento de chamados no Jira, code review no GitHub/GitLab, modelagem relacional em SQL Server e separação limpa de camadas.',
+    thermal: '[CAMADA TÉRMICA — ONDE SENTI PRESSÃO]: Bugs críticos em produção, adequação fiscal para o novo CNPJ Alfanumérico e cálculos de impostos em bases de múltiplas farmácias com validação zero-regressão antes do release.'
   };
 
   function selectBdLayer(layerKey, btnEl) {
@@ -1529,6 +1696,7 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.bdEditorBox && text) {
       dom.bdEditorBox.setAttribute('data-layer', layerKey);
     }
+    bumpDossierSync('bd_' + layerKey, 4);
     toast('Braindance Scanner: Camada ' + layerKey.toUpperCase());
   }
 
@@ -1547,15 +1715,135 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.tarotReadingBox && tarotReadings[idx]) {
       dom.tarotReadingBox.textContent = tarotReadings[idx];
     }
+    bumpDossierSync('tarot_' + idx, 4);
     if (tarotReadings[idx]) toast(tarotReadings[idx].split(':')[0]);
   }
 
   /* ==========================================================================
-     SCREEN 6: HOLOCALL & BREACH PROTOCOL + AUTO-SOLVER
+     ATO 5: DYNAMIC TAROT ENDINGS & CREDITS MODAL
+     ========================================================================== */
+  const tarotEndings = {
+    temperanca: {
+      arcana: 'ARCANO XIV · TEMPERANÇA',
+      msg: '"Leitor silencioso. A porta continua aberta."',
+      hint: 'Dica: Baixe o CV para desbloquear "A Estrela", entre em contato para "O Sol" ou execute o Breach para "O Diabo".'
+    },
+    estrela: {
+      arcana: 'ARCANO XVII · A ESTRELA',
+      msg: '"Você levou o engrama. Agora é só ligar."',
+      hint: 'Final A Estrela desbloqueado ao baixar o Currículo PDF de Miqueias Carvalho.'
+    },
+    diabo: {
+      arcana: 'ARCANO XV · O DIABO',
+      msg: '"Você hackeou tudo. Respeito, netrunner."',
+      hint: 'Final O Diabo desbloqueado ao dominar o Breach Protocol e sistemas avançados do Cyberdeck.'
+    },
+    sol: {
+      arcana: 'ARCANO XIX · O SOL',
+      msg: '"Contrato fechado. Até a próxima, choom."',
+      hint: 'Final O Sol (Canônico) desbloqueado ao abrir canal direto de contato com Miqueias Carvalho.'
+    }
+  };
+
+  function unlockTarotEnding(endingKey) {
+    const priority = { temperanca: 0, diabo: 1, estrela: 2, sol: 3 };
+    if ((priority[endingKey] || 0) < (priority[currentEndingKey] || 0) && currentEndingKey !== 'temperanca') {
+      return;
+    }
+    currentEndingKey = endingKey;
+    const e = tarotEndings[endingKey];
+    if (!e) return;
+    if (dom.endingTarotArcana) dom.endingTarotArcana.textContent = e.arcana;
+    if (dom.endingTarotMessage) dom.endingTarotMessage.textContent = e.msg;
+    if (dom.endingTarotHint) dom.endingTarotHint.textContent = e.hint;
+  }
+
+  function recordCvDownload() {
+    unlockTarotEnding('estrela');
+    bumpDossierSync('cv_download', 15, 'ach_cv', 'Baixou o Engrama (Currículo PDF)');
+  }
+
+  function recordContactClick(channel) {
+    unlockTarotEnding('sol');
+    bumpDossierSync('contact_' + channel, 15, 'ach_contact', 'Iniciou Holocall (' + channel + ')');
+  }
+
+  function openCreditsModal() {
+    if (!dom.creditsDialogBackdrop) return;
+    playUiSound(440, 1120, 0.12, 'triangle');
+    dom.creditsDialogBackdrop.hidden = false;
+    dom.creditsDialogBackdrop.classList.add('open');
+    bumpDossierSync('credits_open', 10);
+  }
+
+  function closeCreditsModal() {
+    if (!dom.creditsDialogBackdrop) return;
+    dom.creditsDialogBackdrop.classList.remove('open');
+    dom.creditsDialogBackdrop.hidden = true;
+  }
+
+  if (dom.creditsDialogBackdrop) {
+    dom.creditsDialogBackdrop.addEventListener('click', (e) => {
+      if (e.target === dom.creditsDialogBackdrop) closeCreditsModal();
+    });
+  }
+
+  /* ==========================================================================
+     SCREEN 6 (ATO 4): HOLOCALL DIALOGUE WHEEL, INCOMING CALL & BREACH PROTOCOL
      ========================================================================== */
   function setSpeech(txt) {
     if (dom.holoSpeechBox) dom.holoSpeechBox.innerHTML = '"' + txt + '"';
   }
+
+  const holocallDialogueAnswers = {
+    disponibilidade: 'Tenho disponibilidade imediata para oportunidades como <strong>Desenvolvedor Backend Júnior (C#/.NET, SQL Server, Java ou Node.js)</strong> — presencial ou híbrido em <strong>Goiânia, GO</strong>, ou <strong>100% remoto</strong>. É só me chamar no WhatsApp (62) 99842-1308 ou e-mail abaixo.',
+    entrevista: 'Perfeito, Choom! Clique em <strong>[Chamar no WhatsApp]</strong> abaixo para abrir a conversa já preenchida no <strong>(62) 99842-1308</strong> ou envie um e-mail para <strong>miqueiash989@gmail.com</strong> com os horários disponíveis.',
+    sql_vb6: 'Na <strong>Zetti</strong>, dezenas de farmácias dependem diariamente do ERP em <strong>VB6 e SQL Server</strong>. Lá eu crio e otimizo <strong>queries, views e stored procedures</strong> e entrego demandas críticas como o <strong>CNPJ Alfanumérico</strong> e novos impostos sem derrubar a produção — o que me deu uma base real de banco de dados e regras de negócio que aplico em <strong>C#/.NET</strong>.',
+    estudando: 'Estou cursando o <strong>Bacharelado em Engenharia de Software na UNIFAN (conclusão em 2027)</strong> e aprofundando diariamente em <strong>C# / .NET, Arquitetura Limpa, otimização de Stored Procedures no SQL Server e testes automatizados</strong>.'
+  };
+
+  function answerHolocallChoice(choiceKey, btnEl) {
+    playUiSound(620, 1280, 0.08, 'triangle');
+    for (let i = 0; i < lists.wheelBtns.length; i++) {
+      lists.wheelBtns[i].classList.toggle('active', lists.wheelBtns[i] === btnEl);
+    }
+    const ans = holocallDialogueAnswers[choiceKey];
+    if (ans) setSpeech(ans);
+    bumpDossierSync('holo_q_' + choiceKey, 6);
+  }
+
+  let incomingCallShown = false;
+  function triggerIncomingHolocall() {
+    if (incomingCallShown || implantsOff) return;
+    try {
+      if (sessionStorage.getItem('mikoshi_holocall_declined') === '1') return;
+    } catch (_) {}
+    const holoScreen = $id('screen-holocall');
+    if (holoScreen && holoScreen.classList.contains('active')) return;
+    incomingCallShown = true;
+    if (dom.incomingHolocallPopup) {
+      dom.incomingHolocallPopup.hidden = false;
+      playUiSound(540, 1080, 0.14, 'triangle');
+    }
+  }
+
+  function acceptIncomingHolocall() {
+    if (dom.incomingHolocallPopup) dom.incomingHolocallPopup.hidden = true;
+    goToHolocall();
+    unlockTarotEnding('sol');
+  }
+
+  function declineIncomingHolocall() {
+    if (dom.incomingHolocallPopup) dom.incomingHolocallPopup.hidden = true;
+    try {
+      sessionStorage.setItem('mikoshi_holocall_declined', '1');
+    } catch (_) {}
+    toast('Chamada recusada — Canal de contato segue fixo no HUD.');
+  }
+
+  setTimeout(() => {
+    if (!document.hidden) triggerIncomingHolocall();
+  }, 55000);
 
   let bpBuffer = [];
 
@@ -1577,6 +1865,8 @@ PASS src/sessions/sessions.controller.spec.ts
     }
     if (dom.daemon3 && (seq.includes('BD E9 7A') || bpBuffer.length >= 4)) {
       dom.daemon3.classList.add('unlocked');
+      unlockTarotEnding('diabo');
+      bumpDossierSync('breach_complete', 12, 'ach_breach', 'Quebrou o Gelo no Breach Protocol');
     }
     toast('Hex injetado no Buffer: ' + code);
   }
@@ -1586,6 +1876,8 @@ PASS src/sessions/sessions.controller.spec.ts
     const el = dom['daemon' + num];
     if (el) el.classList.add('unlocked');
     if (num === 3 && !sandevistanOn) toggleSandevistan();
+    unlockTarotEnding('diabo');
+    bumpDossierSync('daemon_' + num, 8, 'ach_breach', 'Executou Daemon no Breach Protocol');
     toast('Daemon #' + num + ' executado diretamente');
   }
 
@@ -1600,6 +1892,7 @@ PASS src/sessions/sessions.controller.spec.ts
         if (lists.hexBtns[idx]) pickHex(lists.hexBtns[idx], code);
       }, idx * 120);
     }
+    unlockTarotEnding('diabo');
     toast('Auto-Hack Kiroshi: 3 Daemons desbloqueados');
   }
 
@@ -1614,6 +1907,226 @@ PASS src/sessions/sessions.controller.spec.ts
     if (dom.daemon2) dom.daemon2.classList.remove('unlocked');
     if (dom.daemon3) dom.daemon3.classList.remove('unlocked');
   }
+
+  /* ==========================================================================
+     ATO 0: KIROSHI OPTICS BOOT (NON-BLOCKING, <= 3S, SKIPPABLE, 1ST VISIT ONLY)
+     ========================================================================== */
+  function skipKiroshiBoot() {
+    for (let i = 0; i < bootTimers.length; i++) clearTimeout(bootTimers[i]);
+    bootTimers = [];
+    if (dom.skipBootBtn) dom.skipBootBtn.hidden = true;
+    if (dom.kiroshiBootLog) {
+      dom.kiroshiBootLog.textContent = 'KIROSHI OS v2.077 // SCAN COMPLETE: MIQUEIAS CARVALHO';
+    }
+    if (dom.heroTargetScan) dom.heroTargetScan.classList.remove('boot-calibrating');
+    try {
+      localStorage.setItem('mikoshi_kiroshi_boot_v1', '1');
+    } catch (_) {}
+  }
+
+  (function initKiroshiBoot() {
+    if (!dom.kiroshiBootLog) return;
+    if (reducedMotionQuery && reducedMotionQuery.matches) {
+      dom.kiroshiBootLog.textContent = 'KIROSHI OS v2.077 // SCAN COMPLETE: MIQUEIAS CARVALHO';
+      return;
+    }
+    let seen = false;
+    try {
+      seen = localStorage.getItem('mikoshi_kiroshi_boot_v1') === '1';
+    } catch (_) {}
+
+    if (seen) {
+      dom.kiroshiBootLog.textContent = 'BEM-VINDO DE VOLTA, CHOOM // NEUROLINK ATIVO';
+      bootTimers.push(setTimeout(() => {
+        if (dom.kiroshiBootLog) {
+          dom.kiroshiBootLog.textContent = 'KIROSHI OS v2.077 // SCAN COMPLETE: MIQUEIAS CARVALHO';
+        }
+      }, 650));
+    } else {
+      if (dom.skipBootBtn) dom.skipBootBtn.hidden = false;
+      dom.kiroshiBootLog.textContent = 'KIROSHI OS v2.077 // INICIALIZANDO NEUROLINK...';
+      bootTimers.push(setTimeout(() => {
+        if (dom.kiroshiBootLog) {
+          dom.kiroshiBootLog.textContent = 'calibrando retina… OK · sincronizando engrama… OK';
+        }
+      }, 650));
+      bootTimers.push(setTimeout(() => {
+        if (dom.heroTargetScan) dom.heroTargetScan.classList.add('boot-calibrating');
+        if (dom.kiroshiBootLog) {
+          dom.kiroshiBootLog.textContent = 'ALVO DETECTADO // LOCK-ON: MIQUEIAS CARVALHO';
+        }
+      }, 1350));
+      bootTimers.push(setTimeout(() => {
+        skipKiroshiBoot();
+      }, 1900));
+    }
+  })();
+
+  /* ==========================================================================
+     ATO 1 & ATO 2: HERO CTAs & LIFEPATH PERSONALIZATION (?path=corpo|netrunner|nomade)
+     ========================================================================== */
+  const lifepathMeta = {
+    corpo: { hud: 'CORPO · RECRUTADOR (30S)' },
+    netrunner: { hud: 'NETRUNNER · TECH LEAD' },
+    nomade: { hud: 'NÔMADE · JOGO COMPLETO' }
+  };
+
+  function selectLifepath(path, opts) {
+    if (!VALID_LIFEPATHS.has(path)) path = 'netrunner';
+    const silent = !!(opts && opts.silent);
+    currentLifepath = path;
+    document.body.setAttribute('data-lifepath', path);
+    if (dom.hudLifepathLabel && lifepathMeta[path]) {
+      dom.hudLifepathLabel.textContent = lifepathMeta[path].hud;
+    }
+    for (let i = 0; i < lists.lpCards.length; i++) {
+      const c = lists.lpCards[i];
+      const isAct = c.getAttribute('data-lifepath') === path;
+      c.classList.toggle('active', isAct);
+      c.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+    }
+    if (dom.corpoBriefingBox) {
+      dom.corpoBriefingBox.hidden = path !== 'corpo';
+    }
+    bumpDossierSync('lp_' + path, 6);
+    if (!opts || opts.syncUrl !== false) {
+      const activeScreenEl = document.querySelector('.cp-screen.active');
+      const currentTab = activeScreenEl ? activeScreenEl.id.replace('screen-', '') : 'cyberware';
+      syncUrlState(currentTab, currentTab === 'mapa' ? currentMapKey : null, path);
+    }
+    if (!silent) {
+      playUiSound(500, 1140, 0.09, 'triangle');
+      toast('Lifepath selecionado: ' + lifepathMeta[path].hud);
+    }
+  }
+
+  function cycleLifepath() {
+    const order = ['corpo', 'netrunner', 'nomade'];
+    const next = order[(order.indexOf(currentLifepath) + 1) % order.length];
+    selectLifepath(next);
+  }
+
+  function goToMissions() {
+    openGameScreen('mapa');
+    const el = $id('screen-mapa');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goToHolocall() {
+    openGameScreen('holocall');
+    const el = $id('screen-holocall');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ==========================================================================
+     "DESLIGAR IMPLANTES" (MODO CORPO / TEXTO PURO) & @MEDIA PRINT 1-PAGE CV
+     ========================================================================== */
+  function toggleImplantsOff(forceState) {
+    implantsOff = typeof forceState === 'boolean' ? forceState : !implantsOff;
+    document.body.classList.toggle('implants-off', implantsOff);
+    if (dom.corpoCleanDossier) {
+      dom.corpoCleanDossier.hidden = !implantsOff;
+    }
+    if (dom.implantsToggleBtn) {
+      dom.implantsToggleBtn.classList.toggle('active', implantsOff);
+      dom.implantsToggleBtn.setAttribute('aria-pressed', implantsOff ? 'true' : 'false');
+    }
+    if (dom.implantsToggleLabel) {
+      dom.implantsToggleLabel.textContent = implantsOff ? 'Reativar Implantes' : 'Desligar Implantes';
+    }
+    bumpDossierSync('implants_toggle', 8);
+    if (implantsOff) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      toast('Modo Corpo ativo: Versão limpa sem efeitos (Pronta para impressão / ATS)');
+    } else {
+      toast('Implantes Kiroshi reativados');
+    }
+  }
+
+  function printCleanCv() {
+    recordCvDownload();
+    window.print();
+  }
+
+  /* ==========================================================================
+     MODO SCANNER META (HOLD TAB OR BUTTON TOGGLE — SECTION 3.2)
+     ========================================================================== */
+  function toggleMetaScanner(forceState) {
+    metaScannerOn = typeof forceState === 'boolean' ? forceState : !metaScannerOn;
+    document.body.classList.toggle('meta-scanner-active', metaScannerOn);
+    if (dom.metaScanBtn) {
+      dom.metaScanBtn.classList.toggle('active', metaScannerOn);
+      dom.metaScanBtn.setAttribute('aria-pressed', metaScannerOn ? 'true' : 'false');
+    }
+    if (metaScannerOn) {
+      bumpDossierSync('meta_scanner', 8, 'ach_scanner', 'Ativou o Scanner Meta de Engenharia');
+    }
+  }
+
+  /* ==========================================================================
+     MOBILE: "O TELEFONE DO V" BOTTOM BAR HANDLER
+     ========================================================================== */
+  function mobileNavAction(target, btnEl) {
+    for (let i = 0; i < lists.mobNavBtns.length; i++) {
+      lists.mobNavBtns[i].classList.toggle('active', lists.mobNavBtns[i] === btnEl);
+    }
+    if (implantsOff) toggleImplantsOff(false);
+    if (target === 'scan') {
+      openGameScreen('cyberware');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'mapa') {
+      goToMissions();
+    } else if (target === 'holocall') {
+      goToHolocall();
+    } else if (target === 'mais') {
+      openGameScreen('diario');
+      const el = $id('screen-diario');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  /* ==========================================================================
+     LIVE NCPD / GITHUB FEED (WITH SESSIONSTORAGE CACHE & STATIC FALLBACK)
+     ========================================================================== */
+  (function initGithubLiveTicker() {
+    if (!dom.ncpdTickerText) return;
+    const cacheKey = 'mikoshi_gh_feed_v1';
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        dom.ncpdTickerText.textContent = cached;
+        return;
+      }
+    } catch (_) {}
+
+    if (typeof fetch !== 'function') return;
+    fetch('https://api.github.com/users/Miqueias-Henrique/repos?sort=updated&per_page=4')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((repos) => {
+        if (!Array.isArray(repos) || repos.length === 0) return;
+        const summary = repos
+          .slice(0, 4)
+          .map((repo) => `${repo.name} (${repo.language || 'Backend'})`)
+          .join(' · ');
+        const text = `Últimos repositórios atualizados no GitHub: ${summary}`;
+        if (dom.ncpdTickerText) dom.ncpdTickerText.textContent = text;
+        try {
+          sessionStorage.setItem(cacheKey, text);
+        } catch (_) {}
+      })
+      .catch(() => {});
+  })();
+
+  /* ==========================================================================
+     CONSOLE EASTER EGG FOR TECH LEADS (SECTION 3.5)
+     ========================================================================== */
+  try {
+    console.log(
+      '%cMIKOSHI // KIROSHI OPTICS v2.077 — Wake up, Samurai.\n%cProcurando um Desenvolvedor Backend Júnior (C#/.NET & SQL Server) com experiência real em produção na Zetti?\n→ E-mail: miqueiash989@gmail.com | WhatsApp: (62) 99842-1308 | GitHub: https://github.com/Miqueias-Henrique',
+      'color:#5EF6FF;font-weight:bold;font-size:14px;background:#08070C;padding:4px 8px;border-left:3px solid #FF5A50;',
+      'color:#FCEE09;font-family:monospace;font-size:12px;'
+    );
+  } catch (_) {}
 
   /* ==========================================================================
      WAI-ARIA TABS ARROW NAVIGATION
@@ -1648,18 +2161,18 @@ PASS src/sessions/sessions.controller.spec.ts
   const foldText = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   const screenCmds = [
-    { group: 'Telas HUD', title: 'Ripperdoc & Cyberware', sub: '[I] Stack, Código & Biomonitor', kw: 'cyberware c# dotnet sql vb6 java node stack', run: () => openGameScreen('cyberware') },
-    { group: 'Telas HUD', title: 'Mapa Tático de Gigs [11]', sub: '[M] Carreira Real, GPS & Repositórios', kw: 'mapa gps gigs carreira github repositorios', run: () => openGameScreen('mapa') },
-    { group: 'Telas HUD', title: 'Árvore de Habilidades 2.0', sub: '[P] Atributos & Vantagens', kw: 'perks habilidades arvore atributos pontos', run: () => openGameScreen('perks') },
-    { group: 'Telas HUD', title: 'Ficha RPG Cyberpunk RED [1d10]', sub: '[R] Lifepath, NET Architecture & Dados', kw: 'rpg mesa d10 ficha cyberpunk red net', run: () => openGameScreen('trpg') },
-    { group: 'Telas HUD', title: 'Diário, Braindance & Tarô', sub: '[J] Missões, 3 Camadas BD & Currículo PDF', kw: 'diario braindance taro misty missao curriculo', run: () => openGameScreen('diario') },
-    { group: 'Telas HUD', title: 'Holocall & Breach Protocol', sub: '[H] WhatsApp, E-mail, LinkedIn & Matriz Hex', kw: 'holocall contato whatsapp email linkedin breach', run: () => openGameScreen('holocall') }
+    { group: 'Navegação Principal', title: 'Skills · Ripperdoc', sub: '[1] Competências, Snippets & Provas no GitHub', kw: 'skills cyberware c# dotnet sql vb6 java node stack', run: () => openGameScreen('cyberware') },
+    { group: 'Navegação Principal', title: 'Projetos · Gigs [11]', sub: '[2] Contratos STAR, Zetti & Repositórios', kw: 'projetos mapa gps gigs carreira github repositorios star', run: () => goToMissions() },
+    { group: 'Navegação Principal', title: 'Trajetória · Braindance', sub: '[3] Linha do Tempo 2021–2026, 3 Camadas BD & Tarô', kw: 'trajetoria diario braindance taro misty missao curriculo', run: () => openGameScreen('diario') },
+    { group: 'Navegação Principal', title: 'Contato · Holocall', sub: '[4] Roda de Diálogo, WhatsApp, E-mail & Breach', kw: 'contato holocall whatsapp email linkedin breach', run: () => goToHolocall() },
+    { group: 'Navegação Principal', title: 'Extras · Ficha RED [1d10]', sub: '[5] RPG de Mesa Cyberpunk RED & NET Architecture', kw: 'extras rpg mesa d10 ficha cyberpunk red net', run: () => openGameScreen('trpg') },
+    { group: 'Navegação Principal', title: 'Atributos · Árvore 2.0', sub: '[6] Pilares de Engenharia Backend', kw: 'perks habilidades arvore atributos pontos', run: () => openGameScreen('perks') }
   ];
 
   const cwCmds = Object.keys(cyberwareData).map((k) => {
     const c = cyberwareData[k];
     return {
-      group: 'Cyberware & Stack',
+      group: 'Skills & Evidências',
       title: c.title,
       sub: c.cat,
       kw: `${c.title} ${c.cat} ${c.mods.join(' ')}`,
@@ -1673,7 +2186,7 @@ PASS src/sessions/sessions.controller.spec.ts
   const pinCmds = Object.keys(mapPinsData).map((k) => {
     const p = mapPinsData[k];
     return {
-      group: 'Mapa: Projetos & Carreira',
+      group: 'Contratos STAR & Projetos',
       title: p.title,
       sub: p.kicker,
       kw: `${p.title} ${p.kicker} ${p.stack.join(' ')} ${p.coord}`,
@@ -1686,18 +2199,20 @@ PASS src/sessions/sessions.controller.spec.ts
   });
 
   const actionCmds = [
+    { group: 'Modo Corpo & Currículo', title: 'Desligar Implantes (Modo Corpo / Texto Puro)', sub: 'Versão limpa sem efeitos para Recrutadores & ATS', kw: 'desligar implantes corpo texto puro limpo ats cv', run: () => toggleImplantsOff() },
+    { group: 'Modo Corpo & Currículo', title: 'Imprimir / Salvar Currículo 1 Página', sub: 'Formatação A4 limpa via @media print', kw: 'imprimir print salvar pdf 1 pagina curriculo', run: () => printCleanCv() },
+    { group: 'Lifepath (?path=)', title: 'Rota CORPO (Recrutador / RH — 30s)', sub: '?path=corpo · Resumo Executivo', kw: 'lifepath corpo recrutador rh 30s', run: () => selectLifepath('corpo') },
+    { group: 'Lifepath (?path=)', title: 'Rota NETRUNNER (Tech Lead / Dev)', sub: '?path=netrunner · Código, Arquitetura & SQL', kw: 'lifepath netrunner tech lead codigo sql', run: () => selectLifepath('netrunner') },
+    { group: 'Lifepath (?path=)', title: 'Rota NÔMADE (Explorador / Jogo Completo)', sub: '?path=nomade · RPG, Rádio, Johnny & Tarô', kw: 'lifepath nomade explorador gamer rpg', run: () => selectLifepath('nomade') },
+    { group: 'Sistema & Ações', title: 'Alternar Modo Scanner Meta [Tab]', sub: 'Exibir engenharia e métricas do próprio site', kw: 'scanner meta tab engenharia performance', run: () => toggleMetaScanner() },
     { group: 'Sistema & Ações', title: 'Ativar / Desativar Sandevistan [E]', sub: 'Edgerunners Dilatação Temporal', kw: 'sandevistan david martinez edgerunners efeito', run: () => toggleSandevistan() },
-    { group: 'Sistema & Ações', title: 'Alternar Overclock Edgerunner [O]', sub: 'Capacidade 298/300', kw: 'overclock cyberpsicose capacidade', run: () => toggleCyberpsychosisOverclock() },
     { group: 'Sistema & Ações', title: 'Invocar Engrama Johnny Silverhand [G]', sub: 'Relic Biochip Overlay', kw: 'johnny silverhand relic fala', run: () => summonJohnnyEngram() },
-    { group: 'Sistema & Ações', title: 'Ativar / Silenciar Som HUD', sub: 'Alternar WebAudio & Rádio FM', kw: 'som audio volume mute silenciar web audio', run: () => toggleHudAudio() },
+    { group: 'Sistema & Ações', title: 'Ativar / Silenciar Áudio Diegético', sub: 'Alternar WebAudio & Rádio FM', kw: 'som audio volume mute silenciar web audio', run: () => toggleHudAudio() },
     { group: 'Sistema & Ações', title: 'Sintonizar Rádio Night City FM', sub: 'Body Heat · Morro Rock · Pacific Dreams', kw: 'radio musica estacao night city', run: () => cycleNightCityRadio() },
-    { group: 'Sistema & Ações', title: 'Alternar Tema OS (Mikoshi / Edgerunners / Blackwall)', sub: 'Pulso Biochip Relic', kw: 'tema cores os blackwall edgerunners mikoshi', run: () => triggerRelicGlitch() },
-    { group: 'Sistema & Ações', title: 'Rolar Teste Crítico 1d10 Cyberpunk RED', sub: 'INT 10 + Perícia Banco de Dados', kw: 'rolar dado d10 teste sql pericia', run: () => { openGameScreen('trpg'); rollCyberpunkD10('Teste Rápido via Quickhack', 'INT', 10, 8, 17); } },
-    { group: 'Sistema & Ações', title: 'Auto-Hack Breach Protocol (3 Daemons)', sub: 'Resolver Matriz Hex 5x3', kw: 'auto hack breach daemon matriz hex', run: () => { openGameScreen('holocall'); autoSolveBreachProtocol(); } },
-    { group: 'Sistema & Ações', title: 'Baixar Currículo Original (.PDF)', sub: 'Curriculo_Miqueias_Carvalho.pdf', kw: 'baixar curriculo pdf download shard', run: () => { const a = document.createElement('a'); a.href = 'Curriculo_Miqueias_Carvalho.pdf'; a.download = 'Curriculo_Miqueias_Carvalho.pdf'; a.click(); toast('Download iniciado: Curriculo_Miqueias_Carvalho.pdf'); } },
-    { group: 'Sistema & Ações', title: 'Exportar Ficha Cyberpunk RED (.TXT)', sub: 'Download completo da ficha', kw: 'exportar txt ficha rpg', run: () => exportCyberpunkRedSheet() },
-    { group: 'Sistema & Ações', title: 'Copiar WhatsApp (62) 99842-1308', sub: 'Área de transferência', kw: 'copiar telefone whatsapp numero', run: () => copyClip('(62) 99842-1308', 'Telefone copiado: (62) 99842-1308') },
-    { group: 'Sistema & Ações', title: 'Copiar E-mail miqueiash989@gmail.com', sub: 'Área de transferência', kw: 'copiar email netmail contato', run: () => copyClip('miqueiash989@gmail.com', 'E-mail copiado: miqueiash989@gmail.com') }
+    { group: 'Sistema & Ações', title: 'Baixar Currículo Original (.PDF)', sub: 'Curriculo_Miqueias_Carvalho.pdf', kw: 'baixar curriculo pdf download shard', run: () => { recordCvDownload(); const a = document.createElement('a'); a.href = 'Curriculo_Miqueias_Carvalho.pdf'; a.download = 'Curriculo_Miqueias_Carvalho.pdf'; a.click(); toast('Download iniciado: Curriculo_Miqueias_Carvalho.pdf'); } },
+    { group: 'Sistema & Ações', title: 'Rolar Créditos Finais (Ato 5)', sub: 'Stack, inspirações e desfecho de Tarô', kw: 'creditos final taro bastidores', run: () => openCreditsModal() },
+    { group: 'Sistema & Ações', title: 'Copiar WhatsApp (62) 99842-1308', sub: 'Área de transferência', kw: 'copiar telefone whatsapp numero', run: () => { recordContactClick('Telefone'); copyClip('(62) 99842-1308', 'Telefone copiado: (62) 99842-1308'); } },
+    { group: 'Sistema & Ações', title: 'Copiar E-mail miqueiash989@gmail.com', sub: 'Área de transferência', kw: 'copiar email netmail contato', run: () => { recordContactClick('Email'); copyClip('miqueiash989@gmail.com', 'E-mail copiado: miqueiash989@gmail.com'); } }
   ];
 
   const allCmds = [...screenCmds, ...cwCmds, ...pinCmds, ...actionCmds];
@@ -1750,7 +2265,7 @@ PASS src/sessions/sessions.controller.spec.ts
     if (filteredCmds.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'cmd-group-label';
-      empty.textContent = 'NENHUM COMANDO ENCONTRADO — TENTE "SQL", "DOTNET", "DOCKER" OU "D10"';
+      empty.textContent = 'NENHUM COMANDO ENCONTRADO — TENTE "SQL", "DOTNET", "CORPO" OU "CV"';
       dom.cmdResultsList.appendChild(empty);
     } else {
       let lastGroup = '';
@@ -1835,14 +2350,37 @@ PASS src/sessions/sessions.controller.spec.ts
   }
 
   /* ==========================================================================
-     HOTKEYS I, M, P, R, J, H, E, G, O + QUICKHACK CTRL+K / /
+     HOTKEYS, KONAMI CODE & HOLD-TAB META SCANNER
      ========================================================================== */
+  const konamiSeq = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+  let konamiPos = 0;
+
   window.addEventListener('keydown', (e) => {
     const k = e.key.toLowerCase();
+
+    if (k === konamiSeq[konamiPos]) {
+      konamiPos++;
+      if (konamiPos === konamiSeq.length) {
+        konamiPos = 0;
+        document.body.setAttribute('data-cyber-os', 'blackwall');
+        if (dom.osModeLabel) dom.osModeLabel.textContent = 'BLACKWALL';
+        unlockTarotEnding('diabo');
+        bumpDossierSync('konami', 12, 'ach_konami', 'Atravessou a Blackwall (Konami Code)');
+      }
+    } else {
+      konamiPos = k === konamiSeq[0] ? 1 : 0;
+    }
+
     if ((e.ctrlKey || e.metaKey) && k === 'k') {
       e.preventDefault();
       if (cmdOpen) closeQuickhackPalette();
       else openQuickhackPalette();
+      return;
+    }
+
+    if (e.key === 'Escape' && dom.creditsDialogBackdrop && !dom.creditsDialogBackdrop.hidden) {
+      e.preventDefault();
+      closeCreditsModal();
       return;
     }
 
@@ -1871,6 +2409,10 @@ PASS src/sessions/sessions.controller.spec.ts
       return;
     }
 
+    if (e.key === ' ' && dom.skipBootBtn && !dom.skipBootBtn.hidden) {
+      skipKiroshiBoot();
+    }
+
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const activeEl = document.activeElement;
     const tag = activeEl && activeEl.tagName;
@@ -1884,29 +2426,41 @@ PASS src/sessions/sessions.controller.spec.ts
 
     if (k === 'i' || k === '1') openGameScreen('cyberware');
     else if (k === 'm' || k === '2') openGameScreen('mapa');
-    else if (k === 'p' || k === '3') openGameScreen('perks');
-    else if (k === 'r' || k === '4') openGameScreen('trpg');
-    else if (k === 'j' || k === '5') openGameScreen('diario');
-    else if (k === 'h' || k === '6') openGameScreen('holocall');
+    else if (k === 'j' || k === '3') openGameScreen('diario');
+    else if (k === 'h' || k === '4') openGameScreen('holocall');
+    else if (k === 'r' || k === '5') openGameScreen('trpg');
+    else if (k === 'p' || k === '6') openGameScreen('perks');
     else if (k === 'e') toggleSandevistan();
     else if (k === 'g') summonJohnnyEngram();
     else if (k === 'o') toggleCyberpsychosisOverclock();
   });
 
-  /* Hydrate URL search params (?tab=...&gig=...) silently on startup */
+  /* Hydrate URL search params (?path=...&tab=...&gig=...&mode=...) silently on startup */
   (function hydrateFromUrl() {
     try {
       const sp = new URLSearchParams(window.location.search);
+      const initialPath = sp.get('path');
       const initialTab = sp.get('tab');
       const initialGig = sp.get('gig');
+      const initialMode = sp.get('mode');
+      if (initialPath && VALID_LIFEPATHS.has(initialPath)) {
+        selectLifepath(initialPath, { silent: true, syncUrl: false });
+      } else {
+        selectLifepath('netrunner', { silent: true, syncUrl: false });
+      }
       if (initialTab && VALID_SCREENS.has(initialTab)) {
         openGameScreen(initialTab, null, { silent: true, syncUrl: false });
         if (initialTab === 'mapa' && initialGig && mapPinsData[initialGig]) {
           selectMapPin(initialGig, null, { silent: true, syncUrl: false });
         }
       }
+      if (initialMode === 'corpo' || initialMode === 'clean') {
+        toggleImplantsOff(true);
+      }
     } catch (_) {}
   })();
+
+  syncAudioToggleUi();
 
   Object.assign(window, {
     openGameScreen,
@@ -1930,6 +2484,22 @@ PASS src/sessions/sessions.controller.spec.ts
     selectBdLayer,
     inspectTarotCard,
     setSpeech,
+    answerHolocallChoice,
+    acceptIncomingHolocall,
+    declineIncomingHolocall,
+    recordCvDownload,
+    recordContactClick,
+    openCreditsModal,
+    closeCreditsModal,
+    skipKiroshiBoot,
+    selectLifepath,
+    cycleLifepath,
+    goToMissions,
+    goToHolocall,
+    toggleImplantsOff,
+    printCleanCv,
+    toggleMetaScanner,
+    mobileNavAction,
     pickHex,
     unlockSingleDaemon,
     autoSolveBreachProtocol,
@@ -1948,3 +2518,4 @@ PASS src/sessions/sessions.controller.spec.ts
     copyClip
   });
 })();
+
